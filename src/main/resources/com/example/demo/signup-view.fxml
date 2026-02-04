@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<StackPane prefHeight="700.0" prefWidth="1000.0"
+           stylesheets="@style.css"
+           xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.demo.SignUpController">
+
+    <children>
+        <AnchorPane prefHeight="700.0" prefWidth="1000.0">
+            <children>
+                <!-- Left Decorative Panel (re-use same look) -->
+                <AnchorPane prefHeight="700.0" prefWidth="550.0" styleClass="left-panel">
+                    <children>
+                        <Circle fill="#ffffff22" layoutX="120.0" layoutY="160.0" radius="130.0" styleClass="circle-decoration" />
+                        <Circle fill="#ffffff11" layoutX="460.0" layoutY="560.0" radius="160.0" styleClass="circle-decoration" />
+
+                        <Label layoutX="80.0" layoutY="250.0" styleClass="welcome-text" text="Create your" textAlignment="LEFT">
+                            <font><Font name="System Bold" size="38.0" /></font>
+                        </Label>
+                        <Label layoutX="80.0" layoutY="310.0" styleClass="welcome-text-large" text="Account" textAlignment="LEFT">
+                            <font><Font name="System Bold" size="56.0" /></font>
+                        </Label>
+                        <Label layoutX="80.0" layoutY="400.0" prefWidth="420.0" styleClass="welcome-subtitle" wrapText="true"
+                               text="Sign up once, then login to shop." />
+                    </children>
+                </AnchorPane>
+
+                <!-- Right SignUp Panel -->
+                <AnchorPane layoutX="604.0" layoutY="-3.0" prefHeight="694.0" prefWidth="382.0" styleClass="right-panel">
+                    <children>
+                        <Label layoutX="57.0" layoutY="55.0" prefHeight="45.0" prefWidth="260.0" styleClass="login-title" text="Sign Up" textAlignment="CENTER">
+                            <font><Font name="System Bold" size="32.0" /></font>
+                        </Label>
+                        <Label layoutX="57.0" layoutY="110.0" prefHeight="20.0" prefWidth="260.0" styleClass="subtitle"
+                               text="Create a new account" textAlignment="CENTER" />
+
+                        <Label layoutX="57.0" layoutY="150.0" styleClass="field-label" text="Username" />
+                        <TextField fx:id="usernameField" layoutX="57.0" layoutY="177.0" prefHeight="45.0" prefWidth="260.0"
+                                   promptText="Choose a username" styleClass="modern-field" />
+
+                        <Label layoutX="57.0" layoutY="240.0" styleClass="field-label" text="Password" />
+                        <PasswordField fx:id="passwordField" layoutX="57.0" layoutY="267.0" prefHeight="45.0" prefWidth="260.0"
+                                       promptText="Create a password" styleClass="modern-field" />
+
+                        <Label layoutX="57.0" layoutY="330.0" styleClass="field-label" text="Confirm Password" />
+                        <PasswordField fx:id="confirmPasswordField" layoutX="57.0" layoutY="357.0" prefHeight="45.0" prefWidth="260.0"
+                                       promptText="Re-type password" styleClass="modern-field" />
+
+                        <Label layoutX="57.0" layoutY="420.0" styleClass="field-label" text="Personal Data (for recovery)" />
+                        <TextField fx:id="personalDataField" layoutX="57.0" layoutY="447.0" prefHeight="45.0" prefWidth="260.0"
+                                   promptText="e.g., your favorite color" styleClass="modern-field" />
+
+                        <Button layoutX="95.0" layoutY="515.0" prefHeight="50.0" prefWidth="190.0" styleClass="login-button"
+                                text="CREATE ACCOUNT" onAction="#onCreateAccount" />
+
+                        <HBox layoutX="74.0" layoutY="585.0" spacing="8" alignment="CENTER_LEFT">
+                            <Label text="Already have an account?" styleClass="signup-text" />
+                            <Button text="Back to Login" onAction="#onBackToLogin" styleClass="link-button" />
+                        </HBox>
+
+                        <Label fx:id="statusLabel" layoutX="57.0" layoutY="625.0" prefWidth="260.0" wrapText="true" />
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

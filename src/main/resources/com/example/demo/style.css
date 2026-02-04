@@ -30,8 +30,11 @@
 }
 
 .welcome-subtitle {
-    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-text-fill: rgba(255, 255, 255, 0.92);
     -fx-font-style: italic;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 0.4px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.22), 10, 0, 0, 3);
 }
 
 /* Right Panel - White card with shadow */
@@ -257,4 +260,82 @@
     -fx-text-fill: #27ae60;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
+}
+
+/* ===== Home page styles ===== */
+.home-topbar {
+    -fx-background-color: #111827;
+}
+
+.home-brand {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+}
+
+.home-logout {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12px;
+    -fx-padding: 8px 14px;
+}
+
+.home-hero {
+    -fx-background-color: #667eea;
+    -fx-background-radius: 18px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.14), 16, 0, 0, 6);
+}
+
+.home-title {
+    -fx-text-fill: white;
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+}
+
+.home-subtitle {
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-font-size: 14px;
+}
+
+.home-section-title {
+    -fx-text-fill: #111827;
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+}
+
+.home-card {
+    -fx-background-color: white;
+    -fx-text-fill: #111827;
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+    -fx-background-radius: 16px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 16px;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 12, 0, 0, 4);
+}
+
+.home-card:hover {
+    -fx-border-color: #667eea;
+}
+
+.home-status {
+    -fx-text-fill: #374151;
+    -fx-font-size: 13px;
+}
+
+/* Link-like button (used in Sign Up page) */
+.link-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #667eea;
+    -fx-underline: false;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 0;
+}
+
+.link-button:hover {
+    -fx-text-fill: #764ba2;
+    -fx-underline: true;
 }
