@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0"
+            stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.demo.HomeController">
+
+    <!-- Top Bar -->
+    <HBox layoutX="0.0" layoutY="0.0" prefHeight="64.0" prefWidth="1000.0" styleClass="home-topbar">
+        <children>
+            <Label text="HATBAZARx" styleClass="home-brand" HBox.hgrow="ALWAYS" />
+            <Button text="Logout" onAction="#onLogout" styleClass="home-logout" />
+        </children>
+        <padding>
+            <Insets left="24" right="24" top="14" bottom="14" />
+        </padding>
+        <spacing>12</spacing>
+    </HBox>
+
+    <!-- Content -->
+    <VBox layoutX="0.0" layoutY="84.0" prefWidth="1000.0" spacing="18">
+        <padding>
+            <Insets left="28" right="28" top="20" bottom="20" />
+        </padding>
+
+        <StackPane prefHeight="140" styleClass="home-hero">
+            <VBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 22;">
+                <Label fx:id="userLabel" text="Hello!" styleClass="home-title" />
+                <Label text="Choose a category and start shopping." styleClass="home-subtitle" />
+            </VBox>
+        </StackPane>
+
+        <Label text="Categories" styleClass="home-section-title" />
+
+        <HBox spacing="14">
+            <Button text="Fashion" prefWidth="220" prefHeight="90" onAction="#openFashion" styleClass="home-card" />
+            <Button text="Electronics" prefWidth="220" prefHeight="90" onAction="#openElectronics" styleClass="home-card" />
+            <Button text="Home &amp; Living" prefWidth="220" prefHeight="90" onAction="#openHomeLiving" styleClass="home-card" />
+            <Button text="Beauty" prefWidth="220" prefHeight="90" onAction="#openBeauty" styleClass="home-card" />
+        </HBox>
+
+        <Label text="Quick Actions" styleClass="home-section-title" />
+        <HBox spacing="14">
+            <Button text="View Cart" prefWidth="220" onAction="#openCart" />
+            <Button text="My Orders" prefWidth="220" onAction="#openOrders" />
+        </HBox>
+
+        <Label fx:id="statusLabel" text="" styleClass="home-status" />
+    </VBox>
+
+</AnchorPane>
