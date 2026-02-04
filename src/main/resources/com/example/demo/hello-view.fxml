@@ -37,9 +37,11 @@
                                 <Font name="System Bold" size="56.0" />
                             </font>
                         </Label>
-                        <Label layoutX="80.0" layoutY="390.0" prefHeight="40.0" prefWidth="400.0" styleClass="welcome-subtitle" text="Buet er assignment e jemon focus, Product eo temon !!" textAlignment="LEFT">
+                        <Label layoutX="80.0" layoutY="390.0" prefHeight="72.0" prefWidth="440.0"
+                               styleClass="welcome-subtitle" textAlignment="LEFT" wrapText="true"
+                               text="Buet er assignment e jemon focus&#10;Product eo temon !!">
                             <font>
-                                <Font size="18.0" />
+                                <Font size="20.0" />
                             </font>
                         </Label>
                     </children>
@@ -68,18 +70,18 @@
                                 <Font name="System Bold" size="13.0" />
                             </font>
                         </Label>
-                        <TextField layoutX="57.0" layoutY="212.0" maxWidth="260.0" prefHeight="45.0" prefWidth="260.0" promptText="Enter your username" styleClass="modern-field" />
+                        <TextField fx:id="usernameField" layoutX="57.0" layoutY="212.0" maxWidth="260.0" prefHeight="45.0" prefWidth="260.0" promptText="Enter your username" styleClass="modern-field" />
 
                         <Label layoutX="57.0" layoutY="277.0" styleClass="field-label" text="Password">
                             <font>
                                 <Font name="System Bold" size="13.0" />
                             </font>
                         </Label>
-                        <PasswordField layoutX="57.0" layoutY="304.0" prefHeight="45.0" prefWidth="260.0" promptText="Enter your password" styleClass="modern-field" />
+                        <PasswordField fx:id="passwordField" layoutX="57.0" layoutY="304.0" prefHeight="45.0" prefWidth="260.0" promptText="Enter your password" styleClass="modern-field" />
 
                         <Hyperlink layoutX="192.0" layoutY="359.0" styleClass="forgot-link" text="Forgot Password?" />
 
-                        <Button layoutX="105.0" layoutY="400.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="164.0" styleClass="login-button" text="LOGIN" onAction="#onHelloButtonClick">
+                        <Button layoutX="105.0" layoutY="400.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="164.0" styleClass="login-button" text="LOGIN" onAction="#onLogin">
                             <font>
                                 <Font name="System Bold" size="16.0" />
                             </font>
@@ -90,9 +92,9 @@
                                 <Font size="13.0" />
                             </font>
                         </Label>
-                        <Hyperlink layoutX="223.0" layoutY="473.0" styleClass="signup-link" text="Sign Up" />
+                        <Hyperlink layoutX="223.0" layoutY="473.0" styleClass="signup-link" text="Sign Up" onAction="#onSignUp" />
 
-                        <!-- Hidden label to show status text from controller -->
+                        <!-- Status label to show errors/success -->
                         <Label fx:id="welcomeText" layoutX="57.0" layoutY="530.0" prefWidth="260.0" wrapText="true" />
                     </children>
                 </AnchorPane>
