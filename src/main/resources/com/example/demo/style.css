@@ -1,0 +1,260 @@
+/* Root styling - Clean background */
+.root {
+    -fx-background-color: #f0f2f5;
+}
+
+/* Left Panel - solid color (JavaFX 21 CSS-safe) */
+.left-panel {
+    /* JavaFX CSS doesn't accept CSS4 linear-gradient() in -fx-background-color */
+    -fx-background-color: #667eea;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 25, 0, 5, 0);
+}
+
+/* Circle decorations */
+.circle-decoration {
+    -fx-opacity: 0.3;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.2), 30, 0, 0, 0);
+}
+
+/* Welcome text on left panel */
+.welcome-text {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 3);
+}
+
+.welcome-text-large {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 5);
+}
+
+.welcome-subtitle {
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-font-style: italic;
+}
+
+/* Right Panel - White card with shadow */
+.right-panel {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 30, 0, 0, 10);
+}
+
+/* Login title */
+.login-title {
+    /* gradient text fill isn't supported reliably in JavaFX; use solid */
+    -fx-text-fill: #667eea;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.2), 8, 0, 0, 3);
+}
+
+/* Subtitle */
+.subtitle {
+    -fx-text-fill: #718096;
+}
+
+/* Decorative line under subtitle */
+.decorative-line {
+    -fx-fill: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.4), 8, 0, 0, 2);
+}
+
+/* Field labels */
+.field-label {
+    -fx-text-fill: #2d3748;
+    -fx-font-weight: bold;
+}
+
+/* Modern TextField styling */
+.modern-field {
+    -fx-background-color: #f7fafc;
+    -fx-background-radius: 12px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12px;
+    -fx-border-width: 2px;
+    -fx-padding: 12px 18px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2d3748;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+}
+
+.modern-field:focused {
+    -fx-border-color: #667eea;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.3), 15, 0, 0, 3);
+}
+
+.modern-field:hover {
+    -fx-border-color: #764ba2;
+    -fx-background-color: #ffffff;
+}
+
+/* TextField specific */
+.text-field {
+    -fx-background-color: #f7fafc;
+    -fx-background-radius: 12px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12px;
+    -fx-border-width: 2px;
+    -fx-padding: 12px 18px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2d3748;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+}
+
+.text-field:focused {
+    -fx-border-color: #667eea;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.3), 15, 0, 0, 3);
+}
+
+.text-field:hover {
+    -fx-border-color: #764ba2;
+    -fx-background-color: #ffffff;
+}
+
+/* PasswordField styling */
+.password-field {
+    -fx-background-color: #f7fafc;
+    -fx-background-radius: 12px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12px;
+    -fx-border-width: 2px;
+    -fx-padding: 12px 18px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2d3748;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+}
+
+.password-field:focused {
+    -fx-border-color: #667eea;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.3), 15, 0, 0, 3);
+}
+
+.password-field:hover {
+    -fx-border-color: #764ba2;
+    -fx-background-color: #ffffff;
+}
+
+/* Modern Login Button (solid color for JavaFX CSS parser compatibility) */
+.login-button {
+    -fx-background-color: #667eea;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25px;
+    -fx-padding: 15px 40px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.5), 20, 0, 0, 5);
+}
+
+.login-button:hover {
+    -fx-background-color: #5568d3;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.7), 25, 0, 0, 7);
+}
+
+.login-button:pressed {
+    -fx-background-color: #4a5bbf;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.4), 15, 0, 0, 3);
+}
+
+/* General Button styling */
+.button {
+    -fx-background-color: #764ba2;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25px;
+    -fx-padding: 15px 40px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(118, 75, 162, 0.35), 20, 0, 0, 5);
+}
+
+.button:hover {
+    -fx-background-color: #653a8a;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(118, 75, 162, 0.5), 25, 0, 0, 7);
+}
+
+.button:pressed {
+    -fx-background-color: #542d72;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Forgot password link */
+.forgot-link {
+    -fx-text-fill: #667eea;
+    -fx-underline: false;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.forgot-link:hover {
+    -fx-text-fill: #764ba2;
+    -fx-underline: true;
+    -fx-effect: dropshadow(gaussian, rgba(118, 75, 162, 0.4), 5, 0, 0, 0);
+}
+
+/* Sign up text */
+.signup-text {
+    -fx-text-fill: #718096;
+}
+
+/* Sign up link */
+.signup-link {
+    -fx-text-fill: #667eea;
+    -fx-underline: false;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.signup-link:hover {
+    -fx-text-fill: #764ba2;
+    -fx-underline: true;
+    -fx-effect: dropshadow(gaussian, rgba(118, 75, 162, 0.4), 5, 0, 0, 0);
+}
+
+/* Hyperlink general styling */
+.hyperlink {
+    -fx-text-fill: #667eea;
+    -fx-underline: false;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #764ba2;
+    -fx-underline: true;
+    -fx-effect: dropshadow(gaussian, rgba(118, 75, 162, 0.4), 5, 0, 0, 0);
+}
+
+/* Label general styling */
+.label {
+    -fx-text-fill: #2d3748;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Error label styling */
+.error-label {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* Success label styling */
+.success-label {
+    -fx-text-fill: #27ae60;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
