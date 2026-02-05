@@ -45,6 +45,14 @@ public final class Session {
         goToLogin(anyNodeInScene);
     }
 
+    public static void goToForgotPassword(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "forgot-password-view.fxml", 1000, 700);
+    }
+
+    public static void goToFashion(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "fashion-view.fxml", 1000, 700);
+    }
+
     private static void changeScene(Node anyNodeInScene, String fxml, double w, double h) {
         try {
             Stage stage = (Stage) anyNodeInScene.getScene().getWindow();

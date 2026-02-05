@@ -5,55 +5,61 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class SignUpController {
+public class ForgotPasswordController {
 
     @FXML
     private TextField usernameField;
 
     @FXML
-    private PasswordField passwordField;
+    private TextField personalDataField;
+
+    @FXML
+    private PasswordField newPasswordField;
 
     @FXML
     private PasswordField confirmPasswordField;
-
-    @FXML
-    private TextField personalDataField;
 
     @FXML
     private Label statusLabel;
 
     @FXML
     private void initialize() {
-        statusLabel.setText("Fill all fields to create your account.");
+        statusLabel.setText("Enter username + personal data, then set a new password.");
     }
 
     @FXML
-    private void onCreateAccount() {
+    private void onResetPassword() {
         String username = safe(usernameField.getText());
-        String password = safe(passwordField.getText());
-        String confirm = safe(confirmPasswordField.getText());
         String personalData = safe(personalDataField.getText());
+        String newPassword = safe(newPasswordField.getText());
+        String confirm = safe(confirmPasswordField.getText());
 
-        if (username.isEmpty() || password.isEmpty() || confirm.isEmpty() || personalData.isEmpty()) {
+        if (username.isEmpty() || personalData.isEmpty() || newPassword.isEmpty() || confirm.isEmpty()) {
             setError("All fields are required.");
             return;
         }
 
-        if (!password.equals(confirm)) {
-            setError("Password and Confirm Password must match.");
+        if (!UserStore.userExists(username)) {
+            setError("No account found for this username.");
+            return;
+        }
+
+        if (!newPassword.equals(confirm)) {
+            setError("New password and confirmation must match.");
             confirmPasswordField.clear();
             return;
         }
 
-        boolean created = UserStore.createUser(username, password, personalData);
-        if (!created) {
-            setError("Username already exists. Try another.");
+        boolean ok = UserStore.resetPassword(username, personalData, newPassword);
+        if (!ok) {
+            setError("Recovery data didn't match. Try again.");
+            newPasswordField.clear();
+            confirmPasswordField.clear();
             return;
         }
 
-        // Auto-login and go to home directly.
         Session.login(username);
-        setSuccess("Account created! Opening home...");
+        setSuccess("Password updated! Opening home...");
         Session.goToHome(statusLabel);
     }
 

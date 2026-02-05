@@ -52,6 +52,11 @@ public class HelloController {
         Session.goToSignUp(welcomeText);
     }
 
+    @FXML
+    private void onForgotPassword() {
+        Session.goToForgotPassword(welcomeText);
+    }
+
     private void setError(String msg) {
         welcomeText.getStyleClass().removeAll("success-label");
         if (!welcomeText.getStyleClass().contains("error-label")) {

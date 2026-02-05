@@ -79,7 +79,7 @@
                         </Label>
                         <PasswordField fx:id="passwordField" layoutX="57.0" layoutY="304.0" prefHeight="45.0" prefWidth="260.0" promptText="Enter your password" styleClass="modern-field" />
 
-                        <Hyperlink layoutX="192.0" layoutY="359.0" styleClass="forgot-link" text="Forgot Password?" />
+                        <Hyperlink layoutX="192.0" layoutY="359.0" styleClass="forgot-link" text="Forgot Password?" onAction="#onForgotPassword" />
 
                         <Button layoutX="105.0" layoutY="400.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="164.0" styleClass="login-button" text="LOGIN" onAction="#onLogin">
                             <font>
