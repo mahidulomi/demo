@@ -36,10 +36,6 @@ public final class Session {
         changeScene(anyNodeInScene, "signup-view.fxml", 1000, 700);
     }
 
-    public static void goToRecovery(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "recovery-view.fxml", 1000, 700);
-    }
-
     public static void goToLogin(Node anyNodeInScene) {
         changeScene(anyNodeInScene, "hello-view.fxml", 1000, 700);
     }
