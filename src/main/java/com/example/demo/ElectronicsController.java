@@ -7,21 +7,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
- * Controller for Fashion page - products are built directly in FXML
+ * Controller for Electronics page - products are built directly in FXML
  */
-public class FashionController {
+public class ElectronicsController {
 
     @FXML
     private Button btnAll;
 
     @FXML
-    private Button btnBaby;
+    private Button btnMobile;
 
     @FXML
-    private Button btnMale;
+    private Button btnLaptop;
 
     @FXML
-    private Button btnFemale;
+    private Button btnAccessories;
 
     @FXML
     private Label statusLabel;
@@ -31,38 +31,38 @@ public class FashionController {
 
     @FXML
     private void initialize() {
-        statusLabel.setText("✨ 12 Beautiful Products - All with Amazing Discounts!");
+        statusLabel.setText("⚡ 12 Latest Electronics - All with Amazing Discounts!");
     }
 
     @FXML
     private void onFilterAll() {
         updateFilterButtons("All");
         filterProducts("All");
-        statusLabel.setText("✨ Showing all 12 products!");
+        statusLabel.setText("⚡ Showing all 12 products!");
     }
 
     @FXML
-    private void onFilterBaby() {
-        updateFilterButtons("Baby");
-        filterProducts("Baby");
+    private void onFilterMobile() {
+        updateFilterButtons("Mobile");
+        filterProducts("Mobile");
         int count = countVisibleProducts();
-        statusLabel.setText("👶 Baby category selected - " + count + " adorable products!");
+        statusLabel.setText("📱 Mobile category selected - " + count + " smart devices!");
     }
 
     @FXML
-    private void onFilterMale() {
-        updateFilterButtons("Male");
-        filterProducts("Male");
+    private void onFilterLaptop() {
+        updateFilterButtons("Laptop");
+        filterProducts("Laptop");
         int count = countVisibleProducts();
-        statusLabel.setText("👔 Male category selected - " + count + " stylish products!");
+        statusLabel.setText("💻 Laptop category selected - " + count + " powerful machines!");
     }
 
     @FXML
-    private void onFilterFemale() {
-        updateFilterButtons("Female");
-        filterProducts("Female");
+    private void onFilterAccessories() {
+        updateFilterButtons("Accessories");
+        filterProducts("Accessories");
         int count = countVisibleProducts();
-        statusLabel.setText("👗 Female category selected - " + count + " elegant products!");
+        statusLabel.setText("🎧 Accessories category selected - " + count + " essential items!");
     }
 
     @FXML
@@ -106,21 +106,21 @@ public class FashionController {
 
     private void updateFilterButtons(String activeFilter) {
         // Remove active class from all buttons
-        btnAll.getStyleClass().removeAll("fashion-filter-active");
-        btnBaby.getStyleClass().removeAll("fashion-filter-active");
-        btnMale.getStyleClass().removeAll("fashion-filter-active");
-        btnFemale.getStyleClass().removeAll("fashion-filter-active");
+        btnAll.getStyleClass().removeAll("electronics-filter-active");
+        btnMobile.getStyleClass().removeAll("electronics-filter-active");
+        btnLaptop.getStyleClass().removeAll("electronics-filter-active");
+        btnAccessories.getStyleClass().removeAll("electronics-filter-active");
 
         // Add active class to selected button
         Button activeButton = switch (activeFilter) {
-            case "Baby" -> btnBaby;
-            case "Male" -> btnMale;
-            case "Female" -> btnFemale;
+            case "Mobile" -> btnMobile;
+            case "Laptop" -> btnLaptop;
+            case "Accessories" -> btnAccessories;
             default -> btnAll;
         };
 
-        if (!activeButton.getStyleClass().contains("fashion-filter-active")) {
-            activeButton.getStyleClass().add("fashion-filter-active");
+        if (!activeButton.getStyleClass().contains("electronics-filter-active")) {
+            activeButton.getStyleClass().add("electronics-filter-active");
         }
     }
 
@@ -153,3 +153,4 @@ public class FashionController {
                 .count();
     }
 }
+

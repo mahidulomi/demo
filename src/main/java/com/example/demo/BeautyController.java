@@ -7,21 +7,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
- * Controller for Fashion page - products are built directly in FXML
+ * Controller for Beauty page - products are built directly in FXML
  */
-public class FashionController {
+public class BeautyController {
 
     @FXML
     private Button btnAll;
 
     @FXML
-    private Button btnBaby;
+    private Button btnSkincare;
 
     @FXML
-    private Button btnMale;
+    private Button btnMakeup;
 
     @FXML
-    private Button btnFemale;
+    private Button btnHaircare;
 
     @FXML
     private Label statusLabel;
@@ -31,7 +31,7 @@ public class FashionController {
 
     @FXML
     private void initialize() {
-        statusLabel.setText("✨ 12 Beautiful Products - All with Amazing Discounts!");
+        statusLabel.setText("✨ 12 Premium Beauty Products - All with Amazing Discounts!");
     }
 
     @FXML
@@ -42,27 +42,27 @@ public class FashionController {
     }
 
     @FXML
-    private void onFilterBaby() {
-        updateFilterButtons("Baby");
-        filterProducts("Baby");
+    private void onFilterSkincare() {
+        updateFilterButtons("Skincare");
+        filterProducts("Skincare");
         int count = countVisibleProducts();
-        statusLabel.setText("👶 Baby category selected - " + count + " adorable products!");
+        statusLabel.setText("🧴 Skincare category selected - " + count + " glowing products!");
     }
 
     @FXML
-    private void onFilterMale() {
-        updateFilterButtons("Male");
-        filterProducts("Male");
+    private void onFilterMakeup() {
+        updateFilterButtons("Makeup");
+        filterProducts("Makeup");
         int count = countVisibleProducts();
-        statusLabel.setText("👔 Male category selected - " + count + " stylish products!");
+        statusLabel.setText("💄 Makeup category selected - " + count + " stunning products!");
     }
 
     @FXML
-    private void onFilterFemale() {
-        updateFilterButtons("Female");
-        filterProducts("Female");
+    private void onFilterHaircare() {
+        updateFilterButtons("Haircare");
+        filterProducts("Haircare");
         int count = countVisibleProducts();
-        statusLabel.setText("👗 Female category selected - " + count + " elegant products!");
+        statusLabel.setText("💇 Haircare category selected - " + count + " beautiful products!");
     }
 
     @FXML
@@ -106,21 +106,21 @@ public class FashionController {
 
     private void updateFilterButtons(String activeFilter) {
         // Remove active class from all buttons
-        btnAll.getStyleClass().removeAll("fashion-filter-active");
-        btnBaby.getStyleClass().removeAll("fashion-filter-active");
-        btnMale.getStyleClass().removeAll("fashion-filter-active");
-        btnFemale.getStyleClass().removeAll("fashion-filter-active");
+        btnAll.getStyleClass().removeAll("beauty-filter-active");
+        btnSkincare.getStyleClass().removeAll("beauty-filter-active");
+        btnMakeup.getStyleClass().removeAll("beauty-filter-active");
+        btnHaircare.getStyleClass().removeAll("beauty-filter-active");
 
         // Add active class to selected button
         Button activeButton = switch (activeFilter) {
-            case "Baby" -> btnBaby;
-            case "Male" -> btnMale;
-            case "Female" -> btnFemale;
+            case "Skincare" -> btnSkincare;
+            case "Makeup" -> btnMakeup;
+            case "Haircare" -> btnHaircare;
             default -> btnAll;
         };
 
-        if (!activeButton.getStyleClass().contains("fashion-filter-active")) {
-            activeButton.getStyleClass().add("fashion-filter-active");
+        if (!activeButton.getStyleClass().contains("beauty-filter-active")) {
+            activeButton.getStyleClass().add("beauty-filter-active");
         }
     }
 
@@ -153,3 +153,4 @@ public class FashionController {
                 .count();
     }
 }
+

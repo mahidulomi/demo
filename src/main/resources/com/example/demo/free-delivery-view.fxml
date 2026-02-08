@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.FreeDeliveryController">
+
+    <!-- Top Bar -->
+    <HBox layoutY="0.0" prefHeight="70.0" prefWidth="1000.0" styleClass="freedelivery-topbar" alignment="CENTER_LEFT" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets left="30" right="30" top="15" bottom="15" />
+        </padding>
+        <Label text="🚚 Free Delivery Offers" styleClass="freedelivery-brand" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="🏠 Back to Home" onAction="#onBackToHome" styleClass="freedelivery-back-btn" />
+    </HBox>
+
+    <!-- Content Area -->
+    <ScrollPane layoutY="70.0" prefWidth="1000.0" prefHeight="630.0" fitToWidth="true" styleClass="freedelivery-scroll" hbarPolicy="NEVER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="70.0" AnchorPane.bottomAnchor="0.0">
+        <VBox spacing="25">
+            <padding>
+                <Insets left="30" right="30" top="25" bottom="25" />
+            </padding>
+
+            <!-- Title -->
+            <VBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="Free Delivery on All Products" styleClass="freedelivery-page-title" />
+                <Rectangle width="80" height="4" styleClass="freedelivery-title-underline" />
+                <Label text="Get free delivery on orders from all categories - Fashion, Beauty, Electronics &amp; Home!" styleClass="freedelivery-subtitle" />
+            </VBox>
+
+            <!-- Product Grid - Mixed Products from All Categories -->
+            <GridPane fx:id="productGrid" hgap="20" vgap="20" alignment="CENTER">
+
+                <!-- Row 1: Fashion Products -->
+                <!-- Product 1 - Men's Casual Shirt -->
+                <VBox userData="Fashion" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="👔" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Men's Casual Shirt" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳900 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 2 - Beauty Product -->
+                <VBox userData="Beauty" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="💄" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Vitamin C Face Cream" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳1125 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 3 - Electronics -->
+                <VBox userData="Electronics" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="🎧" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Wireless Earbuds Pro" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳3500 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Row 2: More Mixed Products -->
+                <!-- Product 4 - Home & Living -->
+                <VBox userData="Home" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="🛋️" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="3-Seater Sofa Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳32000 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 5 - Fashion -->
+                <VBox userData="Fashion" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="👗" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Women's Designer Kurti" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳760 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 6 - Electronics -->
+                <VBox userData="Electronics" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="📱" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="5G Smartphone 128GB" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳29750 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Row 3: More Products -->
+                <!-- Product 7 - Beauty -->
+                <VBox userData="Beauty" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="🧴" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Hyaluronic Acid Serum" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳1400 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 8 - Home & Living -->
+                <VBox userData="Home" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="☕" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Automatic Coffee Maker" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳5625 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 9 - Fashion -->
+                <VBox userData="Fashion" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="👶" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Baby Winter Jacket" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳840 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Row 4: Final Products -->
+                <!-- Product 10 - Electronics -->
+                <VBox userData="Electronics" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="💻" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Gaming Laptop RTX 3060" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳88000 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 11 - Beauty -->
+                <VBox userData="Beauty" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="💇" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Keratin Repair Shampoo" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳720 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 12 - Home & Living -->
+                <VBox userData="Home" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="🖼️" style="-fx-font-size: 64px;" />
+                        <Label text="🚚 FREE DELIVERY" styleClass="product-free-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Modern Wall Art Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳2800 - Free Delivery!" styleClass="product-price" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+            </GridPane>
+
+            <!-- Status -->
+            <Label fx:id="statusLabel" text="🚚 12 Products with Free Delivery - From All Categories!" styleClass="freedelivery-status" />
+
+        </VBox>
+    </ScrollPane>
+
+</AnchorPane>
+

@@ -38,23 +38,29 @@ public class HomeController {
     }
 
     @FXML
+    private void onProfileClick() {
+        String user = Session.getCurrentUser();
+        statusLabel.setText("👤 Profile: " + (user == null ? "Guest" : user) + " (Profile page coming soon)");
+    }
+
+    @FXML
     private void openFashion() {
         Session.goToFashion(statusLabel);
     }
 
     @FXML
     private void openElectronics() {
-        statusLabel.setText("Electronics: demo screen (products coming next)");
+        Session.goToElectronics(statusLabel);
     }
 
     @FXML
     private void openHomeLiving() {
-        statusLabel.setText("Home & Living: demo screen (products coming next)");
+        Session.goToHomeLiving(statusLabel);
     }
 
     @FXML
     private void openBeauty() {
-        statusLabel.setText("Beauty: demo screen (products coming next)");
+        Session.goToBeauty(statusLabel);
     }
 
     @FXML
@@ -65,5 +71,15 @@ public class HomeController {
     @FXML
     private void openOrders() {
         statusLabel.setText("Orders: demo screen");
+    }
+
+    @FXML
+    private void openFreeDelivery() {
+        Session.goToFreeDelivery(statusLabel);
+    }
+
+    @FXML
+    private void openNewArrivals() {
+        Session.goToNewArrivals(statusLabel);
     }
 }

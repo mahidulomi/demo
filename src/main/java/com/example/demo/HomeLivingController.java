@@ -7,21 +7,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
- * Controller for Fashion page - products are built directly in FXML
+ * Controller for Home & Living page - products are built directly in FXML
  */
-public class FashionController {
+public class HomeLivingController {
 
     @FXML
     private Button btnAll;
 
     @FXML
-    private Button btnBaby;
+    private Button btnFurniture;
 
     @FXML
-    private Button btnMale;
+    private Button btnDecor;
 
     @FXML
-    private Button btnFemale;
+    private Button btnKitchen;
 
     @FXML
     private Label statusLabel;
@@ -31,38 +31,38 @@ public class FashionController {
 
     @FXML
     private void initialize() {
-        statusLabel.setText("✨ 12 Beautiful Products - All with Amazing Discounts!");
+        statusLabel.setText("🏡 12 Home & Living Products - All with Amazing Discounts!");
     }
 
     @FXML
     private void onFilterAll() {
         updateFilterButtons("All");
         filterProducts("All");
-        statusLabel.setText("✨ Showing all 12 products!");
+        statusLabel.setText("🏡 Showing all 12 products!");
     }
 
     @FXML
-    private void onFilterBaby() {
-        updateFilterButtons("Baby");
-        filterProducts("Baby");
+    private void onFilterFurniture() {
+        updateFilterButtons("Furniture");
+        filterProducts("Furniture");
         int count = countVisibleProducts();
-        statusLabel.setText("👶 Baby category selected - " + count + " adorable products!");
+        statusLabel.setText("🛋️ Furniture category selected - " + count + " stylish pieces!");
     }
 
     @FXML
-    private void onFilterMale() {
-        updateFilterButtons("Male");
-        filterProducts("Male");
+    private void onFilterDecor() {
+        updateFilterButtons("Decor");
+        filterProducts("Decor");
         int count = countVisibleProducts();
-        statusLabel.setText("👔 Male category selected - " + count + " stylish products!");
+        statusLabel.setText("🖼️ Decor category selected - " + count + " beautiful items!");
     }
 
     @FXML
-    private void onFilterFemale() {
-        updateFilterButtons("Female");
-        filterProducts("Female");
+    private void onFilterKitchen() {
+        updateFilterButtons("Kitchen");
+        filterProducts("Kitchen");
         int count = countVisibleProducts();
-        statusLabel.setText("👗 Female category selected - " + count + " elegant products!");
+        statusLabel.setText("🍳 Kitchen category selected - " + count + " essential tools!");
     }
 
     @FXML
@@ -106,21 +106,21 @@ public class FashionController {
 
     private void updateFilterButtons(String activeFilter) {
         // Remove active class from all buttons
-        btnAll.getStyleClass().removeAll("fashion-filter-active");
-        btnBaby.getStyleClass().removeAll("fashion-filter-active");
-        btnMale.getStyleClass().removeAll("fashion-filter-active");
-        btnFemale.getStyleClass().removeAll("fashion-filter-active");
+        btnAll.getStyleClass().removeAll("homeliving-filter-active");
+        btnFurniture.getStyleClass().removeAll("homeliving-filter-active");
+        btnDecor.getStyleClass().removeAll("homeliving-filter-active");
+        btnKitchen.getStyleClass().removeAll("homeliving-filter-active");
 
         // Add active class to selected button
         Button activeButton = switch (activeFilter) {
-            case "Baby" -> btnBaby;
-            case "Male" -> btnMale;
-            case "Female" -> btnFemale;
+            case "Furniture" -> btnFurniture;
+            case "Decor" -> btnDecor;
+            case "Kitchen" -> btnKitchen;
             default -> btnAll;
         };
 
-        if (!activeButton.getStyleClass().contains("fashion-filter-active")) {
-            activeButton.getStyleClass().add("fashion-filter-active");
+        if (!activeButton.getStyleClass().contains("homeliving-filter-active")) {
+            activeButton.getStyleClass().add("homeliving-filter-active");
         }
     }
 
@@ -153,3 +153,4 @@ public class FashionController {
                 .count();
     }
 }
+

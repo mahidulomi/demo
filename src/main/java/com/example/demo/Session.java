@@ -53,6 +53,26 @@ public final class Session {
         changeScene(anyNodeInScene, "fashion-view.fxml", 1000, 700);
     }
 
+    public static void goToBeauty(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "beauty-view.fxml", 1000, 700);
+    }
+
+    public static void goToElectronics(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "electronics-view.fxml", 1000, 700);
+    }
+
+    public static void goToHomeLiving(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "homeliving-view.fxml", 1000, 700);
+    }
+
+    public static void goToFreeDelivery(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "free-delivery-view.fxml", 1000, 700);
+    }
+
+    public static void goToNewArrivals(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "new-arrivals-view.fxml", 1000, 700);
+    }
+
     private static void changeScene(Node anyNodeInScene, String fxml, double w, double h) {
         try {
             Stage stage = (Stage) anyNodeInScene.getScene().getWindow();

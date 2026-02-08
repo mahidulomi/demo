@@ -50,11 +50,11 @@
             </HBox>
 
             <!-- Product Grid - 12 Beautiful Products -->
-            <GridPane hgap="20" vgap="20" alignment="CENTER">
+            <GridPane fx:id="productGrid" hgap="20" vgap="20" alignment="CENTER">
 
                 <!-- Row 1: Baby Products -->
                 <!-- Product 1 - Baby Romper -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <VBox userData="Baby" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="0">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -72,7 +72,7 @@
                 </VBox>
 
                 <!-- Product 2 - Baby Dress -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <VBox userData="Baby" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -90,7 +90,7 @@
                 </VBox>
 
                 <!-- Product 3 - Baby Shorts -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <VBox userData="Baby" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="0">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -109,7 +109,7 @@
 
                 <!-- Row 2: Men's Products -->
                 <!-- Product 4 - Men's Shirt -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <VBox userData="Male" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="1">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -127,7 +127,7 @@
                 </VBox>
 
                 <!-- Product 5 - Men's Jeans -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <VBox userData="Male" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -145,7 +145,7 @@
                 </VBox>
 
                 <!-- Product 6 - Men's Kurta -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                <VBox userData="Male" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="1">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -164,7 +164,7 @@
 
                 <!-- Row 3: Women's Products -->
                 <!-- Product 7 - Women's Kurti -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <VBox userData="Female" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="2">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -182,7 +182,7 @@
                 </VBox>
 
                 <!-- Product 8 - Women's Saree -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <VBox userData="Female" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -200,7 +200,7 @@
                 </VBox>
 
                 <!-- Product 9 - Women's Salwar -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                <VBox userData="Female" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="2">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -219,7 +219,7 @@
 
                 <!-- Row 4: Mixed Premium Products -->
                 <!-- Product 10 - Baby Winter Jacket -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                <VBox userData="Baby" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="3">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -237,7 +237,7 @@
                 </VBox>
 
                 <!-- Product 11 - Men's Hoodie -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <VBox userData="Male" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>
@@ -255,7 +255,7 @@
                 </VBox>
 
                 <!-- Product 12 - Women's Lehenga -->
-                <VBox styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                <VBox userData="Female" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="3">
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15" />
                     </padding>

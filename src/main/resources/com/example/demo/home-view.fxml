@@ -28,6 +28,11 @@
 
             <Label fx:id="userLabel" text="Hello!" styleClass="home-user" />
 
+            <!-- Circular Profile Button -->
+            <StackPane styleClass="profile-circle" onMouseClicked="#onProfileClick">
+                <Label text="👤" style="-fx-font-size: 18px;" />
+            </StackPane>
+
             <!-- stays at the far top-right corner due to HBox growth on searchField -->
             <Button text="Logout" onAction="#onLogout" styleClass="home-logout" />
         </children>

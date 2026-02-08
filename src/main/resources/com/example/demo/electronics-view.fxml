@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.ElectronicsController">
+
+    <!-- Top Bar -->
+    <HBox layoutY="0.0" prefHeight="70.0" prefWidth="1000.0" styleClass="electronics-topbar" alignment="CENTER_LEFT" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets left="30" right="30" top="15" bottom="15" />
+        </padding>
+        <Label text="⚡ Electronics Hub" styleClass="electronics-brand" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="🏠 Back to Home" onAction="#onBackToHome" styleClass="electronics-back-btn" />
+    </HBox>
+
+    <!-- Content Area -->
+    <ScrollPane layoutY="70.0" prefWidth="1000.0" prefHeight="630.0" fitToWidth="true" styleClass="electronics-scroll" hbarPolicy="NEVER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="70.0" AnchorPane.bottomAnchor="0.0">
+        <VBox spacing="25">
+            <padding>
+                <Insets left="30" right="30" top="25" bottom="25" />
+            </padding>
+
+            <!-- Title -->
+            <VBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="Latest Electronics" styleClass="electronics-page-title" />
+                <Rectangle width="80" height="4" styleClass="electronics-title-underline" />
+            </VBox>
+
+            <!-- Filter Bar -->
+            <HBox spacing="15" alignment="CENTER_LEFT" styleClass="electronics-filter-bar">
+                <padding>
+                    <Insets top="12" bottom="12" left="15" right="15" />
+                </padding>
+                <Label text="Shop By Category:" styleClass="electronics-filter-label" />
+                <Button fx:id="btnAll" text="All Products" onAction="#onFilterAll" styleClass="electronics-filter electronics-filter-active" />
+                <Button fx:id="btnMobile" text="📱 Mobile" onAction="#onFilterMobile" styleClass="electronics-filter" />
+                <Button fx:id="btnLaptop" text="💻 Laptop" onAction="#onFilterLaptop" styleClass="electronics-filter" />
+                <Button fx:id="btnAccessories" text="🎧 Accessories" onAction="#onFilterAccessories" styleClass="electronics-filter" />
+            </HBox>
+
+            <!-- Product Grid - 12 Electronics Products -->
+            <GridPane fx:id="productGrid" hgap="20" vgap="20" alignment="CENTER">
+
+                <!-- Row 1: Mobile Products -->
+                <!-- Product 1 - Smartphone -->
+                <VBox userData="Mobile" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="📱" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 15% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="5G Smartphone 128GB" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳29750  (was ৳35000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 2 - Android Phone -->
+                <VBox userData="Mobile" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="📱" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 20% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Android Phone 256GB" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳40000  (was ৳50000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 3 - Budget Phone -->
+                <VBox userData="Mobile" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="📱" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Budget Smartphone 64GB" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳11250  (was ৳15000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Row 2: Laptop Products -->
+                <!-- Product 4 - Gaming Laptop -->
+                <VBox userData="Laptop" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="💻" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 12% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Gaming Laptop RTX 3060" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳88000  (was ৳100000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 5 - Business Laptop -->
+                <VBox userData="Laptop" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="💻" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 18% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Business Laptop i7 16GB" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳65600  (was ৳80000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 6 - Ultrabook -->
+                <VBox userData="Laptop" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="💻" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 15% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Ultrabook i5 8GB SSD" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳51000  (was ৳60000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Row 3: Accessories Products -->
+                <!-- Product 7 - Wireless Earbuds -->
+                <VBox userData="Accessories" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="🎧" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 30% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Wireless Earbuds Pro" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳3500  (was ৳5000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 8 - Smart Watch -->
+                <VBox userData="Accessories" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="⌚" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Smart Watch Fitness" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳7500  (was ৳10000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 9 - Power Bank -->
+                <VBox userData="Accessories" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="🔋" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 20% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Power Bank 20000mAh" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳2000  (was ৳2500)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Row 4: Mixed Premium Products -->
+                <!-- Product 10 - Tablet -->
+                <VBox userData="Mobile" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="📱" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 22% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Tablet 10 inch 128GB" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳23400  (was ৳30000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 11 - Keyboard Mouse -->
+                <VBox userData="Accessories" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="⌨️" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 28% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="Gaming Keyboard &amp; Mouse" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳3600  (was ৳5000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+                <!-- Product 12 - External SSD -->
+                <VBox userData="Laptop" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
+                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
+                        <Label text="💾" style="-fx-font-size: 64px;" />
+                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
+                            <StackPane.margin>
+                                <Insets top="10" right="10" />
+                            </StackPane.margin>
+                        </Label>
+                    </StackPane>
+                    <Label text="External SSD 1TB" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <Label text="৳7500  (was ৳10000)" styleClass="product-price-discount" />
+                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                </VBox>
+
+            </GridPane>
+
+            <!-- Status -->
+            <Label fx:id="statusLabel" text="⚡ 12 Latest Electronics - All with Amazing Discounts!" styleClass="electronics-status" />
+
+        </VBox>
+    </ScrollPane>
+
+</AnchorPane>
+
