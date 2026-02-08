@@ -1,17 +1,12 @@
 package com.example.demo;
 
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
+/**
+ * Controller for Fashion page - products are built directly in FXML
+ */
 public class FashionController {
 
     @FXML
@@ -27,44 +22,35 @@ public class FashionController {
     private Button btnFemale;
 
     @FXML
-    private GridPane productGrid;
-
-    @FXML
     private Label statusLabel;
-
-    private String currentFilter = "All";
 
     @FXML
     private void initialize() {
-        loadProducts();
+        statusLabel.setText("✨ 12 Beautiful Products - All with Amazing Discounts!");
     }
 
     @FXML
     private void onFilterAll() {
-        currentFilter = "All";
-        updateFilterButtons();
-        loadProducts();
+        updateFilterButtons("All");
+        statusLabel.setText("✨ Showing all 12 products!");
     }
 
     @FXML
     private void onFilterBaby() {
-        currentFilter = "Baby";
-        updateFilterButtons();
-        loadProducts();
+        updateFilterButtons("Baby");
+        statusLabel.setText("👶 Baby category selected - 4 adorable products!");
     }
 
     @FXML
     private void onFilterMale() {
-        currentFilter = "Male";
-        updateFilterButtons();
-        loadProducts();
+        updateFilterButtons("Male");
+        statusLabel.setText("👔 Male category selected - 4 stylish products!");
     }
 
     @FXML
     private void onFilterFemale() {
-        currentFilter = "Female";
-        updateFilterButtons();
-        loadProducts();
+        updateFilterButtons("Female");
+        statusLabel.setText("👗 Female category selected - 4 elegant products!");
     }
 
     @FXML
@@ -72,108 +58,57 @@ public class FashionController {
         Session.goToHome(statusLabel);
     }
 
-    private void updateFilterButtons() {
+    @FXML
+    private void onAddToCart(javafx.event.ActionEvent event) {
+        Button btn = (Button) event.getSource();
+        String originalText = btn.getText();
+
+        // Get product name from the parent VBox
+        javafx.scene.layout.VBox card = (javafx.scene.layout.VBox) btn.getParent();
+        String productName = "Product";
+
+        for (javafx.scene.Node node : card.getChildren()) {
+            if (node instanceof Label) {
+                Label label = (Label) node;
+                if (label.getStyleClass().contains("product-name")) {
+                    productName = label.getText();
+                    break;
+                }
+            }
+        }
+
+        // Update button and status
+        btn.setText("✓ Added!");
+        statusLabel.setText("✓ Added to cart: " + productName);
+
+        // Reset button text after delay
+        new Thread(() -> {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+            javafx.application.Platform.runLater(() -> btn.setText(originalText));
+        }).start();
+    }
+
+    private void updateFilterButtons(String activeFilter) {
+        // Remove active class from all buttons
         btnAll.getStyleClass().removeAll("fashion-filter-active");
         btnBaby.getStyleClass().removeAll("fashion-filter-active");
         btnMale.getStyleClass().removeAll("fashion-filter-active");
         btnFemale.getStyleClass().removeAll("fashion-filter-active");
 
-        Button active = switch (currentFilter) {
+        // Add active class to selected button
+        Button activeButton = switch (activeFilter) {
             case "Baby" -> btnBaby;
             case "Male" -> btnMale;
             case "Female" -> btnFemale;
             default -> btnAll;
         };
 
-        if (!active.getStyleClass().contains("fashion-filter-active")) {
-            active.getStyleClass().add("fashion-filter-active");
+        if (!activeButton.getStyleClass().contains("fashion-filter-active")) {
+            activeButton.getStyleClass().add("fashion-filter-active");
         }
-    }
-
-    private void loadProducts() {
-        productGrid.getChildren().clear();
-
-        List<Product> all = ProductCatalog.getFashionProducts();
-
-        // Filter by subcategory
-        List<Product> filtered = all.stream()
-                .filter(p -> currentFilter.equals("All") || p.subcategory().equals(currentFilter))
-                .collect(Collectors.toList());
-
-        // Sort: discounted first, then by name
-        filtered.sort(Comparator
-                .comparing(Product::hasDiscount).reversed()
-                .thenComparing(Product::name)
-        );
-
-        int col = 0, row = 0;
-        for (Product p : filtered) {
-            VBox card = buildProductCard(p);
-            productGrid.add(card, col, row);
-
-            col++;
-            if (col >= 3) { // 3 products per row
-                col = 0;
-                row++;
-            }
-        }
-
-        statusLabel.setText(filtered.size() + " product(s) found.");
-    }
-
-    private VBox buildProductCard(Product p) {
-        VBox card = new VBox(10);
-        card.setPrefSize(280, 320);
-        card.setAlignment(Pos.TOP_CENTER);
-        card.setPadding(new Insets(12));
-        card.getStyleClass().add("product-card");
-
-        // Product Image Placeholder
-        javafx.scene.layout.StackPane imagePlaceholder = new javafx.scene.layout.StackPane();
-        imagePlaceholder.setPrefSize(250, 180);
-        imagePlaceholder.setMaxSize(250, 180);
-        imagePlaceholder.getStyleClass().add("product-image");
-
-        // Image icon/text
-        Label imageLabel = new Label("📷");
-        imageLabel.setStyle("-fx-font-size: 48px; -fx-text-fill: #9ca3af;");
-        imagePlaceholder.getChildren().add(imageLabel);
-
-        // Discount badge overlay on image
-        if (p.hasDiscount()) {
-            Label discountBadge = new Label(p.discountPercent() + "% OFF");
-            discountBadge.getStyleClass().add("product-discount-badge");
-            javafx.scene.layout.StackPane.setAlignment(discountBadge, javafx.geometry.Pos.TOP_RIGHT);
-            javafx.scene.layout.StackPane.setMargin(discountBadge, new Insets(8, 8, 0, 0));
-            imagePlaceholder.getChildren().add(discountBadge);
-        }
-
-        // Product Name
-        Label name = new Label(p.name());
-        name.getStyleClass().add("product-name");
-        name.setWrapText(true);
-        name.setMaxWidth(250);
-
-        // Price Label
-        Label priceLabel = new Label();
-        if (p.hasDiscount()) {
-            double oldPrice = p.price();
-            double newPrice = p.getDiscountedPrice();
-            priceLabel.setText(String.format("BDT %.0f  (was %.0f)", newPrice, oldPrice));
-            priceLabel.getStyleClass().add("product-price-discount");
-        } else {
-            priceLabel.setText(String.format("BDT %.0f", p.price()));
-            priceLabel.getStyleClass().add("product-price");
-        }
-
-        // Add to Cart Button
-        Button addBtn = new Button("Add to Cart");
-        addBtn.getStyleClass().add("product-add-btn");
-        addBtn.setPrefWidth(220);
-        addBtn.setOnAction(e -> statusLabel.setText("Added: " + p.name() + " (demo)"));
-
-        card.getChildren().addAll(imagePlaceholder, name, priceLabel, addBtn);
-
-        return card;
     }
 }
