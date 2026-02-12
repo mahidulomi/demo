@@ -32,6 +32,15 @@ public class BeautyController {
     @FXML
     private void initialize() {
         statusLabel.setText("✨ 12 Premium Beauty Products - All with Amazing Discounts!");
+        // Store all products on initialization before any filtering
+        if (productGrid != null) {
+            allProductCards = new java.util.ArrayList<>();
+            for (javafx.scene.Node node : productGrid.getChildren()) {
+                if (node instanceof VBox) {
+                    allProductCards.add((VBox) node);
+                }
+            }
+        }
     }
 
     @FXML
@@ -127,22 +136,44 @@ public class BeautyController {
     private void filterProducts(String category) {
         if (productGrid == null) return;
 
-        productGrid.getChildren().forEach(node -> {
-            if (node instanceof VBox productCard) {
-                String productCategory = (String) productCard.getUserData();
+        // Clear the grid
+        productGrid.getChildren().clear();
 
-                if ("All".equals(category)) {
-                    productCard.setVisible(true);
-                    productCard.setManaged(true);
-                } else if (productCategory != null && productCategory.equals(category)) {
-                    productCard.setVisible(true);
-                    productCard.setManaged(true);
-                } else {
-                    productCard.setVisible(false);
-                    productCard.setManaged(false);
-                }
+        // Get all product cards from FXML and filter them
+        java.util.List<VBox> allProducts = getAllProductCards();
+        java.util.List<VBox> filteredProducts = new java.util.ArrayList<>();
+
+        for (VBox productCard : allProducts) {
+            String productCategory = (String) productCard.getUserData();
+
+            if ("All".equals(category)) {
+                filteredProducts.add(productCard);
+            } else if (productCategory != null && productCategory.equals(category)) {
+                filteredProducts.add(productCard);
             }
-        });
+        }
+
+        // Re-add filtered products to grid in proper positions (3 columns per row)
+        int row = 0;
+        int col = 0;
+        for (VBox productCard : filteredProducts) {
+            productGrid.add(productCard, col, row);
+            col++;
+            if (col >= 3) {
+                col = 0;
+                row++;
+            }
+        }
+    }
+
+    // Store all products on first load
+    private java.util.List<VBox> allProductCards = null;
+
+    private java.util.List<VBox> getAllProductCards() {
+        if (allProductCards == null) {
+            allProductCards = new java.util.ArrayList<>();
+        }
+        return allProductCards;
     }
 
     private int countVisibleProducts() {

@@ -68,7 +68,6 @@
                     </StackPane>
                     <Label text="3-Seater Sofa Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳32000  (was ৳40000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Product 2 - Dining Table -->
@@ -86,7 +85,6 @@
                     </StackPane>
                     <Label text="Dining Table 6-Seater" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳22500  (was ৳30000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Product 3 - Bed Frame -->
@@ -104,7 +102,6 @@
                     </StackPane>
                     <Label text="King Size Bed Frame" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳24600  (was ৳30000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Row 2: Decor Products -->
@@ -123,7 +120,6 @@
                     </StackPane>
                     <Label text="Modern Wall Art Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳2800  (was ৳4000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Product 5 - Table Lamp -->
@@ -141,7 +137,6 @@
                     </StackPane>
                     <Label text="Designer Table Lamp" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳1560  (was ৳2000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Product 6 - Curtains -->
@@ -159,7 +154,6 @@
                     </StackPane>
                     <Label text="Blackout Curtains Pair" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳3000  (was ৳4000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Row 3: Kitchen Products -->
@@ -178,7 +172,6 @@
                     </StackPane>
                     <Label text="Non-Stick Cookware Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳3600  (was ৳5000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Product 8 - Blender -->
@@ -196,7 +189,6 @@
                     </StackPane>
                     <Label text="Multi-Speed Blender" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳4000  (was ৳5000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Product 9 - Knife Set -->
@@ -214,7 +206,6 @@
                     </StackPane>
                     <Label text="Professional Knife Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳2250  (was ৳3000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Row 4: Mixed Premium Products -->
@@ -233,7 +224,6 @@
                     </StackPane>
                     <Label text="3-Door Wardrobe" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳27300  (was ৳35000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Product 11 - Rug -->
@@ -251,7 +241,6 @@
                     </StackPane>
                     <Label text="Persian Style Rug 6x9" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳7000  (was ৳10000)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
                 <!-- Product 12 - Coffee Maker -->
@@ -269,7 +258,6 @@
                     </StackPane>
                     <Label text="Automatic Coffee Maker" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Label text="৳5625  (was ৳7500)" styleClass="product-price-discount" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
             </GridPane>

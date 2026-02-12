@@ -31,14 +31,23 @@ public class ElectronicsController {
 
     @FXML
     private void initialize() {
-        statusLabel.setText("⚡ 12 Latest Electronics - All with Amazing Discounts!");
+        statusLabel.setText("⚡ 13 Latest Electronics - All with Amazing Discounts!");
+        // Store all products on initialization before any filtering
+        if (productGrid != null) {
+            allProductCards = new java.util.ArrayList<>();
+            for (javafx.scene.Node node : productGrid.getChildren()) {
+                if (node instanceof VBox) {
+                    allProductCards.add((VBox) node);
+                }
+            }
+        }
     }
 
     @FXML
     private void onFilterAll() {
         updateFilterButtons("All");
         filterProducts("All");
-        statusLabel.setText("⚡ Showing all 12 products!");
+        statusLabel.setText("⚡ Showing all 13 products!");
     }
 
     @FXML
@@ -71,14 +80,12 @@ public class ElectronicsController {
     }
 
     @FXML
-    private void onAddToCart(javafx.event.ActionEvent event) {
-        Button btn = (Button) event.getSource();
-        String originalText = btn.getText();
-
-        // Get product name from the parent VBox
-        javafx.scene.layout.VBox card = (javafx.scene.layout.VBox) btn.getParent();
+    private void onProductClick(javafx.scene.input.MouseEvent event) {
+        // Get the clicked VBox (product card)
+        javafx.scene.layout.VBox card = (javafx.scene.layout.VBox) event.getSource();
         String productName = "Product";
 
+        // Get product name from the label
         for (javafx.scene.Node node : card.getChildren()) {
             if (node instanceof Label) {
                 Label label = (Label) node;
@@ -89,19 +96,21 @@ public class ElectronicsController {
             }
         }
 
-        // Update button and status
-        btn.setText("✓ Added!");
-        statusLabel.setText("✓ Added to cart: " + productName);
+        // Navigate to product details page
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("product-details-view.fxml"));
+            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
 
-        // Reset button text after delay
-        new Thread(() -> {
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-            javafx.application.Platform.runLater(() -> btn.setText(originalText));
-        }).start();
+            // Pass product name to details controller
+            ProductDetailsController controller = loader.getController();
+            controller.setProductByName(productName);
+
+            javafx.stage.Stage stage = (javafx.stage.Stage) card.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            statusLabel.setText("⚠️ Error loading product details");
+        }
     }
 
     private void updateFilterButtons(String activeFilter) {
@@ -127,29 +136,51 @@ public class ElectronicsController {
     private void filterProducts(String category) {
         if (productGrid == null) return;
 
-        productGrid.getChildren().forEach(node -> {
-            if (node instanceof VBox productCard) {
-                String productCategory = (String) productCard.getUserData();
+        // Clear the grid
+        productGrid.getChildren().clear();
 
-                if ("All".equals(category)) {
-                    productCard.setVisible(true);
-                    productCard.setManaged(true);
-                } else if (productCategory != null && productCategory.equals(category)) {
-                    productCard.setVisible(true);
-                    productCard.setManaged(true);
-                } else {
-                    productCard.setVisible(false);
-                    productCard.setManaged(false);
-                }
+        // Get all product cards from FXML and filter them
+        java.util.List<VBox> allProducts = getAllProductCards();
+        java.util.List<VBox> filteredProducts = new java.util.ArrayList<>();
+
+        for (VBox productCard : allProducts) {
+            String productCategory = (String) productCard.getUserData();
+
+            if ("All".equals(category)) {
+                filteredProducts.add(productCard);
+            } else if (productCategory != null && productCategory.equals(category)) {
+                filteredProducts.add(productCard);
             }
-        });
+        }
+
+        // Re-add filtered products to grid in proper positions (3 columns per row)
+        int row = 0;
+        int col = 0;
+        for (VBox productCard : filteredProducts) {
+            productGrid.add(productCard, col, row);
+            col++;
+            if (col >= 3) {
+                col = 0;
+                row++;
+            }
+        }
+    }
+
+    // Store all products on first load
+    private java.util.List<VBox> allProductCards = null;
+
+    private java.util.List<VBox> getAllProductCards() {
+        if (allProductCards == null) {
+            allProductCards = new java.util.ArrayList<>();
+        }
+        return allProductCards;
     }
 
     private int countVisibleProducts() {
         if (productGrid == null) return 0;
 
         return (int) productGrid.getChildren().stream()
-                .filter(node -> node instanceof VBox && node.isVisible())
+                .filter(node -> node instanceof VBox)
                 .count();
     }
 }
