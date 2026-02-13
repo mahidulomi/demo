@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -37,7 +38,69 @@ public class BeautyController {
             allProductCards = new java.util.ArrayList<>();
             for (javafx.scene.Node node : productGrid.getChildren()) {
                 if (node instanceof VBox) {
-                    allProductCards.add((VBox) node);
+                    VBox productCard = (VBox) node;
+                    allProductCards.add(productCard);
+
+                    // Setup arrow button handlers for each product card
+                    setupArrowButtons(productCard);
+                }
+            }
+        }
+    }
+
+    /**
+     * Setup arrow button click handlers for quantity increase/decrease
+     * Layout: [Add to Cart] [▼ 1 ▲]
+     */
+    private void setupArrowButtons(VBox productCard) {
+        for (javafx.scene.Node child : productCard.getChildren()) {
+            if (child instanceof HBox) {
+                HBox mainHbox = (HBox) child;
+                for (javafx.scene.Node hboxChild : mainHbox.getChildren()) {
+                    // Find the qty-box HBox
+                    if (hboxChild instanceof HBox) {
+                        HBox qtyBox = (HBox) hboxChild;
+                        if (qtyBox.getStyleClass().contains("qty-box")) {
+                            Button downBtn = null;
+                            Button upBtn = null;
+                            Label qtyLabel = null;
+
+                            for (javafx.scene.Node qtyChild : qtyBox.getChildren()) {
+                                if (qtyChild instanceof Button) {
+                                    Button btn = (Button) qtyChild;
+                                    if ("▼".equals(btn.getText())) {
+                                        downBtn = btn;
+                                    } else if ("▲".equals(btn.getText())) {
+                                        upBtn = btn;
+                                    }
+                                } else if (qtyChild instanceof Label) {
+                                    Label lbl = (Label) qtyChild;
+                                    if (lbl.getStyleClass().contains("qty-count")) {
+                                        qtyLabel = lbl;
+                                    }
+                                }
+                            }
+
+                            // Set up event handlers - ▲ increases, ▼ decreases
+                            if (upBtn != null && qtyLabel != null) {
+                                final Label finalQtyLabel = qtyLabel;
+                                upBtn.setOnAction(e -> {
+                                    int currentQty = Integer.parseInt(finalQtyLabel.getText());
+                                    finalQtyLabel.setText(String.valueOf(currentQty + 1));
+                                });
+                            }
+
+                            if (downBtn != null && qtyLabel != null) {
+                                final Label finalQtyLabel = qtyLabel;
+                                downBtn.setOnAction(e -> {
+                                    int currentQty = Integer.parseInt(finalQtyLabel.getText());
+                                    if (currentQty > 1) {
+                                        finalQtyLabel.setText(String.valueOf(currentQty - 1));
+                                    }
+                                });
+                            }
+                        }
+                    }
                 }
             }
         }

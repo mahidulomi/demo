@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -31,13 +32,77 @@ public class ElectronicsController {
 
     @FXML
     private void initialize() {
-        statusLabel.setText("⚡ 13 Latest Electronics - All with Amazing Discounts!");
+        statusLabel.setText("⚡ 13 Latest Electronics - 5 with Amazing Discounts!");
         // Store all products on initialization before any filtering
         if (productGrid != null) {
             allProductCards = new java.util.ArrayList<>();
             for (javafx.scene.Node node : productGrid.getChildren()) {
                 if (node instanceof VBox) {
-                    allProductCards.add((VBox) node);
+                    VBox productCard = (VBox) node;
+                    allProductCards.add(productCard);
+
+                    // Setup arrow button handlers for each product card
+                    setupArrowButtons(productCard);
+                }
+            }
+        }
+    }
+
+    /**
+     * Setup arrow button click handlers for quantity increase/decrease
+     * Layout: [Add to Cart] [▼ 1 ▲]
+     */
+    private void setupArrowButtons(VBox productCard) {
+        for (javafx.scene.Node child : productCard.getChildren()) {
+            if (child instanceof HBox) {
+                HBox mainHbox = (HBox) child;
+                for (javafx.scene.Node hboxChild : mainHbox.getChildren()) {
+                    // Find the qty-box HBox
+                    if (hboxChild instanceof HBox) {
+                        HBox qtyBox = (HBox) hboxChild;
+                        if (qtyBox.getStyleClass().contains("qty-box")) {
+                            Button downBtn = null;
+                            Button upBtn = null;
+                            Label qtyLabel = null;
+
+                            for (javafx.scene.Node qtyChild : qtyBox.getChildren()) {
+                                if (qtyChild instanceof Button) {
+                                    Button btn = (Button) qtyChild;
+                                    if ("▼".equals(btn.getText())) {
+                                        downBtn = btn;
+                                    } else if ("▲".equals(btn.getText())) {
+                                        upBtn = btn;
+                                    }
+                                } else if (qtyChild instanceof Label) {
+                                    Label lbl = (Label) qtyChild;
+                                    if (lbl.getStyleClass().contains("qty-count")) {
+                                        qtyLabel = lbl;
+                                    }
+                                }
+                            }
+
+                            // Set up event handlers - ▲ increases, ▼ decreases
+                            if (upBtn != null && qtyLabel != null) {
+                                final Label finalQtyLabel = qtyLabel;
+                                upBtn.setOnAction(e -> {
+                                    e.consume(); // Prevent card click
+                                    int currentQty = Integer.parseInt(finalQtyLabel.getText());
+                                    finalQtyLabel.setText(String.valueOf(currentQty + 1));
+                                });
+                            }
+
+                            if (downBtn != null && qtyLabel != null) {
+                                final Label finalQtyLabel = qtyLabel;
+                                downBtn.setOnAction(e -> {
+                                    e.consume(); // Prevent card click
+                                    int currentQty = Integer.parseInt(finalQtyLabel.getText());
+                                    if (currentQty > 1) {
+                                        finalQtyLabel.setText(String.valueOf(currentQty - 1));
+                                    }
+                                });
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -79,39 +144,6 @@ public class ElectronicsController {
         Session.goToHome(statusLabel);
     }
 
-    @FXML
-    private void onProductClick(javafx.scene.input.MouseEvent event) {
-        // Get the clicked VBox (product card)
-        javafx.scene.layout.VBox card = (javafx.scene.layout.VBox) event.getSource();
-        String productName = "Product";
-
-        // Get product name from the label
-        for (javafx.scene.Node node : card.getChildren()) {
-            if (node instanceof Label) {
-                Label label = (Label) node;
-                if (label.getStyleClass().contains("product-name")) {
-                    productName = label.getText();
-                    break;
-                }
-            }
-        }
-
-        // Navigate to product details page
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("product-details-view.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
-
-            // Pass product name to details controller
-            ProductDetailsController controller = loader.getController();
-            controller.setProductByName(productName);
-
-            javafx.stage.Stage stage = (javafx.stage.Stage) card.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            statusLabel.setText("⚠️ Error loading product details");
-        }
-    }
 
     private void updateFilterButtons(String activeFilter) {
         // Remove active class from all buttons
