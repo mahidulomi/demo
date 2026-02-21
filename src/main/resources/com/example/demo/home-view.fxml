@@ -50,7 +50,7 @@
                 <Label text="Up to 50% off in selected categories." styleClass="home-subtitle" />
                 <HBox spacing="10">
                     <Button text="Shop Now" onAction="#openFashion" styleClass="home-cta" />
-                    <Button text="View Cart" onAction="#openCart" styleClass="home-cta-secondary" />
+                    <Button text="🛒 View Cart" onAction="#openCart" styleClass="home-cta-secondary" />
                 </HBox>
             </VBox>
         </StackPane>
@@ -69,6 +69,7 @@
             <Button text="My Orders" prefWidth="220" onAction="#openOrders" styleClass="home-tile" />
             <Button text="Free Delivery" prefWidth="220" onAction="#openHomeLiving" styleClass="home-tile" />
             <Button text="New Arrivals" prefWidth="220" onAction="#openElectronics" styleClass="home-tile" />
+            <Button text="📦 Stock" prefWidth="220" onAction="#openStock" styleClass="home-tile" />
         </HBox>
 
         <Label fx:id="statusLabel" text="" styleClass="home-status" />

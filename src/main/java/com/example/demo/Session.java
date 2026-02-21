@@ -73,6 +73,30 @@ public final class Session {
         changeScene(anyNodeInScene, "new-arrivals-view.fxml", 1000, 700);
     }
 
+    public static void goToStock(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "stock-view.fxml", 1000, 700);
+    }
+
+    public static void goToCart(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "cart-view.fxml", 1000, 700);
+    }
+
+    /**
+     * Go to cart while remembering which page we came from
+     */
+    public static void goToCartFrom(Node anyNodeInScene, String fromPage) {
+        Cart.setLastVisitedPage(fromPage);
+        changeScene(anyNodeInScene, "cart-view.fxml", 1000, 700);
+    }
+
+    /**
+     * Go back to the last visited page (used from cart)
+     */
+    public static void goBackFromCart(Node anyNodeInScene) {
+        String lastPage = Cart.getLastVisitedPage();
+        changeScene(anyNodeInScene, lastPage, 1000, 700);
+    }
+
     private static void changeScene(Node anyNodeInScene, String fxml, double w, double h) {
         try {
             Stage stage = (Stage) anyNodeInScene.getScene().getWindow();

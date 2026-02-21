@@ -21,6 +21,11 @@
         </padding>
         <Label text="✨ New Arrivals" styleClass="newarrivals-brand" />
         <Region HBox.hgrow="ALWAYS" />
+        <Button text="🛒 Cart" onAction="#onOpenCart" styleClass="newarrivals-cart-btn">
+            <HBox.margin>
+                <Insets right="30" />
+            </HBox.margin>
+        </Button>
         <Button text="🏠 Back to Home" onAction="#onBackToHome" styleClass="newarrivals-back-btn" />
     </HBox>
 
@@ -56,7 +61,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Women's Silk Saree" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳2125 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳2,125 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -74,7 +79,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Matte Lipstick Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳850 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳850 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -92,7 +97,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Smart Watch Fitness" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳7500 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳7,500 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -111,7 +116,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Dining Table 6-Seater" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳22500 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳22,500 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -129,7 +134,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Men's Denim Jeans" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1260 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳1,260 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -147,7 +152,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Android Phone 256GB" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳40000 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳40,000 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -166,7 +171,7 @@
                         </Label>
                     </StackPane>
                     <Label text="HD Foundation" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1500 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳1,500 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -184,7 +189,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Non-Stick Cookware Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳3600 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳3,600 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -202,7 +207,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Baby Romper Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳360 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳360 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -221,7 +226,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Power Bank 20000mAh" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳2000 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳2,000 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -239,7 +244,7 @@
                         </Label>
                     </StackPane>
                     <Label text="SPF 50+ Sunscreen" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳910 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳910 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 
@@ -257,7 +262,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Designer Table Lamp" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1560 - Just Arrived!" styleClass="product-price" />
+                    <Label text="৳1,560 - Just Arrived!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
                     <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
                 </VBox>
 

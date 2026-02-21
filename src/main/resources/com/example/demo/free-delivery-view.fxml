@@ -21,6 +21,11 @@
         </padding>
         <Label text="🚚 Free Delivery Offers" styleClass="freedelivery-brand" />
         <Region HBox.hgrow="ALWAYS" />
+        <Button text="🛒 Cart" onAction="#onOpenCart" styleClass="freedelivery-cart-btn">
+            <HBox.margin>
+                <Insets right="30" />
+            </HBox.margin>
+        </Button>
         <Button text="🏠 Back to Home" onAction="#onBackToHome" styleClass="freedelivery-back-btn" />
     </HBox>
 
@@ -56,8 +61,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Men's Casual Shirt" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳900 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳900 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Product 2 - Beauty Product -->
@@ -74,8 +86,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Vitamin C Face Cream" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1125 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳1,125 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Product 3 - Electronics -->
@@ -92,8 +111,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Wireless Earbuds Pro" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳3500 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳3,500 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Row 2: More Mixed Products -->
@@ -111,8 +137,15 @@
                         </Label>
                     </StackPane>
                     <Label text="3-Seater Sofa Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳32000 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳32,000 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Product 5 - Fashion -->
@@ -129,8 +162,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Women's Designer Kurti" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳760 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳760 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Product 6 - Electronics -->
@@ -147,8 +187,15 @@
                         </Label>
                     </StackPane>
                     <Label text="5G Smartphone 128GB" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳29750 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳29,750 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Row 3: More Products -->
@@ -166,8 +213,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Hyaluronic Acid Serum" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1400 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳1,400 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Product 8 - Home & Living -->
@@ -184,8 +238,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Automatic Coffee Maker" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳5625 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳5,625 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Product 9 - Fashion -->
@@ -202,8 +263,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Baby Winter Jacket" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳840 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳840 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Row 4: Final Products -->
@@ -221,8 +289,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Gaming Laptop RTX 3060" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳88000 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳88,000 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Product 11 - Beauty -->
@@ -239,8 +314,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Keratin Repair Shampoo" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳720 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳720 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
                 <!-- Product 12 - Home & Living -->
@@ -257,8 +339,15 @@
                         </Label>
                     </StackPane>
                     <Label text="Modern Wall Art Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳2800 - Free Delivery!" styleClass="product-price" />
-                    <Button text="🛒 Add to Cart" styleClass="product-add-btn" prefWidth="240" onAction="#onAddToCart" />
+                    <Label text="৳2,800 - Free Delivery!" styleClass="product-price" wrapText="true" maxWidth="260" alignment="CENTER" />
+                    <HBox alignment="CENTER" spacing="8">
+                        <Button text="🛒 Add to Cart" styleClass="product-add-btn" onAction="#onAddToCart" />
+                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
+                            <Button styleClass="arrow-btn" text="▼" />
+                            <Label styleClass="qty-count" text="1" />
+                            <Button styleClass="arrow-btn" text="▲" />
+                        </HBox>
+                    </HBox>
                 </VBox>
 
             </GridPane>

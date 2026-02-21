@@ -21,6 +21,11 @@
         </padding>
         <Label text="🏡 Home &amp; Living" styleClass="homeliving-brand" />
         <Region HBox.hgrow="ALWAYS" />
+        <Button text="🛒 Cart" onAction="#onOpenCart" styleClass="homeliving-cart-btn">
+            <HBox.margin>
+                <Insets right="30" />
+            </HBox.margin>
+        </Button>
         <Button text="🏠 Back to Home" onAction="#onBackToHome" styleClass="homeliving-back-btn" />
     </HBox>
 
@@ -67,7 +72,7 @@
                         </Label>
                     </StackPane>
                     <Label text="3-Seater Sofa Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳32000  (was ৳40000)" styleClass="product-price-discount" />
+                    <Label text="৳32,000 (was ৳40,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
                 </VBox>
 
                 <!-- Product 2 - Dining Table -->
@@ -84,7 +89,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Dining Table 6-Seater" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳22500  (was ৳30000)" styleClass="product-price-discount" />
+                    <Label text="৳22,500 (was ৳30,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
                 </VBox>
 
                 <!-- Product 3 - Bed Frame -->
@@ -101,7 +106,7 @@
                         </Label>
                     </StackPane>
                     <Label text="King Size Bed Frame" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳24600  (was ৳30000)" styleClass="product-price-discount" />
+                    <Label text="৳24,600 (was ৳30,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
                 </VBox>
 
                 <!-- Row 2: Decor Products -->
@@ -119,7 +124,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Modern Wall Art Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳2800  (was ৳4000)" styleClass="product-price-discount" />
+                    <Label text="৳2,800 (was ৳4,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
                 </VBox>
 
                 <!-- Product 5 - Table Lamp -->
@@ -136,7 +141,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Designer Table Lamp" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1560  (was ৳2000)" styleClass="product-price-discount" />
+                    <Label text="৳1,560 (was ৳2,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
                 </VBox>
 
                 <!-- Product 6 - Curtains -->
@@ -153,7 +158,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Blackout Curtains Pair" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳3000  (was ৳4000)" styleClass="product-price-discount" />
+                    <Label text="৳3,000 (was ৳4,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
                 </VBox>
 
                 <!-- Row 3: Kitchen Products -->
@@ -171,7 +176,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Non-Stick Cookware Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳3600  (was ৳5000)" styleClass="product-price-discount" />
+                    <Label text="৳3,600 (was ৳5,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
                 </VBox>
 
                 <!-- Product 8 - Blender -->
@@ -188,7 +193,7 @@
                         </Label>
                     </StackPane>
                     <Label text="Multi-Speed Blender" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳4000  (was ৳5000)" styleClass="product-price-discount" />
+                    <Label text="৳4,000 (was ৳5,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
                 </VBox>
 
                 <!-- Product 9 - Knife Set -->

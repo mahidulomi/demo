@@ -65,7 +65,7 @@ public class HomeController {
 
     @FXML
     private void openCart() {
-        statusLabel.setText("Cart: demo screen (checkout coming next)");
+        Session.goToCartFrom(statusLabel, "home-view.fxml");
     }
 
     @FXML
@@ -81,5 +81,10 @@ public class HomeController {
     @FXML
     private void openNewArrivals() {
         Session.goToNewArrivals(statusLabel);
+    }
+
+    @FXML
+    private void openStock() {
+        Session.goToStock(statusLabel);
     }
 }
