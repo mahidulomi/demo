@@ -200,7 +200,9 @@ public class ElectronicsController {
     }
 
     /**
-     * Build productId → stock-label / add-button / cart-status-label maps for real-time network updates.
+     * Build productId → stock-label / add-button / cart-status-label maps.
+     * Creates stock labels dynamically for FXML cards that don't have them.
+     * Always syncs from StockManager so stock is correct after page navigation.
      */
     private void buildNetworkMaps() {
         for (VBox productCard : allProductCards) {
@@ -210,24 +212,36 @@ public class ElectronicsController {
 
             cardProductIds.put(productCard, productId);
 
-            Label  stockLabel = getStockLabelFromCard(productCard);
-            Button addBtn     = getAddBtnFromCard(productCard);
-            if (stockLabel != null) netStockLabels.put(productId, stockLabel);
-            if (addBtn     != null) netAddBtns.put(productId, addBtn);
+            // ── Stock label: find existing or create new one ──
+            Label stockLabel = getStockLabelFromCard(productCard);
+            if (stockLabel == null) {
+                // FXML cards don't have stock labels — add one dynamically
+                stockLabel = new Label("📦 Stock: 25");
+                stockLabel.getStyleClass().add("stock-label");
+                stockLabel.setAlignment(javafx.geometry.Pos.CENTER);
+                stockLabel.setMaxWidth(Double.MAX_VALUE);
+                // Insert before the last child (the cart-section HBox)
+                int pos = Math.max(0, productCard.getChildren().size() - 1);
+                productCard.getChildren().add(pos, stockLabel);
+            }
+            netStockLabels.put(productId, stockLabel);
 
-            // ── Add a persistent "In Cart" status label to each card ──
+            Button addBtn = getAddBtnFromCard(productCard);
+            if (addBtn != null) netAddBtns.put(productId, addBtn);
+
+            // ── Cart status label ──
             Label cartStatus = new Label("");
             cartStatus.setStyle("-fx-text-fill:#27ae60; -fx-font-size:12px; -fx-font-weight:bold;");
             cartStatus.setAlignment(javafx.geometry.Pos.CENTER);
             cartStatus.setMaxWidth(Double.MAX_VALUE);
             cartStatus.setVisible(false);
             cartStatus.setManaged(false);
-            // Insert just before the last child (the cartSection HBox)
+            // Insert before the last child (the cart-section HBox)
             int insertIdx = Math.max(0, productCard.getChildren().size() - 1);
             productCard.getChildren().add(insertIdx, cartStatus);
             cartStatusLabels.put(productId, cartStatus);
 
-            // Restore cart label if product is already in cart (page re-visit)
+            // Restore "In Cart" badge if user already added this product
             if (Cart.containsItem(productId)) {
                 int qty = Cart.getItem(productId).getQuantity();
                 cartStatus.setText("✅ In Cart: " + qty + " pcs");
@@ -235,7 +249,8 @@ public class ElectronicsController {
                 cartStatus.setManaged(true);
             }
 
-            // Sync stock from StockManager (important for client: server may have different qty)
+            // ── KEY FIX: always read stock from StockManager, not from FXML default ──
+            // This ensures stock stays correct after page navigation / re-login
             int stock = StockManager.getStock(productId);
             applyStockToCard(productId, stock);
         }
@@ -805,8 +820,8 @@ public class ElectronicsController {
             }
         }
 
-        // ── Stock check (against StockManager, the authoritative source) ──
-        int available    = StockManager.getStock(productId);
+        // ── Stock check ──
+        int available     = StockManager.getStock(productId);
         int alreadyInCart = Cart.containsItem(productId) ? Cart.getItem(productId).getQuantity() : 0;
 
         if (available <= 0) {
@@ -814,11 +829,14 @@ public class ElectronicsController {
             return;
         }
         if (alreadyInCart + quantity > available) {
-            statusLabel.setText("❌ Only " + (available - alreadyInCart) + " more available (stock: " + available + ", in cart: " + alreadyInCart + ")");
+            int canAdd = available - alreadyInCart;
+            statusLabel.setText("❌ Only " + canAdd + " more can be added (stock: " + available + ", in cart: " + alreadyInCart + ")");
             return;
         }
 
-        // ── Add to cart (stock does NOT decrease here — decreases at checkout) ──
+        // NOTE: Stock is NOT reduced here — stock only reduces when the user clicks "Buy Now" (checkout).
+
+        // ── Add to cart ──
         try {
             double price = Double.parseDouble(productPrice);
             Cart.addItem(productId, productName, "Electronics", price, quantity, imagePath, discountPercent);
@@ -826,7 +844,7 @@ public class ElectronicsController {
             Cart.addItem(productId, productName, "Electronics", 0, quantity, imagePath, 0);
         }
 
-        // ── Show persistent "In Cart" label below the product ──
+        // ── Show / update "In Cart" label below the product ──
         Label cartLbl = cartStatusLabels.get(productId);
         if (cartLbl != null) {
             int totalInCart = Cart.getItem(productId).getQuantity();
@@ -838,14 +856,15 @@ public class ElectronicsController {
         // Reset qty selector to 1
         if (qtyLabelRef != null) qtyLabelRef.setText("1");
 
-        // Flash button text momentarily
+        // Flash button
         btn.setText("✓ Added!");
         new Thread(() -> {
             try { Thread.sleep(1200); } catch (InterruptedException ignored) {}
             javafx.application.Platform.runLater(() -> btn.setText("🛒 Add to Cart"));
         }).start();
 
-        statusLabel.setText("✅ Added: " + productName + " × " + quantity + " | Cart total: " + Cart.getTotalQuantity() + " item(s)");
+        statusLabel.setText("✅ Added: " + productName + " × " + quantity
+                + " | Cart: " + Cart.getTotalQuantity() + " item(s)");
     }
 
 

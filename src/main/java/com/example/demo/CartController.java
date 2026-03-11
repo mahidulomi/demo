@@ -13,134 +13,113 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * Controller for Shopping Cart page
+ * Controller for Shopping Cart page.
+ *
+ * Stock flow:
+ *   • Adding an item to cart does NOT reduce stock.
+ *   • Removing/cancelling an item from cart does NOT change stock.
+ *   • "Buy Now" (checkout) reduces stock for every purchased item, then clears the cart.
  */
 public class CartController {
 
-    @FXML
-    private Label statusLabel;
-
-
-    @FXML
-    private VBox billItemsContainer;
-
-    @FXML
-    private Label billDateLabel;
-
-    @FXML
-    private Label subtotalLabel;
-
-    @FXML
-    private Label totalItemsLabel;
-
-    @FXML
-    private Label totalQuantityLabel;
-
-    @FXML
-    private Label totalPriceLabel;
+    @FXML private Label statusLabel;
+    @FXML private VBox  billItemsContainer;
+    @FXML private Label billDateLabel;
+    @FXML private Label subtotalLabel;
+    @FXML private Label totalItemsLabel;
+    @FXML private Label totalQuantityLabel;
+    @FXML private Label totalPriceLabel;
 
     @FXML
     private void initialize() {
         refreshCart();
     }
 
-    /**
-     * Refresh the cart display
-     */
+    // ── Refresh ───────────────────────────────────────────────────────────────
+
     private void refreshCart() {
         List<CartItem> items = Cart.getAllItems();
-
-        if (items.isEmpty()) {
-            statusLabel.setText("🛒 Your cart is empty. Start shopping!");
-        } else {
-            statusLabel.setText("🛒 " + items.size() + " item(s) in your cart");
-        }
-
-        // Update bill summary
+        statusLabel.setText(items.isEmpty()
+                ? "🛒 Your cart is empty. Start shopping!"
+                : "🛒 " + items.size() + " item(s) in your cart");
         updateSummary();
     }
 
-
-    /**
-     * Update cart summary labels and bill receipt
-     */
     private void updateSummary() {
         totalItemsLabel.setText(String.valueOf(Cart.getItemCount()));
         totalQuantityLabel.setText(String.valueOf(Cart.getTotalQuantity()));
         totalPriceLabel.setText(Cart.getFormattedTotal());
 
-        // Update bill date
         if (billDateLabel != null) {
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a");
-            billDateLabel.setText("Date: " + now.format(formatter));
+            billDateLabel.setText("Date: " + LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a")));
         }
-
-        // Update subtotal
         if (subtotalLabel != null) {
             subtotalLabel.setText(String.format("৳ %.2f", Cart.getTotalPrice()));
         }
 
-        // Populate bill items
         if (billItemsContainer != null) {
             billItemsContainer.getChildren().clear();
-
             List<CartItem> items = Cart.getAllItems();
-            for (CartItem item : items) {
-                HBox itemRow = createBillItemRow(item);
-                billItemsContainer.getChildren().add(itemRow);
-            }
-
-            // If cart is empty, show a message
             if (items.isEmpty()) {
-                Label emptyLabel = new Label("(No items)");
-                emptyLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #999; -fx-font-style: italic;");
-                billItemsContainer.getChildren().add(emptyLabel);
+                Label empty = new Label("(No items)");
+                empty.setStyle("-fx-font-size:11px; -fx-text-fill:#999; -fx-font-style:italic;");
+                billItemsContainer.getChildren().add(empty);
+            } else {
+                for (CartItem item : items) {
+                    billItemsContainer.getChildren().add(createBillItemRow(item));
+                }
             }
         }
     }
 
-    /**
-     * Create a row for the bill receipt with remove button
-     */
+    // ── Bill row ──────────────────────────────────────────────────────────────
+
     private HBox createBillItemRow(CartItem item) {
         HBox row = new HBox(5);
         row.setAlignment(Pos.CENTER_LEFT);
         row.getStyleClass().add("bill-item-row");
 
-        // Truncate product name if too long
-        String productName = item.getProductName();
-        if (productName.length() > 20) {
-            productName = productName.substring(0, 17) + "...";
-        }
+        String name = item.getProductName();
+        if (name.length() > 22) name = name.substring(0, 19) + "...";
 
-        Label nameLabel = new Label(productName);
+        Label nameLabel = new Label(name);
         nameLabel.getStyleClass().add("bill-item-name");
-        nameLabel.setMinWidth(180);
+        nameLabel.setMinWidth(160);
         HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
-        Label qtyLabel = new Label("x" + item.getQuantity());
+        Label qtyLabel = new Label("×" + item.getQuantity());
         qtyLabel.getStyleClass().add("bill-item-qty");
-        qtyLabel.setMinWidth(40);
+        qtyLabel.setMinWidth(35);
         qtyLabel.setAlignment(Pos.CENTER);
 
         Label priceLabel = new Label(String.format("৳%.0f", item.getTotalPrice()));
         priceLabel.getStyleClass().add("bill-item-price");
-        priceLabel.setMinWidth(80);
+        priceLabel.setMinWidth(75);
         priceLabel.setAlignment(Pos.CENTER_RIGHT);
 
-        // Remove button
-        Button removeBtn = new Button("✕");
+        // ── Cancel / Remove button — only removes from cart, stock unchanged ──
+        Button removeBtn = new Button("✕ Cancel");
         removeBtn.getStyleClass().add("bill-item-remove-btn");
-        removeBtn.setMinWidth(30);
-        removeBtn.setOnAction(e -> {
-            Cart.removeItem(item.getProductId());
-            refreshCart();
-        });
+        removeBtn.setStyle("-fx-background-color:#e74c3c; -fx-text-fill:white; "
+                + "-fx-font-size:11px; -fx-background-radius:5; -fx-cursor:hand; -fx-padding:3 8;");
+        removeBtn.setOnAction(e -> removeItemFromCart(item));
 
         row.getChildren().addAll(nameLabel, qtyLabel, priceLabel, removeBtn);
         return row;
     }
+
+    /**
+     * Remove one item from the cart.
+     * Stock is NOT changed here — stock is only reduced at checkout/purchase time.
+     */
+    private void removeItemFromCart(CartItem item) {
+        Cart.removeItem(item.getProductId());
+        refreshCart();
+        statusLabel.setText("🗑️ Removed \"" + item.getProductName() + "\" from cart.");
+    }
+
+    // ── Button handlers ───────────────────────────────────────────────────────
 
     @FXML
     private void onBackToHome() {
@@ -149,9 +128,14 @@ public class CartController {
 
     @FXML
     private void onClearCart() {
+        if (Cart.isEmpty()) {
+            statusLabel.setText("⚠️ Cart is already empty.");
+            return;
+        }
+        // Just clear cart — stock is NOT changed (stock only reduces at checkout)
         Cart.clearCart();
         refreshCart();
-        statusLabel.setText("🗑️ Cart has been cleared!");
+        statusLabel.setText("🗑️ Cart cleared.");
     }
 
     @FXML
@@ -160,33 +144,19 @@ public class CartController {
             statusLabel.setText("⚠️ Your cart is empty! Add some products first.");
             return;
         }
-
-        List<CartItem> items = Cart.getAllItems();
-
-        // ── Validate stock for every item before reducing anything ──
-        for (CartItem item : items) {
-            int available = StockManager.getStock(item.getProductId());
-            if (available < item.getQuantity()) {
-                statusLabel.setText("❌ Not enough stock for \"" + item.getProductName()
-                        + "\" — Available: " + available + ", In cart: " + item.getQuantity());
-                return;
-            }
-        }
-
-        // ── All OK — reduce stock and broadcast to network ──
-        for (CartItem item : items) {
+        // NOW reduce stock for every purchased item
+        for (CartItem item : Cart.getAllItems()) {
             int currentStock = StockManager.getStock(item.getProductId());
-            int newStock     = Math.max(0, currentStock - item.getQuantity());
+            int newStock = Math.max(0, currentStock - item.getQuantity());
             StockManager.updateStock(item.getProductId(), newStock);
             NetworkManager.getInstance().broadcastStockUpdate(item.getProductId(), newStock);
         }
-
-        // ── Show success and clear cart ──
-        String total = Cart.getFormattedTotal();
         int    totalQty = Cart.getTotalQuantity();
+        String total    = Cart.getFormattedTotal();
         Cart.clearCart();
         refreshCart();
-        statusLabel.setText("✅ Purchase successful! " + totalQty + " item(s) bought — Total paid: " + total + "  Thank you! 🎉");
+        statusLabel.setText("✅ Purchase successful!  " + totalQty
+                + " item(s) bought — Total: " + total + "  Thank you! 🎉");
     }
 
     @FXML
@@ -194,4 +164,3 @@ public class CartController {
         Session.goBackFromCart(statusLabel);
     }
 }
-

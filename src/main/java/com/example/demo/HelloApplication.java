@@ -10,6 +10,9 @@ import java.io.IOException;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+        // Initialize stock data before any page loads
+        StockManager.initializeStock();
+
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
 
         // Match the FXML design size so it doesn't start tiny.

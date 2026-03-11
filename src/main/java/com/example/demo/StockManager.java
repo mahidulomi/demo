@@ -1,184 +1,231 @@
 package com.example.demo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 
 /**
- * Manages stock quantities for all products across the application.
- * Uses static storage to maintain stock data throughout the session.
+ * Manages stock quantities for all products.
+ *
+ * Persistence: every change is written to STOCK_FILE so data survives restarts.
+ * File lives in the user's home dir: ~/.shopapp_stock.dat
+ * Format per line:  productId|productName|category|quantity|price
  */
 public final class StockManager {
 
-    // Static map to store stock data - productId -> StockItem
-    private static final Map<String, StockItem> stockData = new HashMap<>();
+    // ── Persistence ──────────────────────────────────────────────────────────
+    private static final Path STOCK_FILE =
+            Paths.get(System.getProperty("user.home"), ".shopapp_stock.dat");
 
-    // Flag to check if initial data is loaded
+    // ── In-memory store ──────────────────────────────────────────────────────
+    private static final Map<String, StockItem> stockData = new LinkedHashMap<>();
     private static boolean initialized = false;
 
     private StockManager() {}
 
-    /**
-     * Initialize with default stock data (call once at app start)
-     */
-    public static void initializeStock() {
+    // ── Default product catalogue ─────────────────────────────────────────────
+
+    private static void addDefault(String id, String name, String cat, int qty, double price) {
+        // Only inserts if product is NOT already loaded from file
+        if (!stockData.containsKey(id)) {
+            stockData.put(id, new StockItem(id, name, cat, qty, price));
+        }
+    }
+
+    private static void loadDefaults() {
+        // Electronics
+        addDefault("E_iPhone15",        "iPhone 15",                   "Electronics", 25, 99999);
+        addDefault("E_iPhone16",        "iPhone 16",                   "Electronics", 25, 120000);
+        addDefault("E_iPhone17",        "iPhone 17",                   "Electronics", 25, 139000);
+        addDefault("E_SamsungS25",      "Samsung Galaxy S25",          "Electronics", 25, 120000);
+        addDefault("E_VivoX200",        "Vivo X200 Ultra",             "Electronics", 25, 90000);
+        addDefault("E_LenovoIdeaPad",   "Lenovo IdeaPad i5 8GB SSD",  "Electronics", 25, 144000);
+        addDefault("E_WirelessEarbuds", "Wireless Earbuds Pro",        "Electronics", 25, 5000);
+        addDefault("E_SmartWatch",      "Smart Watch Fitness",         "Electronics", 25, 10000);
+        addDefault("E_PowerBank",       "Power Bank 20000mAh",        "Electronics", 25, 2500);
+        addDefault("E_iPad",            "iPad",                        "Electronics", 25, 30000);
+        addDefault("E_Mouse",           "Mouse",                       "Electronics", 25, 5000);
+        addDefault("E_AsusVivoBook",    "Asus VivoBook Ryzen 5 16GB", "Electronics", 25, 116000);
+        addDefault("E_AjazzK80",        "Ajazz K80 Redswitch",        "Electronics", 25, 4200);
+        // Beauty
+        addDefault("B_FaceCream",    "Vitamin C Face Cream",    "Beauty", 25, 1500);
+        addDefault("B_Serum",        "Hyaluronic Acid Serum",   "Beauty", 25, 2000);
+        addDefault("B_FoamCleanser", "Gentle Foam Cleanser",    "Beauty", 25, 800);
+        addDefault("B_LipstickSet",  "Matte Lipstick Set",      "Beauty", 25, 1000);
+        addDefault("B_Foundation",   "HD Foundation",            "Beauty", 25, 2000);
+        addDefault("B_Eyeshadow",    "Eyeshadow Palette",       "Beauty", 25, 2000);
+        addDefault("B_Shampoo",      "Keratin Repair Shampoo",  "Beauty", 25, 900);
+        addDefault("B_Conditioner",  "Deep Conditioner",         "Beauty", 25, 1000);
+        addDefault("B_HairOil",      "Argan Hair Oil",           "Beauty", 25, 1200);
+        addDefault("B_Sunscreen",    "SPF 50+ Sunscreen",        "Beauty", 25, 1300);
+        addDefault("B_Mascara",      "Volumizing Mascara",       "Beauty", 25, 800);
+        addDefault("B_GentsFaceWash","Gents Face Wash",          "Beauty", 25, 1500);
+    }
+
+    // ── Init ─────────────────────────────────────────────────────────────────
+
+    public static synchronized void initializeStock() {
         if (initialized) return;
-
-        // Electronics Products - All start with 25 stock
-        addStock("E_iPhone15", "iPhone 15", "Electronics", 25, 99999);
-        addStock("E_iPhone16", "iPhone 16", "Electronics", 25, 120000);
-        addStock("E_iPhone17", "iPhone 17", "Electronics", 25, 139000);
-        addStock("E_SamsungS25", "Samsung Galaxy S25", "Electronics", 25, 120000);
-        addStock("E_VivoX200", "Vivo X200 Ultra", "Electronics", 25, 90000);
-        addStock("E_LenovoIdeaPad", "Lenovo IdeaPad i5 8GB SSD", "Electronics", 25, 144000);
-        addStock("E_WirelessEarbuds", "Wireless Earbuds Pro", "Electronics", 25, 5000);
-        addStock("E_SmartWatch", "Smart Watch Fitness", "Electronics", 25, 10000);
-        addStock("E_PowerBank", "Power Bank 20000mAh", "Electronics", 25, 2500);
-        addStock("E_iPad", "iPad", "Electronics", 25, 30000);
-        addStock("E_Mouse", "Mouse", "Electronics", 25, 5000);
-        addStock("E_AsusVivoBook", "Asus VivoBook Ryzen 5 16GB", "Electronics", 25, 116000);
-        addStock("E_AjazzK80", "Ajazz K80 Redswitch", "Electronics", 25, 4200);
-
-        // Beauty Products - All start with 25 stock
-        addStock("B_FaceCream", "Vitamin C Face Cream", "Beauty", 25, 1500);
-        addStock("B_Serum", "Hyaluronic Acid Serum", "Beauty", 25, 2000);
-        addStock("B_FoamCleanser", "Gentle Foam Cleanser", "Beauty", 25, 800);
-        addStock("B_LipstickSet", "Matte Lipstick Set", "Beauty", 25, 1000);
-        addStock("B_Foundation", "HD Foundation", "Beauty", 25, 2000);
-        addStock("B_Eyeshadow", "Eyeshadow Palette", "Beauty", 25, 2000);
-        addStock("B_Shampoo", "Keratin Repair Shampoo", "Beauty", 25, 900);
-        addStock("B_Conditioner", "Deep Conditioner", "Beauty", 25, 1000);
-        addStock("B_HairOil", "Argan Hair Oil", "Beauty", 25, 1200);
-        addStock("B_Sunscreen", "SPF 50+ Sunscreen", "Beauty", 25, 1300);
-        addStock("B_Mascara", "Volumizing Mascara", "Beauty", 25, 800);
-        addStock("B_GentsFaceWash", "Gents Face Wash", "Beauty", 25, 1500);
-
+        loadFromFile();   // load saved data first
+        loadDefaults();   // fill in any missing products with defaults
+        saveToFile();     // persist combined state
         initialized = true;
+        System.out.println("[StockManager] Ready — " + stockData.size()
+                + " products | file: " + STOCK_FILE);
     }
 
-    /**
-     * Add a new stock item
-     */
-    public static void addStock(String productId, String productName, String category, int quantity, double price) {
-        StockItem item = new StockItem(productId, productName, category, quantity, price);
-        stockData.put(productId, item);
+    // ── Public API ────────────────────────────────────────────────────────────
+
+    public static synchronized void addStock(String productId, String productName,
+                                             String category, int quantity, double price) {
+        initializeStock();
+        stockData.put(productId, new StockItem(productId, productName, category, quantity, price));
+        saveToFile();
     }
 
-    /**
-     * Update stock quantity for a product
-     */
-    public static void updateStock(String productId, int newQuantity) {
-        if (stockData.containsKey(productId)) {
-            stockData.get(productId).setQuantity(Math.max(0, newQuantity));
+    public static synchronized void updateStock(String productId, int newQuantity) {
+        initializeStock();
+        StockItem item = stockData.get(productId);
+        if (item != null) {
+            item.setQuantity(Math.max(0, newQuantity));
+            saveToFile();
         }
     }
 
     /**
-     * Reduce stock when product is sold/added to cart
+     * Update many products at once, then save a single time.
+     * Used when syncing a full stock snapshot received from the server.
      */
-    public static boolean reduceStock(String productId, int quantity) {
-        if (stockData.containsKey(productId)) {
-            StockItem item = stockData.get(productId);
-            if (item.getQuantity() >= quantity) {
-                item.setQuantity(item.getQuantity() - quantity);
-                return true;
+    public static synchronized void batchUpdateStock(Map<String, Integer> updates) {
+        initializeStock();
+        for (Map.Entry<String, Integer> e : updates.entrySet()) {
+            StockItem item = stockData.get(e.getKey());
+            if (item != null) {
+                item.setQuantity(Math.max(0, e.getValue()));
             }
+        }
+        saveToFile();
+    }
+
+    public static synchronized boolean reduceStock(String productId, int quantity) {
+        initializeStock();
+        StockItem item = stockData.get(productId);
+        if (item != null && item.getQuantity() >= quantity) {
+            item.setQuantity(item.getQuantity() - quantity);
+            saveToFile();
+            return true;
         }
         return false;
     }
 
-    /**
-     * Get stock quantity for a product
-     */
     public static int getStock(String productId) {
-        if (stockData.containsKey(productId)) {
-            return stockData.get(productId).getQuantity();
-        }
-        return 0;
+        initializeStock();
+        StockItem item = stockData.get(productId);
+        return item != null ? item.getQuantity() : 0;
     }
 
-    /**
-     * Get stock item by product ID
-     */
     public static StockItem getStockItem(String productId) {
+        initializeStock();
         return stockData.get(productId);
     }
 
-    /**
-     * Get all stock items as a list
-     */
     public static List<StockItem> getAllStockItems() {
-        initializeStock(); // Ensure data is loaded
+        initializeStock();
         return new ArrayList<>(stockData.values());
     }
 
-    /**
-     * Get stock items by category
-     */
     public static List<StockItem> getStockByCategory(String category) {
+        initializeStock();
         List<StockItem> items = new ArrayList<>();
-        for (StockItem item : stockData.values()) {
-            if (item.getCategory().equals(category)) {
-                items.add(item);
-            }
-        }
+        for (StockItem item : stockData.values())
+            if (item.getCategory().equals(category)) items.add(item);
         return items;
     }
 
-    /**
-     * Get low stock items (quantity <= 10)
-     */
     public static List<StockItem> getLowStockItems() {
+        initializeStock();
         List<StockItem> items = new ArrayList<>();
-        for (StockItem item : stockData.values()) {
-            if (item.getQuantity() > 0 && item.getQuantity() <= 10) {
-                items.add(item);
-            }
-        }
+        for (StockItem item : stockData.values())
+            if (item.getQuantity() > 0 && item.getQuantity() <= 10) items.add(item);
         return items;
     }
 
-    /**
-     * Get out of stock items (quantity = 0)
-     */
     public static List<StockItem> getOutOfStockItems() {
+        initializeStock();
         List<StockItem> items = new ArrayList<>();
-        for (StockItem item : stockData.values()) {
-            if (item.getQuantity() <= 0) {
-                items.add(item);
-            }
-        }
+        for (StockItem item : stockData.values())
+            if (item.getQuantity() <= 0) items.add(item);
         return items;
     }
 
-    /**
-     * Find a product ID by matching the product name (case-sensitive).
-     * Returns null if not found.
-     */
     public static String findProductIdByName(String productName) {
+        initializeStock();
         if (productName == null) return null;
-        for (Map.Entry<String, StockItem> entry : stockData.entrySet()) {
-            if (productName.equals(entry.getValue().getProductName())) {
-                return entry.getKey();
-            }
-        }
+        for (Map.Entry<String, StockItem> e : stockData.entrySet())
+            if (productName.equals(e.getValue().getProductName())) return e.getKey();
         return null;
     }
 
-    /**
-     * Check if product is in stock
-     */
-    public static boolean isInStock(String productId) {
-        return getStock(productId) > 0;
+    public static boolean isInStock(String productId)  { return getStock(productId) > 0; }
+    public static boolean isLowStock(String productId) {
+        int q = getStock(productId); return q > 0 && q <= 10;
     }
 
     /**
-     * Check if product has low stock
+     * Reset all quantities back to default (25) and delete the saved file.
+     * Useful for an admin "Reset Stock" function.
      */
-    public static boolean isLowStock(String productId) {
-        int qty = getStock(productId);
-        return qty > 0 && qty <= 10;
+    public static synchronized void resetToDefaults() {
+        stockData.clear();
+        initialized = false;
+        try { Files.deleteIfExists(STOCK_FILE); } catch (IOException ignored) {}
+        initializeStock();
+        System.out.println("[StockManager] Stock reset to defaults.");
+    }
+
+    // ── File I/O ──────────────────────────────────────────────────────────────
+
+    private static void saveToFile() {
+        try (BufferedWriter bw = Files.newBufferedWriter(STOCK_FILE)) {
+            for (StockItem item : stockData.values()) {
+                bw.write(item.getProductId()  + "|"
+                       + item.getProductName() + "|"
+                       + item.getCategory()    + "|"
+                       + item.getQuantity()    + "|"
+                       + item.getPrice());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("[StockManager] Save failed: " + e.getMessage());
+        }
+    }
+
+    private static void loadFromFile() {
+        if (!Files.exists(STOCK_FILE)) {
+            System.out.println("[StockManager] No saved file — will use defaults.");
+            return;
+        }
+        int count = 0;
+        try (BufferedReader br = Files.newBufferedReader(STOCK_FILE)) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) continue;
+                String[] p = line.split("\\|", -1);
+                if (p.length < 5) continue;
+                try {
+                    String id   = p[0];
+                    String name = p[1];
+                    String cat  = p[2];
+                    int    qty  = Integer.parseInt(p[3].trim());
+                    double price= Double.parseDouble(p[4].trim());
+                    stockData.put(id, new StockItem(id, name, cat, qty, price));
+                    count++;
+                } catch (NumberFormatException ignored) {}
+            }
+        } catch (IOException e) {
+            System.err.println("[StockManager] Load failed: " + e.getMessage());
+        }
+        System.out.println("[StockManager] Loaded " + count + " products from " + STOCK_FILE);
     }
 }
-
