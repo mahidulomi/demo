@@ -3,8 +3,11 @@ package com.example.demo;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+
+import java.util.Locale;
 
 /**
  * Controller for Fashion page - products are built directly in FXML
@@ -30,8 +33,104 @@ public class FashionController {
     private GridPane productGrid;
 
     @FXML
+    private TextField searchField;
+
+    // Store all products on initialization
+    private java.util.List<javafx.scene.layout.VBox> allProductCards = null;
+
+    @FXML
     private void initialize() {
         statusLabel.setText("✨ 12 Beautiful Products - All with Amazing Discounts!");
+
+        // Store all products on initialization before any filtering
+        if (productGrid != null) {
+            allProductCards = new java.util.ArrayList<>();
+            for (javafx.scene.Node node : productGrid.getChildren()) {
+                if (node instanceof javafx.scene.layout.VBox) {
+                    allProductCards.add((javafx.scene.layout.VBox) node);
+                }
+            }
+            System.out.println("✓ Fashion: Stored " + allProductCards.size() + " products for search");
+        }
+
+        // Setup search field action
+        if (searchField != null) {
+            searchField.setOnAction(e -> onSearch());
+        }
+    }
+
+    @FXML
+    private void onSearch() {
+        String query = safe(searchField.getText()).toLowerCase(Locale.ROOT);
+
+        if (query.isEmpty()) {
+            statusLabel.setText("Type a product name or category to search.");
+            filterProducts("All");
+            return;
+        }
+
+        // Make sure we have the products list
+        if (allProductCards == null || allProductCards.isEmpty()) {
+            statusLabel.setText("⚠️ Product list not loaded yet!");
+            return;
+        }
+
+        // Search through ALL products (not just currently visible ones)
+        int matchCount = 0;
+        java.util.List<javafx.scene.layout.VBox> matchedProducts = new java.util.ArrayList<>();
+        
+        for (javafx.scene.layout.VBox productCard : allProductCards) {
+            boolean matches = false;
+
+            // Check product name
+            for (javafx.scene.Node child : productCard.getChildren()) {
+                if (child instanceof Label) {
+                    Label label = (Label) child;
+                    if (label.getStyleClass().contains("product-name")) {
+                        String productName = label.getText().toLowerCase(Locale.ROOT);
+                        if (productName.contains(query)) {
+                            matches = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Check category if name doesn't match
+            if (!matches) {
+                String category = (String) productCard.getUserData();
+                if (category != null && category.toLowerCase(Locale.ROOT).contains(query)) {
+                    matches = true;
+                }
+            }
+
+            if (matches) {
+                matchedProducts.add(productCard);
+                matchCount++;
+            }
+        }
+
+        // Clear grid and show only matched products
+        productGrid.getChildren().clear();
+        
+        int row = 0;
+        int col = 0;
+        for (javafx.scene.layout.VBox productCard : matchedProducts) {
+            productGrid.add(productCard, col, row);
+            col++;
+            if (col >= 3) {
+                col = 0;
+                row++;
+            }
+        }
+
+        if (matchCount > 0) {
+            statusLabel.setText("🔍 Found " + matchCount + " product(s) matching: \"" + query + "\"");
+        } else {
+            statusLabel.setText("❌ No products found matching: \"" + query + "\"");
+        }
+        
+        System.out.println("✓ Search completed: " + matchCount + " matches for \"" + query + "\"");
     }
 
     @FXML
@@ -80,8 +179,24 @@ public class FashionController {
         Button btn = (Button) event.getSource();
         String originalText = btn.getText();
 
-        // Get product name from the parent VBox
-        javafx.scene.layout.VBox card = (javafx.scene.layout.VBox) btn.getParent();
+        // Get parent HBox first, then VBox (product card)
+        javafx.scene.Node parent = btn.getParent();
+        javafx.scene.layout.VBox card = null;
+        
+        if (parent instanceof javafx.scene.layout.HBox) {
+            // Button is inside HBox, get HBox's parent which is VBox
+            card = (javafx.scene.layout.VBox) parent.getParent();
+        } else if (parent instanceof javafx.scene.layout.VBox) {
+            // Direct parent is VBox
+            card = (javafx.scene.layout.VBox) parent;
+        }
+        
+        if (card == null) {
+            System.err.println("❌ Could not find product card!");
+            statusLabel.setText("❌ Error adding to cart!");
+            return;
+        }
+        
         String productName = "Product";
         String productPrice = "0";
         int discountPercent = 0;
@@ -159,23 +274,58 @@ public class FashionController {
 
     private void filterProducts(String category) {
         if (productGrid == null) return;
+        
+        // Use stored products list if available
+        if (allProductCards == null || allProductCards.isEmpty()) {
+            // Fallback to old method if list not initialized
+            productGrid.getChildren().forEach(node -> {
+                if (node instanceof VBox productCard) {
+                    String productCategory = (String) productCard.getUserData();
 
-        productGrid.getChildren().forEach(node -> {
-            if (node instanceof VBox productCard) {
-                String productCategory = (String) productCard.getUserData();
-
-                if ("All".equals(category)) {
-                    productCard.setVisible(true);
-                    productCard.setManaged(true);
-                } else if (productCategory != null && productCategory.equals(category)) {
-                    productCard.setVisible(true);
-                    productCard.setManaged(true);
-                } else {
-                    productCard.setVisible(false);
-                    productCard.setManaged(false);
+                    if ("All".equals(category)) {
+                        productCard.setVisible(true);
+                        productCard.setManaged(true);
+                    } else if (productCategory != null && productCategory.equals(category)) {
+                        productCard.setVisible(true);
+                        productCard.setManaged(true);
+                    } else {
+                        productCard.setVisible(false);
+                        productCard.setManaged(false);
+                    }
                 }
+            });
+            return;
+        }
+        
+        // Clear grid first
+        productGrid.getChildren().clear();
+        
+        // Filter and re-add products
+        java.util.List<javafx.scene.layout.VBox> filteredProducts = new java.util.ArrayList<>();
+        
+        for (javafx.scene.layout.VBox productCard : allProductCards) {
+            String productCategory = (String) productCard.getUserData();
+            
+            if ("All".equals(category)) {
+                filteredProducts.add(productCard);
+            } else if (productCategory != null && productCategory.equals(category)) {
+                filteredProducts.add(productCard);
             }
-        });
+        }
+        
+        // Re-add filtered products to grid (3 columns per row)
+        int row = 0;
+        int col = 0;
+        for (javafx.scene.layout.VBox productCard : filteredProducts) {
+            productGrid.add(productCard, col, row);
+            col++;
+            if (col >= 3) {
+                col = 0;
+                row++;
+            }
+        }
+        
+        System.out.println("✓ Filter: Showing " + filteredProducts.size() + " products in category: " + category);
     }
 
     private int countVisibleProducts() {
@@ -184,5 +334,9 @@ public class FashionController {
         return (int) productGrid.getChildren().stream()
                 .filter(node -> node instanceof VBox && node.isVisible())
                 .count();
+    }
+
+    private static String safe(String s) {
+        return s == null ? "" : s.trim();
     }
 }

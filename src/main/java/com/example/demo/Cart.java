@@ -39,17 +39,24 @@ public final class Cart {
      * Add item to cart. If item already exists, increment quantity.
      */
     public static void addItem(CartItem item) {
-        if (item == null || item.getProductId() == null) return;
+        if (item == null || item.getProductId() == null) {
+            System.err.println("⚠️ Cart: Cannot add null item or item with null ID");
+            return;
+        }
 
         String productId = item.getProductId();
         if (cartItems.containsKey(productId)) {
             // Item exists, increment quantity
             CartItem existingItem = cartItems.get(productId);
-            existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
+            int oldQty = existingItem.getQuantity();
+            existingItem.setQuantity(oldQty + item.getQuantity());
+            System.out.println("✓ Cart: Updated " + item.getProductName() + " quantity from " + oldQty + " to " + existingItem.getQuantity());
         } else {
             // New item
             cartItems.put(productId, item);
+            System.out.println("✓ Cart: Added new item - " + item.getProductName() + " (Qty: " + item.getQuantity() + ", Price: ৳" + item.getUnitPrice() + ")");
         }
+        System.out.println("📊 Cart Status: " + getItemCount() + " unique items, Total Qty: " + getTotalQuantity() + ", Total Price: ৳" + getTotalPrice());
     }
 
     /**
@@ -57,6 +64,11 @@ public final class Cart {
      */
     public static void addItem(String productId, String productName, String category,
                                double unitPrice, int quantity, String imagePath, int discountPercent) {
+        if (productId == null || productId.isEmpty()) {
+            System.err.println("⚠️ Cart: Cannot add item with empty product ID");
+            return;
+        }
+        
         CartItem item = new CartItem(productId, productName, category, unitPrice, quantity, imagePath, discountPercent);
         addItem(item);
     }
@@ -66,6 +78,8 @@ public final class Cart {
      */
     public static void removeItem(String productId) {
         cartItems.remove(productId);
+        System.out.println("✓ Cart: Removed item with ID " + productId);
+        System.out.println("📊 Cart Status: " + getItemCount() + " unique items, Total Qty: " + getTotalQuantity() + ", Total Price: ৳" + getTotalPrice());
     }
 
     /**
@@ -77,6 +91,7 @@ public final class Cart {
                 removeItem(productId);
             } else {
                 cartItems.get(productId).setQuantity(quantity);
+                System.out.println("✓ Cart: Updated " + productId + " quantity to " + quantity);
             }
         }
     }
@@ -87,6 +102,7 @@ public final class Cart {
     public static void incrementQuantity(String productId) {
         if (cartItems.containsKey(productId)) {
             cartItems.get(productId).incrementQuantity();
+            System.out.println("✓ Cart: Incremented " + productId + " quantity");
         }
     }
 
@@ -96,6 +112,7 @@ public final class Cart {
     public static void decrementQuantity(String productId) {
         if (cartItems.containsKey(productId)) {
             cartItems.get(productId).decrementQuantity();
+            System.out.println("✓ Cart: Decremented " + productId + " quantity");
         }
     }
 
@@ -157,6 +174,7 @@ public final class Cart {
      */
     public static void clearCart() {
         cartItems.clear();
+        System.out.println("✓ Cart: Cleared all items");
     }
 
     /**

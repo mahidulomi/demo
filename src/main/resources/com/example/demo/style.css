@@ -318,11 +318,16 @@
 
 .home-card:hover {
     -fx-border-color: #667eea;
+    -fx-translate-y: -2px;
 }
 
 .home-status {
-    -fx-text-fill: #374151;
+    -fx-text-fill: #1f2937;
     -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-background-color: #e5edff;
+    -fx-background-radius: 10px;
+    -fx-padding: 8px 10px;
 }
 
 /* Search bar in home page */
@@ -408,6 +413,7 @@
 
 .home-tile:hover {
     -fx-background-color: #0b1220;
+    -fx-translate-y: -2px;
 }
 
 /* ===== Fashion page styles ===== */
