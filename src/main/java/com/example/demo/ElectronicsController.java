@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * Controller for Electronics page - products are built directly in FXML
@@ -39,6 +40,9 @@ public class ElectronicsController {
 
     @FXML
     private GridPane productGrid;
+
+    @FXML
+    private TextField searchField;
 
     // Add Product Panel fields
     @FXML
@@ -81,6 +85,94 @@ public class ElectronicsController {
             categoryComboBox.setValue("Mobile");
         }
 
+        // Setup arrow button click handlers for quantity increase/decrease
+        setupArrowButtons();
+        
+        // Setup search field action
+        if (searchField != null) {
+            searchField.setOnAction(e -> onSearch());
+        }
+    }
+
+    @FXML
+    private void onSearch() {
+        String query = safe(searchField.getText()).toLowerCase(Locale.ROOT);
+        
+        if (query.isEmpty()) {
+            statusLabel.setText("Type a product name or category to search.");
+            filterProducts("All");
+            return;
+        }
+        
+        // Make sure we have the products list
+        if (allProductCards == null || allProductCards.isEmpty()) {
+            statusLabel.setText("⚠️ Product list not loaded yet!");
+            return;
+        }
+        
+        // Search through ALL products (not just currently visible ones)
+        int matchCount = 0;
+        java.util.List<VBox> matchedProducts = new java.util.ArrayList<>();
+        
+        for (VBox productCard : allProductCards) {
+            boolean matches = false;
+            
+            // Check product name
+            for (javafx.scene.Node child : productCard.getChildren()) {
+                if (child instanceof Label) {
+                    Label label = (Label) child;
+                    if (label.getStyleClass().contains("product-name")) {
+                        String productName = label.getText().toLowerCase(Locale.ROOT);
+                        if (productName.contains(query)) {
+                            matches = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Check category if name doesn't match
+            if (!matches) {
+                String category = (String) productCard.getUserData();
+                if (category != null && category.toLowerCase(Locale.ROOT).contains(query)) {
+                    matches = true;
+                }
+            }
+            
+            if (matches) {
+                matchedProducts.add(productCard);
+                matchCount++;
+            }
+        }
+        
+        // Clear grid and show only matched products
+        productGrid.getChildren().clear();
+        
+        int row = 0;
+        int col = 0;
+        for (VBox productCard : matchedProducts) {
+            productGrid.add(productCard, col, row);
+            col++;
+            if (col >= 3) {
+                col = 0;
+                row++;
+            }
+        }
+        
+        if (matchCount > 0) {
+            statusLabel.setText("🔍 Found " + matchCount + " product(s) matching: \"" + query + "\"");
+        } else {
+            statusLabel.setText("❌ No products found matching: \"" + query + "\"");
+        }
+        
+        System.out.println("✓ Electronics Search: " + matchCount + " matches for \"" + query + "\"");
+    }
+
+    /**
+     * Setup arrow button click handlers for quantity increase/decrease
+     * Layout: [Add to Cart] [▼ 1 ▲]
+     */
+    private void setupArrowButtons() {
         // Store all products on initialization before any filtering
         if (productGrid != null) {
             allProductCards = new java.util.ArrayList<>();
@@ -96,10 +188,6 @@ public class ElectronicsController {
         }
     }
 
-    /**
-     * Setup arrow button click handlers for quantity increase/decrease
-     * Layout: [Add to Cart] [▼ 1 ▲]
-     */
     private void setupArrowButtons(VBox productCard) {
         // Find stock label to get max quantity
         Label stockLabelRef = null;
@@ -748,6 +836,10 @@ public class ElectronicsController {
         return (int) productGrid.getChildren().stream()
                 .filter(node -> node instanceof VBox)
                 .count();
+    }
+
+    private static String safe(String s) {
+        return s == null ? "" : s.trim();
     }
 }
 

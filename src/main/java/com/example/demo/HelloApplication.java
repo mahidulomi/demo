@@ -15,7 +15,7 @@ public class HelloApplication extends Application {
         // Match the FXML design size so it doesn't start tiny.
         Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
 
-        stage.setTitle("My First JavaFX App");
+        stage.setTitle("HatBazarX Shopping App");
         stage.setMinWidth(900);
         stage.setMinHeight(650);
         stage.setScene(scene);

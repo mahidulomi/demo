@@ -27,6 +27,11 @@
         </padding>
         <Label styleClass="electronics-brand" text="⚡ Electronics Hub" />
         <Region HBox.hgrow="ALWAYS" />
+        <TextField fx:id="searchField" promptText="Search products..." styleClass="home-search" prefWidth="300">
+            <HBox.margin>
+                <Insets right="15" />
+            </HBox.margin>
+        </TextField>
         <Button onAction="#onToggleAddProduct" styleClass="admin-add-btn" text="➕ Add Product">
             <HBox.margin>
                 <Insets right="15" />

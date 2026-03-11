@@ -4,6 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.time.LocalTime;
+import java.util.Locale;
+
 public class HomeController {
 
     @FXML
@@ -18,18 +21,66 @@ public class HomeController {
     @FXML
     private void initialize() {
         String user = Session.getCurrentUser();
-        userLabel.setText(user == null ? "Hello!" : "Hello, " + user + "!");
+        userLabel.setText(buildGreeting(user));
+
+        statusLabel.setText("Welcome! Try search: fashion, electronics, beauty, cart, free delivery.");
 
         if (searchField != null) {
-            searchField.setOnAction(e -> {
-                String q = searchField.getText() == null ? "" : searchField.getText().trim();
-                if (!q.isEmpty()) {
-                    statusLabel.setText("Searching for: " + q + " (demo)");
-                } else {
-                    statusLabel.setText("");
-                }
-            });
+            searchField.setOnAction(e -> onSearch());
         }
+    }
+
+    @FXML
+    private void onSearch() {
+        String q = safe(searchField.getText()).toLowerCase(Locale.ROOT);
+
+        if (q.isEmpty()) {
+            statusLabel.setText("Type a category name to jump quickly.");
+            return;
+        }
+
+        if (q.contains("fashion")) {
+            statusLabel.setText("Opening Fashion...");
+            Session.goToFashion(statusLabel);
+            return;
+        }
+        if (q.contains("electronic") || q.contains("mobile") || q.contains("laptop")) {
+            statusLabel.setText("Opening Electronics...");
+            Session.goToElectronics(statusLabel);
+            return;
+        }
+        if (q.contains("beauty") || q.contains("cosmetic")) {
+            statusLabel.setText("Opening Beauty...");
+            Session.goToBeauty(statusLabel);
+            return;
+        }
+        if (q.contains("home") || q.contains("living")) {
+            statusLabel.setText("Opening Home & Living...");
+            Session.goToHomeLiving(statusLabel);
+            return;
+        }
+        if (q.contains("arrival") || q.contains("new")) {
+            statusLabel.setText("Opening New Arrivals...");
+            Session.goToNewArrivals(statusLabel);
+            return;
+        }
+        if (q.contains("free") || q.contains("delivery")) {
+            statusLabel.setText("Opening Free Delivery...");
+            Session.goToFreeDelivery(statusLabel);
+            return;
+        }
+        if (q.contains("stock")) {
+            statusLabel.setText("Opening Stock...");
+            Session.goToStock(statusLabel);
+            return;
+        }
+        if (q.contains("cart")) {
+            statusLabel.setText("Opening Cart...");
+            Session.goToCartFrom(statusLabel, "home-view.fxml");
+            return;
+        }
+
+        statusLabel.setText("No quick match for: " + q + " (try: fashion, electronics, beauty, cart)");
     }
 
     @FXML
@@ -40,7 +91,7 @@ public class HomeController {
     @FXML
     private void onProfileClick() {
         String user = Session.getCurrentUser();
-        statusLabel.setText("👤 Profile: " + (user == null ? "Guest" : user) + " (Profile page coming soon)");
+        statusLabel.setText("Profile: " + (user == null ? "Guest" : user) + " (Profile page coming soon)");
     }
 
     @FXML
@@ -86,5 +137,15 @@ public class HomeController {
     @FXML
     private void openStock() {
         Session.goToStock(statusLabel);
+    }
+
+    private static String buildGreeting(String user) {
+        int hour = LocalTime.now().getHour();
+        String prefix = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+        return user == null ? prefix + "!" : prefix + ", " + user + "!";
+    }
+
+    private static String safe(String text) {
+        return text == null ? "" : text.trim();
     }
 }

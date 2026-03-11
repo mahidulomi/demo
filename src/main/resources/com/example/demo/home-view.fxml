@@ -64,11 +64,11 @@
             <Button text="Beauty" prefWidth="220" prefHeight="90" onAction="#openBeauty" styleClass="home-card" GridPane.columnIndex="3" GridPane.rowIndex="0" />
         </GridPane>
 
-        <Label text="Offers" styleClass="home-section-title" />
+        <Label text="Offers &amp; Services" styleClass="home-section-title" />
         <HBox spacing="14">
             <Button text="My Orders" prefWidth="220" onAction="#openOrders" styleClass="home-tile" />
-            <Button text="Free Delivery" prefWidth="220" onAction="#openHomeLiving" styleClass="home-tile" />
-            <Button text="New Arrivals" prefWidth="220" onAction="#openElectronics" styleClass="home-tile" />
+            <Button text="Free Delivery" prefWidth="220" onAction="#openFreeDelivery" styleClass="home-tile" />
+            <Button text="New Arrivals" prefWidth="220" onAction="#openNewArrivals" styleClass="home-tile" />
             <Button text="📦 Stock" prefWidth="220" onAction="#openStock" styleClass="home-tile" />
         </HBox>
 

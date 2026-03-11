@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * Controller for Beauty page - products are built directly in FXML
@@ -39,6 +40,9 @@ public class BeautyController {
 
     @FXML
     private GridPane productGrid;
+
+    @FXML
+    private TextField searchField;
 
     // Add Product Panel fields
     @FXML
@@ -94,6 +98,85 @@ public class BeautyController {
                 }
             }
         }
+        
+        // Setup search field action
+        if (searchField != null) {
+            searchField.setOnAction(e -> onSearch());
+        }
+    }
+
+    @FXML
+    private void onSearch() {
+        String query = safe(searchField.getText()).toLowerCase(Locale.ROOT);
+        
+        if (query.isEmpty()) {
+            statusLabel.setText("Type a product name or category to search.");
+            filterProducts("All");
+            return;
+        }
+        
+        // Make sure we have the products list
+        if (allProductCards == null || allProductCards.isEmpty()) {
+            statusLabel.setText("⚠️ Product list not loaded yet!");
+            return;
+        }
+        
+        // Search through ALL products (not just currently visible ones)
+        int matchCount = 0;
+        java.util.List<VBox> matchedProducts = new java.util.ArrayList<>();
+        
+        for (VBox productCard : allProductCards) {
+            boolean matches = false;
+            
+            // Check product name
+            for (javafx.scene.Node child : productCard.getChildren()) {
+                if (child instanceof Label) {
+                    Label label = (Label) child;
+                    if (label.getStyleClass().contains("product-name")) {
+                        String productName = label.getText().toLowerCase(Locale.ROOT);
+                        if (productName.contains(query)) {
+                            matches = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Check category if name doesn't match
+            if (!matches) {
+                String category = (String) productCard.getUserData();
+                if (category != null && category.toLowerCase(Locale.ROOT).contains(query)) {
+                    matches = true;
+                }
+            }
+            
+            if (matches) {
+                matchedProducts.add(productCard);
+                matchCount++;
+            }
+        }
+        
+        // Clear grid and show only matched products
+        productGrid.getChildren().clear();
+        
+        int row = 0;
+        int col = 0;
+        for (VBox productCard : matchedProducts) {
+            productGrid.add(productCard, col, row);
+            col++;
+            if (col >= 3) {
+                col = 0;
+                row++;
+            }
+        }
+        
+        if (matchCount > 0) {
+            statusLabel.setText("🔍 Found " + matchCount + " product(s) matching: \"" + query + "\"");
+        } else {
+            statusLabel.setText("❌ No products found matching: \"" + query + "\"");
+        }
+        
+        System.out.println("✓ Beauty Search: " + matchCount + " matches for \"" + query + "\"");
     }
 
     /**
@@ -749,6 +832,10 @@ public class BeautyController {
         return (int) productGrid.getChildren().stream()
                 .filter(node -> node instanceof VBox && node.isVisible())
                 .count();
+    }
+
+    private static String safe(String s) {
+        return s == null ? "" : s.trim();
     }
 }
 
