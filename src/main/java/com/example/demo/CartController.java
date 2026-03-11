@@ -158,9 +158,35 @@ public class CartController {
     private void onCheckout() {
         if (Cart.isEmpty()) {
             statusLabel.setText("⚠️ Your cart is empty! Add some products first.");
-        } else {
-            statusLabel.setText("✓ Proceeding to checkout... (Demo - Total: " + Cart.getFormattedTotal() + ")");
+            return;
         }
+
+        List<CartItem> items = Cart.getAllItems();
+
+        // ── Validate stock for every item before reducing anything ──
+        for (CartItem item : items) {
+            int available = StockManager.getStock(item.getProductId());
+            if (available < item.getQuantity()) {
+                statusLabel.setText("❌ Not enough stock for \"" + item.getProductName()
+                        + "\" — Available: " + available + ", In cart: " + item.getQuantity());
+                return;
+            }
+        }
+
+        // ── All OK — reduce stock and broadcast to network ──
+        for (CartItem item : items) {
+            int currentStock = StockManager.getStock(item.getProductId());
+            int newStock     = Math.max(0, currentStock - item.getQuantity());
+            StockManager.updateStock(item.getProductId(), newStock);
+            NetworkManager.getInstance().broadcastStockUpdate(item.getProductId(), newStock);
+        }
+
+        // ── Show success and clear cart ──
+        String total = Cart.getFormattedTotal();
+        int    totalQty = Cart.getTotalQuantity();
+        Cart.clearCart();
+        refreshCart();
+        statusLabel.setText("✅ Purchase successful! " + totalQty + " item(s) bought — Total paid: " + total + "  Thank you! 🎉");
     }
 
     @FXML

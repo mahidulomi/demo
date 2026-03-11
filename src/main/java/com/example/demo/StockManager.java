@@ -153,6 +153,20 @@ public final class StockManager {
     }
 
     /**
+     * Find a product ID by matching the product name (case-sensitive).
+     * Returns null if not found.
+     */
+    public static String findProductIdByName(String productName) {
+        if (productName == null) return null;
+        for (Map.Entry<String, StockItem> entry : stockData.entrySet()) {
+            if (productName.equals(entry.getValue().getProductName())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    /**
      * Check if product is in stock
      */
     public static boolean isInStock(String productId) {
