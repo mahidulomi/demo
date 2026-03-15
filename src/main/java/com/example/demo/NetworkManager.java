@@ -2,6 +2,9 @@ package com.example.demo;
 
 import javafx.application.Platform;
 
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,7 +20,10 @@ public class NetworkManager {
     // ── Singleton ─────────────────────────────────────────────────────────────
     private static final NetworkManager INSTANCE = new NetworkManager();
     public static NetworkManager getInstance() { return INSTANCE; }
-    private NetworkManager() {}
+    private NetworkManager() {
+        // Same-machine multi-instance mode: refresh active UI when stock file changes externally.
+        StockManager.addExternalChangeListener(this::onLocalStockFileChanged);
+    }
 
     // ── Internal state ────────────────────────────────────────────────────────
     private StockServer server;
@@ -85,6 +91,22 @@ public class NetworkManager {
             client.sendStockUpdate(productId, newQty);
     }
 
+    public void broadcastNewProduct(StockItem item) {
+        if (item == null || mode == Mode.OFFLINE) return;
+        if (mode == Mode.SERVER && server != null)
+            server.broadcastProductToAllClients(item);
+        else if (mode == Mode.CLIENT && client != null)
+            client.sendNewProduct(item);
+    }
+
+    public void broadcastSaleRecord(SaleRecord sale) {
+        if (sale == null || mode == Mode.OFFLINE) return;
+        if (mode == Mode.SERVER && server != null)
+            server.broadcastSaleToAllClients(sale);
+        else if (mode == Mode.CLIENT && client != null)
+            client.sendSaleRecord(sale);
+    }
+
     // ── Called by StockServer / StockClient when network messages arrive ──────
 
     /**
@@ -114,6 +136,24 @@ public class NetworkManager {
         });
     }
 
+    public void onFullProductSync(List<StockItem> products) {
+        StockManager.replaceAllStock(products);
+        Platform.runLater(() -> {
+            if (currentListener != null) {
+                currentListener.onProductCatalogChanged();
+            }
+        });
+    }
+
+    public void onFullSalesSync(List<SaleRecord> sales) {
+        SalesManager.replaceAllSales(sales);
+        Platform.runLater(() -> {
+            if (currentListener != null) {
+                currentListener.onSalesDataChanged();
+            }
+        });
+    }
+
     public void onClientDisconnected() {
         System.out.println("[NetworkManager] Disconnected from server.");
         mode = Mode.OFFLINE;
@@ -128,28 +168,84 @@ public class NetworkManager {
         });
     }
 
-    public void onNewProductFromNetwork(String data) {
-        // Format: productId:name:category:qty:price
-        String[] parts = data.split(":");
-        if (parts.length >= 5) {
-            try {
-                StockManager.addStock(parts[0], parts[1], parts[2],
-                        Integer.parseInt(parts[3]), Double.parseDouble(parts[4]));
-                System.out.println("[NetworkManager] New product from network: " + parts[1]);
-            } catch (NumberFormatException e) {
-                System.err.println("[NetworkManager] Bad NEW_PRODUCT data: " + data);
+    private void onLocalStockFileChanged() {
+        Platform.runLater(() -> {
+            if (currentListener != null) {
+                currentListener.onProductCatalogChanged();
             }
+        });
+    }
+
+    public void onNewProductFromNetwork(String data) {
+        try {
+            StockItem item = NetworkCodec.decodeStockItem(data);
+            StockManager.upsertStockItem(item);
+            System.out.println("[NetworkManager] Product sync from network: " + item.getProductName());
+            Platform.runLater(() -> {
+                if (currentListener != null) {
+                    currentListener.onProductCatalogChanged();
+                }
+            });
+        } catch (RuntimeException e) {
+            System.err.println("[NetworkManager] Bad PRODUCT_UPSERT data: " + data);
         }
     }
 
-    /** Serialise full stock for sending to a newly connected client. */
-    public String getFullStockData() {
-        StringBuilder sb = new StringBuilder();
-        for (StockItem item : StockManager.getAllStockItems()) {
-            if (sb.length() > 0) sb.append("|");
-            sb.append(item.getProductId()).append("=").append(item.getQuantity());
+    public void onSaleRecordFromNetwork(String data) {
+        try {
+            SaleRecord sale = NetworkCodec.decodeSaleRecord(data);
+            SalesManager.recordSale(sale);
+            System.out.println("[NetworkManager] Sale synced from network: " + sale.getSaleId());
+            Platform.runLater(() -> {
+                if (currentListener != null) {
+                    currentListener.onSalesDataChanged();
+                }
+            });
+        } catch (RuntimeException e) {
+            System.err.println("[NetworkManager] Bad SALE_RECORD data: " + data);
         }
-        return sb.toString();
+    }
+
+    /** Serialise full product data for sending to a newly connected client. */
+    public String getFullProductData() {
+        List<String> encodedProducts = new ArrayList<>();
+        for (StockItem item : StockManager.getAllStockItems()) {
+            encodedProducts.add(NetworkCodec.encodeStockItem(item));
+        }
+        return NetworkCodec.joinRecords(encodedProducts);
+    }
+
+    public String getFullSalesData() {
+        return SalesManager.getSerializedSalesData();
+    }
+
+    public SaleRecord buildSaleRecord(List<CartItem> items, int totalQty, double totalAmount) {
+        StringBuilder summary = new StringBuilder();
+        for (CartItem item : items) {
+            if (summary.length() > 0) summary.append(" | ");
+            summary.append(item.getProductName()).append(" x").append(item.getQuantity())
+                    .append(" @ ").append(String.format("%.2f", item.getDiscountedUnitPrice()));
+        }
+        String user = Session.getCurrentUser();
+        String soldBy = (user == null || user.isBlank()) ? "Guest" : user;
+        String sourceNode = getMachineName() + "-" + mode.name();
+        return new SaleRecord(
+                java.util.UUID.randomUUID().toString(),
+                java.time.LocalDateTime.now().toString(),
+                soldBy,
+                sourceNode,
+                totalQty,
+                totalAmount,
+                summary.toString()
+        );
+    }
+
+    private String getMachineName() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (Exception e) {
+            return "unknown-host";
+        }
     }
 
     public void shutdown() {

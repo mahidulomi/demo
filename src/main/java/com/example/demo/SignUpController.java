@@ -47,7 +47,7 @@ public class SignUpController {
 
         boolean created = UserStore.createUser(username, password, personalData);
         if (!created) {
-            setError("Username already exists. Try another.");
+            setError("Account create failed: username exists or local save failed.");
             return;
         }
 

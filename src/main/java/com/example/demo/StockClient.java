@@ -2,8 +2,8 @@ package com.example.demo;
 
 import java.io.*;
 import java.net.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TCP Client - connects to a StockServer on another machine.
@@ -74,9 +74,15 @@ public class StockClient {
     /**
      * Notify server that a new product was added.
      */
-    public void sendNewProduct(String productId, String name, String category, int qty, double price) {
+    public void sendNewProduct(StockItem item) {
         if (out != null && connected) {
-            out.println("NEW_PRODUCT:" + productId + ":" + name + ":" + category + ":" + qty + ":" + price);
+            out.println("PRODUCT_UPSERT:" + NetworkCodec.encodeStockItem(item));
+        }
+    }
+
+    public void sendSaleRecord(SaleRecord sale) {
+        if (out != null && connected) {
+            out.println("SALE_RECORD:" + NetworkCodec.encodeSaleRecord(sale));
         }
     }
 
@@ -109,23 +115,36 @@ public class StockClient {
                     System.err.println("[CLIENT] Invalid update: " + line);
                 }
             }
-        } else if (line.startsWith("STOCK_ALL:")) {
-            // Full stock snapshot from server — sync everything in one batch (single file save)
-            String data = line.substring("STOCK_ALL:".length());
-            if (data.isEmpty()) return;
-            Map<String, Integer> updates = new HashMap<>();
-            for (String item : data.split("\\|")) {
-                String[] kv = item.split("=");
-                if (kv.length == 2) {
-                    try { updates.put(kv[0], Integer.parseInt(kv[1])); }
-                    catch (NumberFormatException ignored) {}
+        } else if (line.startsWith("PRODUCT_ALL:")) {
+            String data = line.substring("PRODUCT_ALL:".length());
+            List<StockItem> products = new ArrayList<>();
+            for (String record : NetworkCodec.splitRecords(data)) {
+                try {
+                    products.add(NetworkCodec.decodeStockItem(record));
+                } catch (RuntimeException e) {
+                    System.err.println("[CLIENT] Skipping bad product record: " + e.getMessage());
                 }
             }
-            networkManager.onBatchNetworkUpdate(updates);
-            System.out.println("[CLIENT] Full stock synced from server (" + updates.size() + " products)");
+            networkManager.onFullProductSync(products);
+            System.out.println("[CLIENT] Full product catalog synced from server (" + products.size() + " products)");
+        } else if (line.startsWith("SALES_ALL:")) {
+            String data = line.substring("SALES_ALL:".length());
+            List<SaleRecord> sales = new ArrayList<>();
+            for (String record : NetworkCodec.splitRecords(data)) {
+                try {
+                    sales.add(NetworkCodec.decodeSaleRecord(record));
+                } catch (RuntimeException e) {
+                    System.err.println("[CLIENT] Skipping bad sale record: " + e.getMessage());
+                }
+            }
+            networkManager.onFullSalesSync(sales);
+            System.out.println("[CLIENT] Full sales history synced from server (" + sales.size() + " sales)");
+        } else if (line.startsWith("PRODUCT_UPSERT:")) {
+            networkManager.onNewProductFromNetwork(line.substring("PRODUCT_UPSERT:".length()));
         } else if (line.startsWith("NEW_PRODUCT:")) {
-            // Another client added a new product
             networkManager.onNewProductFromNetwork(line.substring("NEW_PRODUCT:".length()));
+        } else if (line.startsWith("SALE_RECORD:")) {
+            networkManager.onSaleRecordFromNetwork(line.substring("SALE_RECORD:".length()));
         }
     }
 }

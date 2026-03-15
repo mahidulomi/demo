@@ -3,6 +3,7 @@ package com.example.demo;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Manages stock quantities for all products.
@@ -19,7 +20,10 @@ public final class StockManager {
 
     // ── In-memory store ──────────────────────────────────────────────────────
     private static final Map<String, StockItem> stockData = new LinkedHashMap<>();
+    private static final List<Runnable> externalChangeListeners = new CopyOnWriteArrayList<>();
     private static boolean initialized = false;
+    private static volatile boolean fileWatcherStarted = false;
+    private static volatile long lastKnownFileModified = -1L;
 
     private StockManager() {}
 
@@ -70,16 +74,42 @@ public final class StockManager {
         loadDefaults();   // fill in any missing products with defaults
         saveToFile();     // persist combined state
         initialized = true;
+        startFileWatcherIfNeeded();
         System.out.println("[StockManager] Ready — " + stockData.size()
                 + " products | file: " + STOCK_FILE);
+    }
+
+    /**
+     * Register a callback that is invoked when another running process changes the stock file.
+     */
+    public static void addExternalChangeListener(Runnable listener) {
+        if (listener != null) externalChangeListeners.add(listener);
+    }
+
+    public static void removeExternalChangeListener(Runnable listener) {
+        externalChangeListeners.remove(listener);
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
 
     public static synchronized void addStock(String productId, String productName,
                                              String category, int quantity, double price) {
+        addStock(productId, productName, category, category, quantity, price, "");
+    }
+
+    public static synchronized void addStock(String productId, String productName,
+                                             String category, String subCategory,
+                                             int quantity, double price, String imagePath) {
         initializeStock();
-        stockData.put(productId, new StockItem(productId, productName, category, quantity, price));
+        stockData.put(productId, new StockItem(productId, productName, category, subCategory,
+                quantity, price, imagePath));
+        saveToFile();
+    }
+
+    public static synchronized void upsertStockItem(StockItem item) {
+        initializeStock();
+        if (item == null || item.getProductId() == null || item.getProductId().isBlank()) return;
+        stockData.put(item.getProductId(), item);
         saveToFile();
     }
 
@@ -102,6 +132,19 @@ public final class StockManager {
             StockItem item = stockData.get(e.getKey());
             if (item != null) {
                 item.setQuantity(Math.max(0, e.getValue()));
+            }
+        }
+        saveToFile();
+    }
+
+    public static synchronized void replaceAllStock(List<StockItem> items) {
+        initializeStock();
+        stockData.clear();
+        if (items != null) {
+            for (StockItem item : items) {
+                if (item != null && item.getProductId() != null && !item.getProductId().isBlank()) {
+                    stockData.put(item.getProductId(), item);
+                }
             }
         }
         saveToFile();
@@ -191,17 +234,22 @@ public final class StockManager {
                 bw.write(item.getProductId()  + "|"
                        + item.getProductName() + "|"
                        + item.getCategory()    + "|"
+                       + item.getSubCategory() + "|"
                        + item.getQuantity()    + "|"
-                       + item.getPrice());
+                       + item.getPrice()       + "|"
+                       + item.getImagePath());
                 bw.newLine();
             }
         } catch (IOException e) {
             System.err.println("[StockManager] Save failed: " + e.getMessage());
+            return;
         }
+        lastKnownFileModified = getFileModifiedMillis();
     }
 
     private static void loadFromFile() {
         if (!Files.exists(STOCK_FILE)) {
+            lastKnownFileModified = -1L;
             System.out.println("[StockManager] No saved file — will use defaults.");
             return;
         }
@@ -217,15 +265,84 @@ public final class StockManager {
                     String id   = p[0];
                     String name = p[1];
                     String cat  = p[2];
-                    int    qty  = Integer.parseInt(p[3].trim());
-                    double price= Double.parseDouble(p[4].trim());
-                    stockData.put(id, new StockItem(id, name, cat, qty, price));
+                    String subCategory;
+                    int qty;
+                    double price;
+                    String imagePath = "";
+
+                    if (p.length >= 7) {
+                        subCategory = p[3];
+                        qty = Integer.parseInt(p[4].trim());
+                        price = Double.parseDouble(p[5].trim());
+                        imagePath = p[6];
+                    } else {
+                        subCategory = cat;
+                        qty = Integer.parseInt(p[3].trim());
+                        price = Double.parseDouble(p[4].trim());
+                    }
+
+                    stockData.put(id, new StockItem(id, name, cat, subCategory, qty, price, imagePath));
                     count++;
                 } catch (NumberFormatException ignored) {}
             }
         } catch (IOException e) {
             System.err.println("[StockManager] Load failed: " + e.getMessage());
         }
+        lastKnownFileModified = getFileModifiedMillis();
         System.out.println("[StockManager] Loaded " + count + " products from " + STOCK_FILE);
+    }
+
+    private static long getFileModifiedMillis() {
+        try {
+            if (!Files.exists(STOCK_FILE)) return -1L;
+            return Files.getLastModifiedTime(STOCK_FILE).toMillis();
+        } catch (IOException e) {
+            return -1L;
+        }
+    }
+
+    private static void startFileWatcherIfNeeded() {
+        if (fileWatcherStarted) return;
+        fileWatcherStarted = true;
+
+        Thread watcher = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+
+                boolean changedExternally = false;
+                synchronized (StockManager.class) {
+                    if (!initialized) continue;
+
+                    long currentModified = getFileModifiedMillis();
+                    if (currentModified != lastKnownFileModified) {
+                        stockData.clear();
+                        loadFromFile();
+                        loadDefaults();
+                        changedExternally = true;
+                    }
+                }
+
+                if (changedExternally) {
+                    notifyExternalChangeListeners();
+                }
+            }
+        }, "StockManager-FileWatcher");
+        watcher.setDaemon(true);
+        watcher.start();
+    }
+
+    private static void notifyExternalChangeListeners() {
+        for (Runnable listener : externalChangeListeners) {
+            try {
+                listener.run();
+            } catch (RuntimeException ignored) {
+                // Listener failures should not stop stock synchronization.
+            }
+        }
     }
 }

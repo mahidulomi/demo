@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Locale;
 
 /**
@@ -107,8 +108,21 @@ public class BeautyController {
             buildNetworkMaps();
         }
 
-        // Register as network stock listener
-        NetworkManager.getInstance().setCurrentListener(this::handleNetworkStockUpdate);
+        // Register as network listener
+        NetworkManager.getInstance().setCurrentListener(new StockUpdateListener() {
+            @Override
+            public void onStockUpdated(String productId, int newQuantity) {
+                handleNetworkStockUpdate(productId, newQuantity);
+            }
+
+            @Override
+            public void onProductCatalogChanged() {
+                syncCustomProductsFromStock();
+                refreshAllStockFromManager();
+            }
+        });
+        syncCustomProductsFromStock();
+        refreshAllStockFromManager();
     }
 
     /**
@@ -226,6 +240,12 @@ public class BeautyController {
         // Setup search field action
         if (searchField != null) {
             searchField.setOnAction(e -> onSearch());
+        }
+    }
+
+    private void refreshAllStockFromManager() {
+        for (String productId : netStockLabels.keySet()) {
+            applyStockToCard(productId, StockManager.getStock(productId));
         }
     }
 
@@ -500,7 +520,8 @@ public class BeautyController {
 
         // Register in StockManager with unique ID
         String newProductId = "B_custom_" + System.currentTimeMillis();
-        StockManager.addStock(newProductId, productName, "Beauty", stockQuantity, price);
+        String imagePath = selectedImageFile != null ? selectedImageFile.toURI().toString() : "";
+        StockManager.addStock(newProductId, productName, "Beauty", category, stockQuantity, price, imagePath);
 
         // Add to network maps so real-time updates work for this card too
         Label  newStockLabel = getStockLabelFromCard(newProductCard);
@@ -509,8 +530,11 @@ public class BeautyController {
         if (newAddBtn     != null) netAddBtns.put(newProductId, newAddBtn);
         cardProductIds.put(newProductCard, newProductId);
 
+        StockItem createdItem = new StockItem(newProductId, productName, "Beauty", category, stockQuantity, price, imagePath);
+        applyStockToCard(newProductId, stockQuantity);
+
         // Broadcast to other machines
-        NetworkManager.getInstance().broadcastStockUpdate(newProductId, stockQuantity);
+        NetworkManager.getInstance().broadcastNewProduct(createdItem);
 
         // Add to allProductCards list
         allProductCards.add(newProductCard);
@@ -649,6 +673,54 @@ public class BeautyController {
         card.getChildren().addAll(imagePane, nameLabel, priceLabel, stockLabel, cartSection);
 
         return card;
+    }
+
+    private void syncCustomProductsFromStock() {
+        if (allProductCards == null) return;
+
+        boolean changed = false;
+        for (StockItem item : StockManager.getAllStockItems()) {
+            if (!"Beauty".equals(item.getCategory()) || !item.getProductId().startsWith("B_custom_")) {
+                continue;
+            }
+
+            if (!netStockLabels.containsKey(item.getProductId())) {
+                VBox productCard = createProductCard(
+                        item.getProductName(),
+                        item.getPrice(),
+                        item.getSubCategory(),
+                        parseImageFile(item.getImagePath()),
+                        item.getQuantity()
+                );
+
+                Label newStockLabel = getStockLabelFromCard(productCard);
+                Button newAddBtn = getAddBtnFromCard(productCard);
+                if (newStockLabel != null) netStockLabels.put(item.getProductId(), newStockLabel);
+                if (newAddBtn != null) netAddBtns.put(item.getProductId(), newAddBtn);
+                cardProductIds.put(productCard, item.getProductId());
+                allProductCards.add(productCard);
+                setupArrowButtons(productCard);
+                changed = true;
+            }
+
+            applyStockToCard(item.getProductId(), item.getQuantity());
+        }
+
+        if (changed) {
+            refreshProductGrid();
+        }
+    }
+
+    private File parseImageFile(String imagePath) {
+        if (imagePath == null || imagePath.isBlank()) return null;
+        try {
+            if (imagePath.startsWith("file:/")) {
+                return new File(new URI(imagePath));
+            }
+            return new File(imagePath);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

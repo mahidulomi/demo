@@ -7,15 +7,24 @@ public class StockItem {
     private String productId;
     private String productName;
     private String category;
+    private String subCategory;
     private int quantity;
     private double price;
+    private String imagePath;
 
     public StockItem(String productId, String productName, String category, int quantity, double price) {
+        this(productId, productName, category, category, quantity, price, "");
+    }
+
+    public StockItem(String productId, String productName, String category, String subCategory,
+                     int quantity, double price, String imagePath) {
         this.productId = productId;
         this.productName = productName;
         this.category = category;
+        this.subCategory = (subCategory == null || subCategory.isBlank()) ? category : subCategory;
         this.quantity = quantity;
         this.price = price;
+        this.imagePath = imagePath == null ? "" : imagePath;
     }
 
     public String getProductId() {
@@ -42,6 +51,14 @@ public class StockItem {
         this.category = category;
     }
 
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = (subCategory == null || subCategory.isBlank()) ? category : subCategory;
+    }
+
     public int getQuantity() {
         return quantity;
     }
@@ -56,6 +73,14 @@ public class StockItem {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath == null ? "" : imagePath;
     }
 }
 

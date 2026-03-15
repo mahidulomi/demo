@@ -68,12 +68,24 @@ public class StockController {
         NetworkManager.getInstance().setServerStatusCallback(() ->
                 Platform.runLater(this::refreshNetworkStatus));
 
-        // Register as network listener — refresh table when another machine buys a product
-        NetworkManager.getInstance().setCurrentListener((productId, newQty) -> {
-            loadStockData();
-            updateSummary();
-            displayStockTable(currentFilter);
+        // Register as network listener — refresh table when stock, products, or sales sync changes
+        NetworkManager.getInstance().setCurrentListener(new StockUpdateListener() {
+            @Override
+            public void onStockUpdated(String productId, int newQuantity) {
+                refreshStockView();
+            }
+
+            @Override
+            public void onProductCatalogChanged() {
+                refreshStockView();
+            }
         });
+    }
+
+    private void refreshStockView() {
+        loadStockData();
+        updateSummary();
+        displayStockTable(currentFilter);
     }
 
     // ── Network Panel ────────────────────────────────────────────────────────

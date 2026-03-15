@@ -76,6 +76,14 @@ public class StockServer {
         }
     }
 
+    public void broadcastProductToAllClients(StockItem item) {
+        broadcastRawToAllClients("PRODUCT_UPSERT:" + NetworkCodec.encodeStockItem(item));
+    }
+
+    public void broadcastSaleToAllClients(SaleRecord sale) {
+        broadcastRawToAllClients("SALE_RECORD:" + NetworkCodec.encodeSaleRecord(sale));
+    }
+
     /**
      * Broadcast stock update to all clients EXCEPT the sender.
      */
@@ -86,6 +94,14 @@ public class StockServer {
                 if (ch != sender) {
                     ch.sendMessage(message);
                 }
+            }
+        }
+    }
+
+    private void broadcastRawToAllClients(String fullMessage) {
+        synchronized (clients) {
+            for (ClientHandler ch : new ArrayList<>(clients)) {
+                ch.sendMessage(fullMessage);
             }
         }
     }
@@ -121,10 +137,10 @@ public class StockServer {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
                 out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 
-                // Send full current stock to the newly connected client
-                String stockData = networkManager.getFullStockData();
-                out.println("STOCK_ALL:" + stockData);
-                System.out.println("[SERVER] Sent full stock to new client");
+                // Send full current product and sales state to the newly connected client
+                out.println("PRODUCT_ALL:" + networkManager.getFullProductData());
+                out.println("SALES_ALL:" + networkManager.getFullSalesData());
+                System.out.println("[SERVER] Sent full catalog/sales snapshot to new client");
 
                 String line;
                 while (active && (line = in.readLine()) != null) {
@@ -157,11 +173,16 @@ public class StockServer {
                     }
                 }
             } else if (line.equals("GET_ALL")) {
-                // Client is requesting full stock
-                out.println("STOCK_ALL:" + networkManager.getFullStockData());
+                out.println("PRODUCT_ALL:" + networkManager.getFullProductData());
+                out.println("SALES_ALL:" + networkManager.getFullSalesData());
+            } else if (line.startsWith("PRODUCT_UPSERT:")) {
+                networkManager.onNewProductFromNetwork(line.substring("PRODUCT_UPSERT:".length()));
+                broadcastRawToOthers(this, line);
             } else if (line.startsWith("NEW_PRODUCT:")) {
-                // Client added a new product - update server StockManager and relay to others
                 networkManager.onNewProductFromNetwork(line.substring("NEW_PRODUCT:".length()));
+                broadcastRawToOthers(this, "PRODUCT_UPSERT:" + line.substring("NEW_PRODUCT:".length()));
+            } else if (line.startsWith("SALE_RECORD:")) {
+                networkManager.onSaleRecordFromNetwork(line.substring("SALE_RECORD:".length()));
                 broadcastRawToOthers(this, line);
             }
         }

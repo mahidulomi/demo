@@ -21,6 +21,7 @@ import java.util.List;
  *   • "Buy Now" (checkout) reduces stock for every purchased item, then clears the cart.
  */
 public class CartController {
+    private static final int DEFAULT_NEW_PRODUCT_STOCK = 25;
 
     @FXML private Label statusLabel;
     @FXML private VBox  billItemsContainer;
@@ -144,15 +145,24 @@ public class CartController {
             statusLabel.setText("⚠️ Your cart is empty! Add some products first.");
             return;
         }
+        List<CartItem> purchasedItems = Cart.getAllItems();
+        int totalQty = Cart.getTotalQuantity();
+        double totalAmount = Cart.getTotalPrice();
+
         // NOW reduce stock for every purchased item
-        for (CartItem item : Cart.getAllItems()) {
-            int currentStock = StockManager.getStock(item.getProductId());
+        for (CartItem item : purchasedItems) {
+            String canonicalProductId = ensureCanonicalStockProduct(item);
+            int currentStock = StockManager.getStock(canonicalProductId);
             int newStock = Math.max(0, currentStock - item.getQuantity());
-            StockManager.updateStock(item.getProductId(), newStock);
-            NetworkManager.getInstance().broadcastStockUpdate(item.getProductId(), newStock);
+            StockManager.updateStock(canonicalProductId, newStock);
+            NetworkManager.getInstance().broadcastStockUpdate(canonicalProductId, newStock);
         }
-        int    totalQty = Cart.getTotalQuantity();
-        String total    = Cart.getFormattedTotal();
+
+        SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(purchasedItems, totalQty, totalAmount);
+        SalesManager.recordSale(sale);
+        NetworkManager.getInstance().broadcastSaleRecord(sale);
+
+        String total = String.format("৳ %.2f BDT", totalAmount);
         Cart.clearCart();
         refreshCart();
         statusLabel.setText("✅ Purchase successful!  " + totalQty
@@ -162,5 +172,47 @@ public class CartController {
     @FXML
     private void onContinueShopping() {
         Session.goBackFromCart(statusLabel);
+    }
+
+    private String ensureCanonicalStockProduct(CartItem item) {
+        String productId = item.getProductId();
+        if (StockManager.getStockItem(productId) != null) {
+            return productId;
+        }
+
+        String existingByName = StockManager.findProductIdByName(item.getProductName());
+        if (existingByName != null) {
+            return existingByName;
+        }
+
+        String category = normalizeCategory(item.getCategory());
+        String prefix = "Beauty".equals(category) ? "B" : "E";
+        String slug = item.getProductName() == null ? "item" : item.getProductName().replaceAll("[^A-Za-z0-9]+", "_");
+        if (slug.isBlank()) slug = "item";
+        String newId = prefix + "_auto_" + slug;
+
+        int suffix = 2;
+        while (StockManager.getStockItem(newId) != null &&
+                !item.getProductName().equalsIgnoreCase(StockManager.getStockItem(newId).getProductName())) {
+            newId = prefix + "_auto_" + slug + "_" + suffix;
+            suffix++;
+        }
+
+        int initialStock = Math.max(DEFAULT_NEW_PRODUCT_STOCK, item.getQuantity());
+        StockItem newItem = new StockItem(newId, item.getProductName(), category, item.getCategory(),
+                initialStock, item.getUnitPrice(), item.getImagePath());
+        StockManager.upsertStockItem(newItem);
+        NetworkManager.getInstance().broadcastNewProduct(newItem);
+        return newId;
+    }
+
+    private String normalizeCategory(String category) {
+        if (category == null) return "Electronics";
+        String c = category.trim();
+        if (c.equalsIgnoreCase("Beauty")) return "Beauty";
+        if (c.equalsIgnoreCase("Skincare") || c.equalsIgnoreCase("Makeup") || c.equalsIgnoreCase("Haircare")) {
+            return "Beauty";
+        }
+        return "Electronics";
     }
 }

@@ -498,6 +498,27 @@ public class ProductDetailsController {
 
         String selectedColor = colorComboBox.getValue();
         int quantity = quantitySpinner.getValue();
+         String productId = StockManager.findProductIdByName(currentProduct.getName());
+
+        if (productId == null) {
+            showStatus("❌ This product is not linked with stock management yet.", false);
+            return;
+        }
+
+        int available = StockManager.getStock(productId);
+        int alreadyInCart = Cart.containsItem(productId) ? Cart.getItem(productId).getQuantity() : 0;
+        if (available <= 0) {
+            showStatus("❌ This product is out of stock.", false);
+            return;
+        }
+        if (alreadyInCart + quantity > available) {
+            showStatus("❌ Only " + Math.max(0, available - alreadyInCart) + " more item(s) can be added.", false);
+            return;
+        }
+
+        double unitPrice = parseUnitPrice(currentProduct.getPrice());
+        String imagePath = currentProduct.getImagePath() == null ? "" : currentProduct.getImagePath();
+        Cart.addItem(productId, currentProduct.getName(), "Electronics", unitPrice, quantity, imagePath, 0);
 
         String message = """
                 ✓ Added to Cart!
@@ -537,6 +558,30 @@ public class ProductDetailsController {
 
         String selectedColor = colorComboBox.getValue();
         int quantity = quantitySpinner.getValue();
+        String productId = StockManager.findProductIdByName(currentProduct.getName());
+
+        if (productId == null) {
+            showStatus("❌ This product is not linked with stock management yet.", false);
+            return;
+        }
+
+        int currentStock = StockManager.getStock(productId);
+        if (currentStock < quantity) {
+            showStatus("❌ Only " + currentStock + " item(s) available in stock.", false);
+            return;
+        }
+
+        int newStock = currentStock - quantity;
+        StockManager.updateStock(productId, newStock);
+        NetworkManager.getInstance().broadcastStockUpdate(productId, newStock);
+
+        double unitPrice = parseUnitPrice(currentProduct.getPrice());
+        double totalAmount = unitPrice * quantity;
+        CartItem purchasedItem = new CartItem(productId, currentProduct.getName(), "Electronics", unitPrice, quantity,
+                currentProduct.getImagePath() == null ? "" : currentProduct.getImagePath(), 0);
+        SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(java.util.List.of(purchasedItem), quantity, totalAmount);
+        SalesManager.recordSale(sale);
+        NetworkManager.getInstance().broadcastSaleRecord(sale);
 
         String message = """
                 🎉 Order Confirmed!
@@ -557,10 +602,20 @@ public class ProductDetailsController {
                 selectedColor,
                 quantity,
                 currentProduct.getPrice(),
-                calculateTotal(quantity)
+                String.format("BDT %,.0f", totalAmount)
         );
 
         showStatus(message, true);
+    }
+
+    private double parseUnitPrice(String priceText) {
+        try {
+            String numeric = priceText == null ? "" : priceText.replaceAll("[^0-9.]", "");
+            if (numeric.isEmpty()) return 0;
+            return Double.parseDouble(numeric);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     private String calculateTotal(int quantity) {

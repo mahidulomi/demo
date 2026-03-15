@@ -6,5 +6,11 @@ package com.example.demo;
  */
 public interface StockUpdateListener {
     void onStockUpdated(String productId, int newQuantity);
+
+    default void onProductCatalogChanged() {
+    }
+
+    default void onSalesDataChanged() {
+    }
 }
 

@@ -3,6 +3,9 @@ package com.example.demo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Files;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserStoreTest {
@@ -38,5 +41,36 @@ class UserStoreTest {
 
         assertFalse(UserStore.resetPassword("Charlie", "anything", "newpass"));
         assertTrue(UserStore.validateLogin("Charlie", "pass"));
+    }
+
+    @Test
+    void createUser_persistsAcrossReload() {
+        String username = "persist_" + UUID.randomUUID().toString().replace("-", "");
+        String password = "12345";
+
+        assertTrue(UserStore.createUser(username, password, "river"));
+        assertTrue(Files.exists(UserStore.storePathForTestOnly()));
+
+        UserStore.clearInMemoryForTestOnly();
+        assertFalse(UserStore.validateLogin(username, password));
+
+        UserStore.reloadFromDiskForTestOnly();
+        assertTrue(UserStore.validateLogin(username, password));
+    }
+
+    @Test
+    void createUser_withPipeInPassword_persistsAcrossReload() {
+        String username = "persist_pipe_" + UUID.randomUUID().toString().replace("-", "");
+        String password = "pa|ss=word:1";
+        String personalData = "city|blue";
+
+        assertTrue(UserStore.createUser(username, password, personalData));
+        assertTrue(UserStore.validateLogin(username, password));
+
+        UserStore.clearInMemoryForTestOnly();
+        UserStore.reloadFromDiskForTestOnly();
+
+        assertTrue(UserStore.validateLogin(username, password));
+        assertTrue(UserStore.verifyRecoveryData(username, personalData));
     }
 }
