@@ -37,11 +37,6 @@
                 <Insets right="15" />
             </HBox.margin>
         </Button>
-        <Button onAction="#onOpenCart" styleClass="electronics-cart-btn" text="🛒 Cart">
-            <HBox.margin>
-                <Insets right="30" />
-            </HBox.margin>
-        </Button>
         <Button onAction="#onBackToHome" styleClass="electronics-back-btn" text="🏠 Back to Home" />
     </HBox>
 
@@ -71,318 +66,116 @@
                 <Button fx:id="btnAccessories" onAction="#onFilterAccessories" styleClass="electronics-filter" text="🎧 Accessories" />
             </HBox>
 
-            <!-- Product Grid - 13 Electronics Products -->
-            <GridPane fx:id="productGrid" alignment="CENTER" hgap="20" vgap="20">
+            <!-- Product List - 13 Electronics Products -->
+            <GridPane fx:id="productGrid" alignment="TOP_LEFT" hgap="0" vgap="10">
 
-                <!-- Row 1: Mobile Products -->
-                <!-- Product 1 - iPhone 15 -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Mobile" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/iphone15.png" />
-                        </ImageView>
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="iPhone 15" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳99,999" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Mobile" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="iPhone 15" />
+                    <Label styleClass="product-id-label" text="ID: E_iPhone15" />
+                    <Label styleClass="product-price-discount" text="Price: ৳99,999" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Product 2 - iPhone 16 -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Mobile" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/iphone16.png" />
-                        </ImageView>
-<Label styleClass="product-discount-badge" text="🔥 20% OFF" StackPane.alignment="TOP_RIGHT" />
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="iPhone 16" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳96,000 (was ৳1,20,000)" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Mobile" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="iPhone 16" />
+                    <Label styleClass="product-id-label" text="ID: E_iPhone16" />
+                    <Label styleClass="product-price-discount" text="Price: ৳96,000 (was ৳1,20,000)" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Product 3 - iPhone 17 -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Mobile" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/iphone17.png" />
-                        </ImageView>
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="iPhone 17" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳1,39,000" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Mobile" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="iPhone 17" />
+                    <Label styleClass="product-id-label" text="ID: E_iPhone17" />
+                    <Label styleClass="product-price-discount" text="Price: ৳1,39,000" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Row 2: More Mobile Products -->
-                <!-- Product 4 - Samsung Galaxy S25 -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Mobile" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/samsungs25.png" />
-                        </ImageView>
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Samsung Galaxy S25" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳1,20,000" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Mobile" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="Samsung Galaxy S25" />
+                    <Label styleClass="product-id-label" text="ID: E_SamsungS25" />
+                    <Label styleClass="product-price-discount" text="Price: ৳1,20,000" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Product 5 - Vivo X200 Ultra -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Mobile" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/vivox200ultra.png" />
-                        </ImageView>
-<Label styleClass="product-discount-badge" text="🔥 18% OFF" StackPane.alignment="TOP_RIGHT" />
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Vivo X200 Ultra" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳73,800 (was ৳90,000)" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Mobile" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="Vivo X200 Ultra" />
+                    <Label styleClass="product-id-label" text="ID: E_VivoX200" />
+                    <Label styleClass="product-price-discount" text="Price: ৳73,800 (was ৳90,000)" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Product 6 - Lenovo Laptop -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Laptop" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/loglenevo.png" />
-                        </ImageView>
-<Label styleClass="product-discount-badge" text="🔥 15% OFF" StackPane.alignment="TOP_RIGHT" />
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Lenovo IdeaPad i5 8GB SSD" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳1,19,000 (was ৳1,44,000)" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Laptop" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="Lenovo IdeaPad i5 8GB SSD" />
+                    <Label styleClass="product-id-label" text="ID: E_LenovoIdeaPad" />
+                    <Label styleClass="product-price-discount" text="Price: ৳1,19,000 (was ৳1,44,000)" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Row 3: Accessories Products -->
-                <!-- Product 7 - Wireless Earbuds -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Accessories" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/airpods.png" />
-                        </ImageView>
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Wireless Earbuds Pro" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳5,000" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Accessories" GridPane.columnIndex="0" GridPane.rowIndex="6">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="Wireless Earbuds Pro" />
+                    <Label styleClass="product-id-label" text="ID: E_WirelessEarbuds" />
+                    <Label styleClass="product-price-discount" text="Price: ৳5,000" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Product 8 - Smart Watch -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Accessories" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/titan.png" />
-                        </ImageView>
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Smart Watch Fitness" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳10,000" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Accessories" GridPane.columnIndex="0" GridPane.rowIndex="7">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="Smart Watch Fitness" />
+                    <Label styleClass="product-id-label" text="ID: E_SmartWatch" />
+                    <Label styleClass="product-price-discount" text="Price: ৳10,000" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Product 9 - Power Bank -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Accessories" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/powerbank.png" />
-                        </ImageView>
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Power Bank 20000mAh" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳2,500" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Accessories" GridPane.columnIndex="0" GridPane.rowIndex="8">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="Power Bank 20000mAh" />
+                    <Label styleClass="product-id-label" text="ID: E_PowerBank" />
+                    <Label styleClass="product-price-discount" text="Price: ৳2,500" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Row 4: Mixed Premium Products -->
-                <!-- Product 10 - iPad -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Mobile" GridPane.columnIndex="0" GridPane.rowIndex="3">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/ipad.png" />
-                        </ImageView>
-<Label styleClass="product-discount-badge" text="🔥 22% OFF" StackPane.alignment="TOP_RIGHT" />
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="iPad" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳23,400 (was ৳30,000)" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Mobile" GridPane.columnIndex="0" GridPane.rowIndex="9">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="iPad" />
+                    <Label styleClass="product-id-label" text="ID: E_iPad" />
+                    <Label styleClass="product-price-discount" text="Price: ৳23,400 (was ৳30,000)" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Product 11 - Mouse -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Accessories" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/mouise.png" />
-                        </ImageView>
-<Label styleClass="product-discount-badge" text="🔥 28% OFF" StackPane.alignment="TOP_RIGHT" />
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Mouse" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳3,600 (was ৳5,000)" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Accessories" GridPane.columnIndex="0" GridPane.rowIndex="10">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="Mouse" />
+                    <Label styleClass="product-id-label" text="ID: E_Mouse" />
+                    <Label styleClass="product-price-discount" text="Price: ৳3,600 (was ৳5,000)" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Product 12 - Asus Laptop -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Laptop" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/asus.png" />
-                        </ImageView>
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Asus VivoBook Ryzen 5 16GB" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳1,16,000" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Laptop" GridPane.columnIndex="0" GridPane.rowIndex="11">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="Asus VivoBook Ryzen 5 16GB" />
+                    <Label styleClass="product-id-label" text="ID: E_AsusVivoBook" />
+                    <Label styleClass="product-price-discount" text="Price: ৳1,16,000" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-                <!-- Row 5 -->
-                <!-- Product 13 - Ajazz Keyboard -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Accessories" GridPane.columnIndex="0" GridPane.rowIndex="4">
-                    <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
-                    </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../images/ajaj.png" />
-                        </ImageView>
-                    </StackPane>
-<Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Ajazz K80 Redswitch" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳4,200" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn-electronics" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="120" prefWidth="920" spacing="6" styleClass="product-card" userData="Accessories" GridPane.columnIndex="0" GridPane.rowIndex="12">
+                    <padding><Insets bottom="14" left="14" right="14" top="14" /></padding>
+                    <Label styleClass="product-name" text="Ajazz K80 Redswitch" />
+                    <Label styleClass="product-id-label" text="ID: E_AjazzK80" />
+                    <Label styleClass="product-price-discount" text="Price: ৳4,200" />
+                    <Label styleClass="stock-label" text="Stock: 25" />
                 </VBox>
 
-            <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
-
+                <columnConstraints>
+                    <ColumnConstraints />
+                </columnConstraints>
             </GridPane>
 
             <!-- Status -->

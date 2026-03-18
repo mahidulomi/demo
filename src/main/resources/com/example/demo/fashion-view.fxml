@@ -34,11 +34,6 @@
                 <Insets right="15" />
             </HBox.margin>
         </Button>
-        <Button text="🛒 Cart" onAction="#onOpenCart" styleClass="fashion-cart-btn">
-            <HBox.margin>
-                <Insets right="30" />
-            </HBox.margin>
-        </Button>
         <Button text="🏠 Back to Home" onAction="#onBackToHome" styleClass="fashion-back-btn" />
     </HBox>
 
@@ -67,251 +62,103 @@
                 <Button fx:id="btnFemale" text="👗 Female" onAction="#onFilterFemale" styleClass="fashion-filter" />
             </HBox>
 
-            <!-- Product Grid - 12 Beautiful Products -->
-            <GridPane fx:id="productGrid" hgap="20" vgap="20" alignment="CENTER">
+            <!-- Product List - 12 Fashion Products -->
+            <GridPane fx:id="productGrid" hgap="0" vgap="10" alignment="TOP_LEFT">
 
-                <!-- Row 1: Baby Products -->
-                <!-- Product 1 - Baby Romper -->
-                <VBox userData="Baby" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👶" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 20% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Baby Romper Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳360 (was ৳450)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Baby" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Baby Romper Set" styleClass="product-name" />
+                    <Label text="ID: F_BabyRomper" styleClass="product-id-label" />
+                    <Label text="Price: ৳360 (was ৳450)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 2 - Baby Dress -->
-                <VBox userData="Baby" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👶" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 15% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Baby Cotton Dress" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳468 (was ৳550)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Baby" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Baby Cotton Dress" styleClass="product-name" />
+                    <Label text="ID: F_BabyDress" styleClass="product-id-label" />
+                    <Label text="Price: ৳468 (was ৳550)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 3 - Baby Shorts -->
-                <VBox userData="Baby" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👶" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Baby Summer Shorts" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳263 (was ৳350)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Baby" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Baby Summer Shorts" styleClass="product-name" />
+                    <Label text="ID: F_BabyShorts" styleClass="product-id-label" />
+                    <Label text="Price: ৳263 (was ৳350)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Row 2: Men's Products -->
-                <!-- Product 4 - Men's Shirt -->
-                <VBox userData="Male" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👔" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Men's Casual Shirt" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳900 (was ৳1,200)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Male" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Men's Casual Shirt" styleClass="product-name" />
+                    <Label text="ID: F_MenShirt" styleClass="product-id-label" />
+                    <Label text="Price: ৳900 (was ৳1,200)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 5 - Men's Jeans -->
-                <VBox userData="Male" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👔" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 30% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Men's Denim Jeans" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1260 (was ৳1,800)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Male" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Men's Denim Jeans" styleClass="product-name" />
+                    <Label text="ID: F_MenJeans" styleClass="product-id-label" />
+                    <Label text="Price: ৳1260 (was ৳1,800)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 6 - Men's Kurta -->
-                <VBox userData="Male" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👔" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 15% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Men's Premium Kurta" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳850 (was ৳1,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Male" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Men's Premium Kurta" styleClass="product-name" />
+                    <Label text="ID: F_MenKurta" styleClass="product-id-label" />
+                    <Label text="Price: ৳850 (was ৳1,000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Row 3: Women's Products -->
-                <!-- Product 7 - Women's Kurti -->
-                <VBox userData="Female" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👗" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 20% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Women's Designer Kurti" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳760 (was ৳950)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Female" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="6">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Women's Designer Kurti" styleClass="product-name" />
+                    <Label text="ID: F_WomenKurti" styleClass="product-id-label" />
+                    <Label text="Price: ৳760 (was ৳950)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 8 - Women's Saree -->
-                <VBox userData="Female" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👗" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 15% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Women's Silk Saree" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳2,125 (was ৳2,500)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Female" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="7">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Women's Silk Saree" styleClass="product-name" />
+                    <Label text="ID: F_WomenSaree" styleClass="product-id-label" />
+                    <Label text="Price: ৳2,125 (was ৳2,500)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 9 - Women's Salwar -->
-                <VBox userData="Female" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👗" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Women's Salwar Kameez" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1,200 (was ৳1,600)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Female" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="8">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Women's Salwar Kameez" styleClass="product-name" />
+                    <Label text="ID: F_WomenSalwar" styleClass="product-id-label" />
+                    <Label text="Price: ৳1,200 (was ৳1,600)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Row 4: Mixed Premium Products -->
-                <!-- Product 10 - Baby Winter Jacket -->
-                <VBox userData="Baby" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="3">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👶" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 30% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Baby Winter Jacket" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳840 (was ৳1,200)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Baby" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="9">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Baby Winter Jacket" styleClass="product-name" />
+                    <Label text="ID: F_BabyJacket" styleClass="product-id-label" />
+                    <Label text="Price: ৳840 (was ৳1,200)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 11 - Men's Hoodie -->
-                <VBox userData="Male" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👔" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 18% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Men's Premium Hoodie" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1,312 (was ৳1,600)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Male" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="10">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Men's Premium Hoodie" styleClass="product-name" />
+                    <Label text="ID: F_MenHoodie" styleClass="product-id-label" />
+                    <Label text="Price: ৳1,312 (was ৳1,600)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 12 - Women's Lehenga -->
-                <VBox userData="Female" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="👗" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 30% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Women's Lehenga Choli" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳2,450 (was ৳3,500)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                    </HBox>
+                <VBox userData="Female" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="11">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Women's Lehenga Choli" styleClass="product-name" />
+                    <Label text="ID: F_WomenLehenga" styleClass="product-id-label" />
+                    <Label text="Price: ৳2,450 (was ৳3,500)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
             </GridPane>
@@ -346,7 +193,7 @@
                 <!-- Image Preview -->
                 <VBox alignment="CENTER" spacing="10">
                     <StackPane prefHeight="140" prefWidth="180" styleClass="image-preview-box">
-                        <javafx.scene.image.ImageView fx:id="previewImageView" fitHeight="130" fitWidth="170" preserveRatio="true" />
+                        <ImageView fx:id="previewImageView" fitHeight="130" fitWidth="170" preserveRatio="true" />
                         <Label fx:id="noImageLabel" text="📷 No Image Selected" styleClass="no-image-label" />
                     </StackPane>
                     <Button onAction="#onChooseImage" styleClass="choose-image-btn" text="📁 Choose Image" />
@@ -373,7 +220,7 @@
                 <!-- Product Category -->
                 <VBox alignment="CENTER_LEFT" spacing="5">
                     <Label styleClass="form-label" text="Category:" />
-                    <javafx.scene.control.ComboBox fx:id="categoryComboBox" prefHeight="40" prefWidth="420" promptText="Select Category" styleClass="form-combobox" />
+                    <ComboBox fx:id="categoryComboBox" prefHeight="40" prefWidth="420" promptText="Select Category" styleClass="form-combobox" />
                 </VBox>
 
                 <!-- Action Buttons -->

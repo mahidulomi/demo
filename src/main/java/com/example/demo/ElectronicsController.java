@@ -527,11 +527,12 @@ public class ElectronicsController {
             return;
         }
 
-        // Create new product card with stock
-        VBox newProductCard = createProductCard(productName, price, category, selectedImageFile, stockQuantity);
-
         // Register in StockManager with unique ID
         String newProductId = "E_custom_" + System.currentTimeMillis();
+
+        // Create new product row with stock
+        VBox newProductCard = createProductCard(productName, price, category, newProductId, stockQuantity);
+
         String imagePath = selectedImageFile != null ? selectedImageFile.toURI().toString() : "";
         StockManager.addStock(newProductId, productName, "Electronics", category, stockQuantity, price, imagePath);
 
@@ -572,111 +573,36 @@ public class ElectronicsController {
         }).start();
     }
 
-    private VBox createProductCard(String name, double price, String category, File imageFile, int stockQuantity) {
-        VBox card = new VBox(8);
-        card.setAlignment(Pos.TOP_CENTER);
-        card.setPrefWidth(290);
-        card.setPrefHeight(340);
+    private VBox createProductCard(String name, double price, String category, String productId, int stockQuantity) {
+        VBox card = new VBox(6);
+        card.setAlignment(Pos.CENTER_LEFT);
+        card.setPrefWidth(920);
+        card.setPrefHeight(120);
         card.getStyleClass().add("product-card");
         card.setUserData(category);
-        card.setPadding(new Insets(15));
-
-        // Image StackPane
-        StackPane imagePane = new StackPane();
-        imagePane.setPrefSize(260, 180);
-        imagePane.getStyleClass().add("product-image");
-
-        ImageView imageView = new ImageView();
-        imageView.setFitWidth(260);
-        imageView.setFitHeight(180);
-        imageView.setPreserveRatio(true);
-
-        if (imageFile != null) {
-            try {
-                Image image = new Image(imageFile.toURI().toString());
-                imageView.setImage(image);
-                imagePane.getChildren().add(imageView);
-            } catch (Exception e) {
-                Label emojiLabel = new Label(getCategoryEmoji(category));
-                emojiLabel.setStyle("-fx-font-size: 64px;");
-                imagePane.getChildren().add(emojiLabel);
-            }
-        } else {
-            Label emojiLabel = new Label(getCategoryEmoji(category));
-            emojiLabel.setStyle("-fx-font-size: 64px;");
-            imagePane.getChildren().add(emojiLabel);
-        }
-
-        // NEW badge
-        Label newBadge = new Label("✨ NEW");
-        newBadge.getStyleClass().add("product-new-badge");
-        StackPane.setAlignment(newBadge, Pos.TOP_RIGHT);
-        StackPane.setMargin(newBadge, new Insets(10, 10, 0, 0));
-        imagePane.getChildren().add(newBadge);
+        card.setPadding(new Insets(14));
 
         // Product Name
         Label nameLabel = new Label(name);
         nameLabel.getStyleClass().add("product-name");
         nameLabel.setWrapText(true);
-        nameLabel.setMaxWidth(260);
-        nameLabel.setAlignment(Pos.CENTER);
+        nameLabel.setMaxWidth(Double.MAX_VALUE);
+        nameLabel.setAlignment(Pos.CENTER_LEFT);
+
+        Label idLabel = new Label("ID: " + productId);
+        idLabel.getStyleClass().add("product-id-label");
 
         // Product Price
-        Label priceLabel = new Label(String.format("৳%.0f", price));
+        Label priceLabel = new Label(String.format("Price: ৳%.0f", price));
         priceLabel.getStyleClass().add("product-price-discount");
         priceLabel.setWrapText(true);
-        priceLabel.setMaxWidth(260);
-        priceLabel.setAlignment(Pos.CENTER);
+        priceLabel.setMaxWidth(Double.MAX_VALUE);
+        priceLabel.setAlignment(Pos.CENTER_LEFT);
 
         // Stock Label
-        Label stockLabel = new Label("📦 Stock: " + stockQuantity);
+        Label stockLabel = new Label("Stock: " + stockQuantity);
         stockLabel.getStyleClass().add(getStockStyleClass(stockQuantity));
-
-        // Add to Cart section
-        HBox cartSection = new HBox(8);
-        cartSection.setAlignment(Pos.CENTER);
-
-        Button addBtn = new Button("🛒 Add to Cart");
-        addBtn.getStyleClass().add("add-cart-btn-electronics");
-        if (stockQuantity <= 0) {
-            addBtn.setText("❌ Out of Stock");
-            addBtn.setDisable(true);
-        }
-        addBtn.setOnAction(this::onAddToCart);
-
-        // Quantity box
-        HBox qtyBox = new HBox(4);
-        qtyBox.setAlignment(Pos.CENTER);
-        qtyBox.getStyleClass().add("qty-box");
-
-        Button downBtn = new Button("▼");
-        downBtn.getStyleClass().add("arrow-btn");
-
-        Label qtyLabel = new Label("1");
-        qtyLabel.getStyleClass().add("qty-count");
-
-        Button upBtn = new Button("▲");
-        upBtn.getStyleClass().add("arrow-btn");
-
-        final int maxStock = stockQuantity;
-        upBtn.setOnAction(e -> {
-            int qty = Integer.parseInt(qtyLabel.getText());
-            if (qty < maxStock) {
-                qtyLabel.setText(String.valueOf(qty + 1));
-            }
-        });
-
-        downBtn.setOnAction(e -> {
-            int qty = Integer.parseInt(qtyLabel.getText());
-            if (qty > 1) {
-                qtyLabel.setText(String.valueOf(qty - 1));
-            }
-        });
-
-        qtyBox.getChildren().addAll(downBtn, qtyLabel, upBtn);
-        cartSection.getChildren().addAll(addBtn, qtyBox);
-
-        card.getChildren().addAll(imagePane, nameLabel, priceLabel, stockLabel, cartSection);
+        card.getChildren().addAll(nameLabel, idLabel, priceLabel, stockLabel);
 
         return card;
     }
@@ -695,7 +621,7 @@ public class ElectronicsController {
                         item.getProductName(),
                         item.getPrice(),
                         item.getSubCategory(),
-                        parseImageFile(item.getImagePath()),
+                        item.getProductId(),
                         item.getQuantity()
                 );
 
@@ -705,7 +631,6 @@ public class ElectronicsController {
                 if (newAddBtn != null) netAddBtns.put(item.getProductId(), newAddBtn);
                 cardProductIds.put(productCard, item.getProductId());
                 allProductCards.add(productCard);
-                setupArrowButtons(productCard);
                 changed = true;
             }
 

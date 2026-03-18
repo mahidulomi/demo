@@ -21,11 +21,6 @@
         </padding>
         <Label text="✨ New Arrivals" styleClass="newarrivals-brand" />
         <Region HBox.hgrow="ALWAYS" />
-        <Button text="🛒 Cart" onAction="#onOpenCart" styleClass="newarrivals-cart-btn">
-            <HBox.margin>
-                <Insets right="30" />
-            </HBox.margin>
-        </Button>
         <Button text="🏠 Back to Home" onAction="#onBackToHome" styleClass="newarrivals-back-btn" />
     </HBox>
 

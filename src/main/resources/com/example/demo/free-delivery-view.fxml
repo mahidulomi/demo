@@ -21,11 +21,6 @@
         </padding>
         <Label text="🚚 Free Delivery Offers" styleClass="freedelivery-brand" />
         <Region HBox.hgrow="ALWAYS" />
-        <Button text="🛒 Cart" onAction="#onOpenCart" styleClass="freedelivery-cart-btn">
-            <HBox.margin>
-                <Insets right="30" />
-            </HBox.margin>
-        </Button>
         <Button text="🏠 Back to Home" onAction="#onBackToHome" styleClass="freedelivery-back-btn" />
     </HBox>
 
