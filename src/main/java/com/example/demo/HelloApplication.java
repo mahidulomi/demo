@@ -16,10 +16,10 @@ public class HelloApplication extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
 
-        // Match the FXML design size so it doesn't start tiny.
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
+        // Match the standardized design size (1250x750)
+        Scene scene = new Scene(fxmlLoader.load(), 1250, 750);
 
-        stage.setTitle("My First JavaFX App");
+        stage.setTitle("HATBAZARx - Modern Sales App");
         stage.setMinWidth(900);
         stage.setMinHeight(650);
         stage.setScene(scene);

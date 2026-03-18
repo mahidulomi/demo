@@ -29,15 +29,15 @@ public final class Session {
     }
 
     public static void goToHome(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "home-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "home-view.fxml", 1250, 750);
     }
 
     public static void goToSignUp(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "signup-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "signup-view.fxml", 1250, 750);
     }
 
     public static void goToLogin(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "hello-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "hello-view.fxml", 1250, 750);
     }
 
     public static void logoutToLogin(Node anyNodeInScene) {
@@ -46,39 +46,39 @@ public final class Session {
     }
 
     public static void goToForgotPassword(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "forgot-password-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "forgot-password-view.fxml", 1250, 750);
     }
 
     public static void goToFashion(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "fashion-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "fashion-view.fxml", 1250, 750);
     }
 
     public static void goToBeauty(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "beauty-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "beauty-view.fxml", 1250, 750);
     }
 
     public static void goToElectronics(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "electronics-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "electronics-view.fxml", 1250, 750);
     }
 
     public static void goToHomeLiving(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "homeliving-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "homeliving-view.fxml", 1250, 750);
     }
 
     public static void goToFreeDelivery(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "free-delivery-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "free-delivery-view.fxml", 1250, 750);
     }
 
     public static void goToNewArrivals(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "new-arrivals-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "new-arrivals-view.fxml", 1250, 750);
     }
 
     public static void goToStock(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "stock-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "stock-view.fxml", 1250, 750);
     }
 
     public static void goToCart(Node anyNodeInScene) {
-        changeScene(anyNodeInScene, "cart-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "cart-view.fxml", 1250, 750);
     }
 
     /**
@@ -86,7 +86,7 @@ public final class Session {
      */
     public static void goToCartFrom(Node anyNodeInScene, String fromPage) {
         Cart.setLastVisitedPage(fromPage);
-        changeScene(anyNodeInScene, "cart-view.fxml", 1000, 700);
+        changeScene(anyNodeInScene, "cart-view.fxml", 1250, 750);
     }
 
     /**
@@ -94,7 +94,7 @@ public final class Session {
      */
     public static void goBackFromCart(Node anyNodeInScene) {
         String lastPage = Cart.getLastVisitedPage();
-        changeScene(anyNodeInScene, lastPage, 1000, 700);
+        changeScene(anyNodeInScene, lastPage, 1250, 750);
     }
 
     private static void changeScene(Node anyNodeInScene, String fxml, double w, double h) {

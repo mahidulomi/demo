@@ -2,7 +2,9 @@ package com.example.demo;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
@@ -19,7 +21,7 @@ public class SalesController {
     private TextField searchField;
 
     @FXML
-    private GridPane productsGrid;
+    private TilePane productsTilePane;
 
     @FXML
     private VBox cartItemsContainer;
@@ -40,16 +42,17 @@ public class SalesController {
     private void initialize() {
         try {
             System.out.println("🔄 SalesController initializing...");
+            StockManager.initializeStock(); // Ensure global stock is ready
             
-            if (productsGrid == null) {
-                System.err.println("⚠️ ERROR: productsGrid not injected!");
+            if (productsTilePane == null) {
+                System.err.println("⚠️ ERROR: productsTilePane not injected!");
             }
              if (cartItemsContainer == null) {
                 System.err.println("⚠️ ERROR: cartItemsContainer not injected!");
             }
 
             // Safe check for nulls
-            if (productsGrid != null) {
+            if (productsTilePane != null) {
                 loadProducts("All");
             }
             
@@ -102,24 +105,17 @@ public class SalesController {
      * Load products for category
      */
     private void loadProducts(String category) {
-        if (productsGrid == null) {
+        if (productsTilePane == null) {
             return;
         }
         
         try {
-            productsGrid.getChildren().clear();
+            productsTilePane.getChildren().clear();
             List<Product> products = getProductsByCategory(category);
 
-            int col = 0, row = 0;
             for (Product product : products) {
                 VBox productCard = createProductCard(product);
-                productsGrid.add(productCard, col, row);
-                
-                col++;
-                if (col >= 3) {
-                    col = 0;
-                    row++;
-                }
+                productsTilePane.getChildren().add(productCard);
             }
         } catch (Exception e) {
             System.err.println("Error loading products: " + e.getMessage());
@@ -131,35 +127,54 @@ public class SalesController {
      */
     private VBox createProductCard(Product product) {
         VBox card = new VBox();
-        card.setSpacing(8);
-        card.setPadding(new Insets(10));
-        card.setStyle("-fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-color: #fff;");
-        card.setPrefWidth(250);
+        card.getStyleClass().add("product-card");
+        // aligned with CSS: spacing and padding are now handled by .product-card style
+        card.setAlignment(Pos.CENTER);
+        card.setPrefWidth(240); // Adjusted for 3 columns per row
+        card.setPrefHeight(340); // Maintain proportion
+
+        // Product Image
+        ImageView imageView = new ImageView();
+        imageView.setFitHeight(120);
+        imageView.setFitWidth(120);
+        imageView.setPreserveRatio(true);
+        
+        try {
+            String imagePath = product.getImagePath();
+            if (imagePath != null && !imagePath.isEmpty()) {
+                Image image = new Image(getClass().getResourceAsStream(imagePath));
+                imageView.setImage(image);
+            }
+        } catch (Exception e) {
+            System.err.println("Could not load image: " + product.getImagePath());
+        }
 
         // Product Name
         Label nameLabel = new Label(product.getName());
-        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13;");
+        nameLabel.getStyleClass().add("product-name");
         nameLabel.setWrapText(true);
+        nameLabel.setAlignment(Pos.CENTER);
+        nameLabel.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
 
         // Price
-        Label priceLabel = new Label("₹" + String.format("%.2f", product.getPrice()));
-        priceLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #27ae60;");
+        Label priceLabel = new Label("Tk." + String.format("%.2f", product.getPrice()));
+        priceLabel.getStyleClass().add("product-price");
 
         // Stock
         Label stockLabel = new Label("Stock: " + product.getStock());
-        stockLabel.setStyle("-fx-font-size: 11; -fx-text-fill: #666;");
+        stockLabel.getStyleClass().add("product-stock");
 
         // Add Button + Qty Controls
         HBox controlBox = new HBox();
-        controlBox.setSpacing(5);
+        controlBox.setSpacing(10);
         controlBox.setAlignment(Pos.CENTER);
 
-        Spinner<Integer> qtySpinner = new Spinner<>(0, product.getStock(), 1);
-        qtySpinner.setPrefWidth(80);
+        Spinner<Integer> qtySpinner = new Spinner<>(1, product.getStock(), 1);
+        qtySpinner.setPrefWidth(70);
+        qtySpinner.setStyle("-fx-font-size: 14px;");
 
         Button addBtn = new Button("Add");
-        addBtn.setPrefWidth(80);
-        addBtn.setStyle("-fx-padding: 8px; -fx-font-size: 12;");
+        addBtn.getStyleClass().add("add-button");
         addBtn.setOnAction(e -> {
             int qty = qtySpinner.getValue();
             if (qty > 0) {
@@ -170,7 +185,7 @@ public class SalesController {
 
         controlBox.getChildren().addAll(qtySpinner, addBtn);
 
-        card.getChildren().addAll(nameLabel, priceLabel, stockLabel, controlBox);
+        card.getChildren().addAll(imageView, nameLabel, priceLabel, stockLabel, controlBox);
         return card;
     }
 
@@ -213,9 +228,9 @@ public class SalesController {
             double discount = subtotal * 0.05;
             double total = subtotal - discount;
 
-            subtotalLabel.setText(String.format("₹%.2f", subtotal));
-            discountLabel.setText(String.format("₹%.2f", discount));
-            totalLabel.setText(String.format("₹%.2f", total));
+            subtotalLabel.setText(String.format("Tk.%.2f", subtotal));
+            discountLabel.setText(String.format("Tk.%.2f", discount));
+            totalLabel.setText(String.format("Tk.%.2f", total));
         } catch (Exception e) {
             System.err.println("Error updating cart: " + e.getMessage());
         }
@@ -226,38 +241,34 @@ public class SalesController {
      */
     private HBox createCartItemRow(CartItem item) {
         HBox row = new HBox();
-        row.setSpacing(10);
-        row.setPadding(new Insets(8));
-        row.setStyle("-fx-border-color: #eee; -fx-background-color: #f9f9f9;");
+        row.getStyleClass().add("cart-item-row");
+        // spacing handled by CSS .cart-item-row
+        row.setAlignment(Pos.CENTER_LEFT);
 
         Label nameLabel = new Label(item.productName);
-        nameLabel.setPrefWidth(150);
-        nameLabel.setStyle("-fx-font-size: 12;");
+        nameLabel.setPrefWidth(130);
+        nameLabel.setStyle("-fx-font-weight: bold;");
 
-        Label priceLabel = new Label("₹" + String.format("%.2f", item.price));
-        priceLabel.setPrefWidth(80);
+        // Unit Price removed to save space and avoid duplicate "Tk." display
+        // User requested showing Tk only once (for total)
 
-        // Quantity Spinner
-        Spinner<Integer> qtySpinner = new Spinner<>(1, 100, item.quantity);
-        qtySpinner.setPrefWidth(70);
-        qtySpinner.setOnMouseClicked(e -> {
-            item.quantity = qtySpinner.getValue();
-            updateCartDisplay();
-        });
+        // Quantity Label (Replacement for Spinner)
+        Label qtyLabel = new Label("*" + item.quantity);
+        qtyLabel.setPrefWidth(40);
+        qtyLabel.setStyle("-fx-font-weight: bold; -fx-alignment: center; -fx-text-fill: #7f8c8d;");
 
-        Label totalAmountLabel = new Label("₹" + String.format("%.2f", item.getTotalPrice()));
-        totalAmountLabel.setPrefWidth(80);
-        totalAmountLabel.setStyle("-fx-font-weight: bold;");
+        Label totalAmountLabel = new Label("Tk." + String.format("%.2f", item.getTotalPrice()));
+        totalAmountLabel.setPrefWidth(90);
+        totalAmountLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #27ae60;");
 
-        Button removeBtn = new Button("Remove");
-        removeBtn.setPrefWidth(80);
-        removeBtn.setStyle("-fx-padding: 5px;");
+        Button removeBtn = new Button("✕");
+        removeBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 10px; -fx-min-width: 25px;");
         removeBtn.setOnAction(e -> {
             cartMap.remove(item.productName);
             updateCartDisplay();
         });
 
-        row.getChildren().addAll(nameLabel, priceLabel, qtySpinner, totalAmountLabel, removeBtn);
+        row.getChildren().addAll(nameLabel, qtyLabel, totalAmountLabel, removeBtn);
         return row;
     }
 
@@ -278,15 +289,22 @@ public class SalesController {
         // Record sales with actual product categories
         for (CartItem item : cartMap.values()) {
             SalesTracker.addSale(item.productName, item.category, item.price, item.quantity);
+            
+            // Update Stock
+            String stockId = StockManager.findProductIdByName(item.productName);
+            if (stockId != null) {
+                StockManager.reduceStock(stockId, item.quantity);
+            }
         }
 
         showAlert("Sale Confirmed", String.format(
-            "Sale Confirmed!\n\nSubtotal: ₹%.2f\nDiscount: ₹%.2f\nTotal: ₹%.2f\n\nItems: %d",
+            "Sale Confirmed!\n\nSubtotal: Tk.%.2f\nDiscount: Tk.%.2f\nTotal: Tk.%.2f\n\nItems: %d",
             subtotal, discount, total, cartMap.size()
         ));
 
         cartMap.clear();
         updateCartDisplay();
+        loadProducts(currentCategory); // Refresh UI to show updated stock
         HomeController.refreshDashboard();
     }
 
@@ -340,7 +358,9 @@ public class SalesController {
      * Search for products by name
      */
     private void searchProducts(String query) {
-        productsGrid.getChildren().clear();
+        if (productsTilePane == null) return;
+        
+        productsTilePane.getChildren().clear();
         List<Product> allProducts = getAllProducts();
         List<Product> searchResults = new ArrayList<>();
 
@@ -351,16 +371,9 @@ public class SalesController {
             }
         }
 
-        int col = 0, row = 0;
         for (Product product : searchResults) {
             VBox productCard = createProductCard(product);
-            productsGrid.add(productCard, col, row);
-            
-            col++;
-            if (col >= 3) {
-                col = 0;
-                row++;
-            }
+            productsTilePane.getChildren().add(productCard);
         }
     }
 
@@ -370,27 +383,65 @@ public class SalesController {
     private List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
 
-        // Beauty Products
-        products.add(new Product("Face Cream", "Beauty", 800, 10));
-        products.add(new Product("Lipstick", "Beauty", 400, 3));
-        products.add(new Product("Hair Oil", "Beauty", 600, 5));
-        products.add(new Product("Face Mask", "Beauty", 350, 8));
+        // --- BEAUTY ---
+        products.add(new Product("Acid Serum", "Beauty", 1200, 20, "/beautyimages/acidserum.png"));
+        products.add(new Product("Deep Conditioner", "Beauty", 950, 15, "/beautyimages/deepconditioner.png"));
+        products.add(new Product("Eyeshadow Palette", "Beauty", 1800, 10, "/beautyimages/eyeshadow.png"));
+        products.add(new Product("Face Cream", "Beauty", 850, 30, "/beautyimages/facecream.png"));
+        products.add(new Product("Foam Cleanser", "Beauty", 600, 25, "/beautyimages/foamcleanser.png"));
+        products.add(new Product("Foundation", "Beauty", 1500, 18, "/beautyimages/foundation_cropped.png"));
+        products.add(new Product("Garnier Men Facewash", "Beauty", 250, 50, "/beautyimages/gernierman_1_cropped.png"));
+        products.add(new Product("Hair Oil", "Beauty", 350, 40, "/beautyimages/hairoil_cropped.png"));
+        products.add(new Product("Lipstick Set", "Beauty", 2200, 12, "/beautyimages/lipstickset_cropped.png"));
+        products.add(new Product("Mascara", "Beauty", 450, 25, "/beautyimages/mashkara_cropped.png"));
+        products.add(new Product("Shampoo", "Beauty", 500, 35, "/beautyimages/shampp_1_cropped.png"));
+        products.add(new Product("Sunscreen", "Beauty", 750, 45, "/beautyimages/sunscreen_1_cropped.png"));
 
-        // Electronics
-        products.add(new Product("iPhone 15", "Electronics", 80000, 2));
-        products.add(new Product("Wireless Mouse", "Electronics", 2500, 15));
-        products.add(new Product("USB-C Cable", "Electronics", 500, 20));
-        products.add(new Product("Headphones", "Electronics", 5000, 4));
+        // --- ELECTRONICS ---
+        products.add(new Product("AirPods", "Electronics", 18000, 15, "/images/airpods.png"));
+        products.add(new Product("Asus Laptop", "Electronics", 65000, 8, "/images/asus.png"));
+        products.add(new Product("iPad", "Electronics", 45000, 10, "/images/ipad.png"));
+        products.add(new Product("iPhone 15", "Electronics", 75000, 12, "/images/iphone15.png"));
+        products.add(new Product("iPhone 16", "Electronics", 85000, 10, "/images/iphone16.png"));
+        products.add(new Product("iPhone 17", "Electronics", 95000, 5, "/images/iphone17.png"));
+        products.add(new Product("Lenovo Laptop", "Electronics", 55000, 10, "/images/loglenevo.png"));
+        products.add(new Product("Wireless Mouse", "Electronics", 1200, 25, "/images/mouise.png"));
+        products.add(new Product("Power Bank", "Electronics", 2500, 30, "/images/powerbank.png"));
+        products.add(new Product("Samsung S25", "Electronics", 80000, 8, "/images/samsungs25.png"));
+        products.add(new Product("Vivo X200 Ultra", "Electronics", 60000, 10, "/images/vivox200ultra.png"));
 
-        // Home & Living
-        products.add(new Product("Bed Sheet", "Home and Living", 1200, 25));
-        products.add(new Product("Pillow", "Home and Living", 800, 30));
-        products.add(new Product("Towel", "Home and Living", 400, 50));
+        // --- FASHION --- (Assuming some electronics images match or as placeholders)
+        products.add(new Product("Titan Watch", "Fashion", 4500, 20, "/images/titan.png"));
+        products.add(new Product("Ajaj Watch", "Fashion", 3500, 15, "/images/ajaj.png"));
+        products.add(new Product("Men's T-Shirt", "Fashion", 800, 50, null));
+        products.add(new Product("Jeans", "Fashion", 1800, 30, null));
+        products.add(new Product("Sneakers", "Fashion", 2500, 25, null));
 
-        // Fashion
-        products.add(new Product("T-Shirt", "Fashion", 600, 40));
-        products.add(new Product("Jeans", "Fashion", 1500, 20));
-        products.add(new Product("Shoes", "Fashion", 2500, 10));
+        // --- HOME & LIVING ---
+        products.add(new Product("Bed Sheet", "Home and Living", 1200, 20, null));
+        products.add(new Product("Pillow Set", "Home and Living", 900, 15, null));
+        products.add(new Product("Table Lamp", "Home and Living", 1500, 10, null));
+        products.add(new Product("Wall Clock", "Home and Living", 1200, 12, null));
+        
+        // Sync with StockManager (Persistence)
+        for (Product p : products) {
+            String stockId = StockManager.findProductIdByName(p.getName());
+            if (stockId != null) {
+                // Update product stock from persistent storage
+                p.setStock(StockManager.getStock(stockId));
+            } else {
+                // Determine category-based prefix
+                String prefix = "X";
+                if (p.getCategory().contains("Beauty")) prefix = "B";
+                else if (p.getCategory().contains("Electronics")) prefix = "E";
+                else if (p.getCategory().contains("Fashion")) prefix = "F";
+                else if (p.getCategory().contains("Home")) prefix = "H";
+                
+                // Add to persistent storage if missing
+                String newId = prefix + "_" + p.getName().replaceAll("\\s+", "");
+                StockManager.addStock(newId, p.getName(), p.getCategory(), p.getStock(), p.getPrice());
+            }
+        }
 
         return products;
     }
@@ -403,18 +454,26 @@ public class SalesController {
         private String category;
         private double price;
         private int stock;
+        private String imagePath;
 
         public Product(String name, String category, double price, int stock) {
+            this(name, category, price, stock, null);
+        }
+
+        public Product(String name, String category, double price, int stock, String imagePath) {
             this.name = name;
             this.category = category;
             this.price = price;
             this.stock = stock;
+            this.imagePath = imagePath;
         }
 
         public String getName() { return name; }
         public String getCategory() { return category; }
         public double getPrice() { return price; }
         public int getStock() { return stock; }
+        public void setStock(int stock) { this.stock = stock; }
+        public String getImagePath() { return imagePath; }
     }
 
     /**

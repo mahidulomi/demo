@@ -9,9 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@style.css"
-            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.demo.ProductListController">
+<AnchorPane prefHeight="750.0" prefWidth="1400.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.ProductListController">
 
     <!-- Header -->
     <VBox layoutX="0.0" layoutY="0.0" prefHeight="80.0" prefWidth="1000.0" styleClass="dashboard-header">

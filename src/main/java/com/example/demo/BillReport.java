@@ -133,7 +133,7 @@ public class BillReport {
         
         for (int i = 0; i < bill.items.size(); i++) {
             BillItem item = bill.items.get(i);
-            sb.append(String.format("│%2d│ %-22s │ %4d │ ₹%6.2f│ ₹%10.2f │\n",
+            sb.append(String.format("│%2d│ %-22s │ %4d │ Tk.%6.2f│ Tk.%10.2f │\n",
                     i + 1,
                     item.productName.substring(0, Math.min(22, item.productName.length())),
                     item.quantity,
@@ -144,7 +144,7 @@ public class BillReport {
         sb.append("└──┴────────────────────────┴──────┴────────┴──────────────┘\n\n");
         
         sb.append(String.format("Total Items: %d\n", bill.totalItems));
-        sb.append(String.format("Total Amount: ₹%.2f\n\n", bill.totalAmount));
+        sb.append(String.format("Total Amount: Tk.%.2f\n\n", bill.totalAmount));
         
         sb.append("═══════════════════════════════════════════════════════════════\n");
         sb.append("              Thank you for your purchase! 🙏\n");
@@ -161,4 +161,3 @@ public class BillReport {
         billCounter = 0;
     }
 }
-

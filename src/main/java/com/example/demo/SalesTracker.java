@@ -32,12 +32,12 @@ public class SalesTracker {
         }
 
         public String getFormattedAmount() {
-            return String.format("₹%.2f", totalAmount);
+            return String.format("Tk.%.2f", totalAmount);
         }
 
         @Override
         public String toString() {
-            return String.format("%s (%s) - Qty: %d @ ₹%.2f each = %s [%s]",
+            return String.format("%s (%s) - Qty: %d @ Tk.%.2f each = %s [%s]",
                     productName, category, quantity, price, getFormattedAmount(), getFormattedDate());
         }
     }
@@ -144,4 +144,3 @@ public class SalesTracker {
         // TODO: Implement persistence if needed
     }
 }
-

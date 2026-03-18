@@ -10,12 +10,12 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1280.0" stylesheets="@style.css"
+<AnchorPane prefHeight="750.0" prefWidth="1250.0" stylesheets="@style.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.demo.HomeController">
 
     <!-- Sidebar Navigation -->
-    <VBox layoutX="0.0" layoutY="0.0" prefHeight="800.0" prefWidth="168.0" styleClass="dashboard-sidebar">
+    <VBox prefWidth="168.0" styleClass="dashboard-sidebar" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
         <padding><Insets top="20" left="10" right="10" bottom="20" /></padding>
         <spacing>15</spacing>
         <children>
@@ -36,7 +36,7 @@
     </VBox>
 
     <!-- Header -->
-    <HBox layoutX="168.0" layoutY="0.0" prefHeight="60.0" prefWidth="1112.0" styleClass="dashboard-header">
+    <HBox prefHeight="60.0" styleClass="dashboard-header" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="168.0" AnchorPane.rightAnchor="0.0">
         <padding><Insets left="30" right="30" top="15" bottom="15" /></padding>
         <spacing>30</spacing>
         <alignment>CENTER_LEFT</alignment>
@@ -48,31 +48,31 @@
     </HBox>
 
     <!-- Main Content -->
-    <VBox layoutX="168.0" layoutY="60.0" prefHeight="740.0" prefWidth="1112.0" spacing="20">
+    <VBox spacing="20" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="168.0" AnchorPane.rightAnchor="0.0">
         <padding><Insets left="20" right="20" top="20" bottom="20" /></padding>
 
         <!-- Stats Cards Row -->
         <HBox spacing="20" prefHeight="120.0">
             <!-- Today's Sales -->
-            <AnchorPane prefWidth="260.0" prefHeight="120.0" styleClass="stat-card-green">
+            <AnchorPane HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="120.0" styleClass="stat-card-green">
                 <Label layoutX="20" layoutY="15" text="Today's Sales" styleClass="stat-label" />
                 <Label fx:id="todaysSalesLabel" layoutX="20" layoutY="50" text="₹0.00" styleClass="stat-value" />
             </AnchorPane>
 
             <!-- Total Products -->
-            <AnchorPane prefWidth="260.0" prefHeight="120.0" styleClass="stat-card-blue">
+            <AnchorPane HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="120.0" styleClass="stat-card-blue">
                 <Label layoutX="20" layoutY="15" text="Total Products" styleClass="stat-label" />
                 <Label fx:id="totalProductsLabel" layoutX="20" layoutY="50" text="0" styleClass="stat-value" />
             </AnchorPane>
 
             <!-- Low Stock Alert -->
-            <AnchorPane prefWidth="260.0" prefHeight="120.0" styleClass="stat-card-red">
+            <AnchorPane HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="120.0" styleClass="stat-card-red">
                 <Label layoutX="20" layoutY="15" text="Low Stock Alert" styleClass="stat-label" />
                 <Label fx:id="lowStockLabel" layoutX="20" layoutY="50" text="0 Items" styleClass="stat-value" />
             </AnchorPane>
 
             <!-- Total Customers -->
-            <AnchorPane prefWidth="260.0" prefHeight="120.0" styleClass="stat-card-orange">
+            <AnchorPane HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="120.0" styleClass="stat-card-orange">
                 <Label layoutX="20" layoutY="15" text="Total Customers" styleClass="stat-label" />
                 <Label fx:id="totalCustomersLabel" layoutX="20" layoutY="50" text="0" styleClass="stat-value" />
             </AnchorPane>
@@ -89,10 +89,10 @@
         <!-- Content Area: Sales Overview and Recent Activity -->
         <HBox spacing="20" prefHeight="350.0" VBox.vgrow="ALWAYS">
             <!-- Sales Overview (Left) -->
-            <AnchorPane prefWidth="700.0" styleClass="content-card">
+            <AnchorPane HBox.hgrow="ALWAYS" styleClass="content-card">
                 <Label layoutX="20" layoutY="15" text="Sales Overview" styleClass="section-title" />
                 <Label layoutX="20" layoutY="45" prefWidth="660" prefHeight="280" text="[Chart Area - Sales by Day]"
-                       styleClass="chart-placeholder" wrapText="true" />
+                       styleClass="chart-placeholder" wrapText="true" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="45" AnchorPane.bottomAnchor="20"/>
             </AnchorPane>
 
             <!-- Recent Activity (Right) -->

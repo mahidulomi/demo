@@ -11,15 +11,15 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0"
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1250.0"
            stylesheets="@style.css"
            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.example.demo.HelloController">
     <children>
-        <AnchorPane prefHeight="700.0" prefWidth="1000.0">
+        <AnchorPane prefHeight="750.0" prefWidth="1250.0">
             <children>
                 <!-- Left Decorative Panel -->
-                <AnchorPane layoutX="0.0" layoutY="0.0" prefHeight="700.0" prefWidth="550.0" styleClass="left-panel">
+                <AnchorPane layoutX="0.0" layoutY="0.0" prefHeight="750.0" prefWidth="750.0" styleClass="left-panel">
                     <children>
                         <!-- Decorative Circles -->
                         <Circle fill="#ffffff33" layoutX="100.0" layoutY="150.0" radius="120.0" styleClass="circle-decoration" />
@@ -48,54 +48,54 @@
                 </AnchorPane>
 
                 <!-- Right Login Panel -->
-                <AnchorPane layoutX="604.0" layoutY="-3.0" prefHeight="694.0" prefWidth="382.0" styleClass="right-panel">
+                <AnchorPane layoutX="750.0" layoutY="0.0" prefHeight="750.0" prefWidth="500.0" styleClass="right-panel">
                     <children>
                         <!-- Login Form -->
-                        <Label layoutX="57.0" layoutY="60.0" prefHeight="45.0" prefWidth="260.0" styleClass="login-title" text="Welcome Back!" textAlignment="CENTER">
+                        <Label layoutX="120.0" layoutY="60.0" prefHeight="45.0" prefWidth="260.0" styleClass="login-title" text="Welcome Back!" textAlignment="CENTER">
                             <font>
                                 <Font name="System Bold" size="32.0" />
                             </font>
                         </Label>
-                        <Label layoutX="57.0" layoutY="115.0" prefHeight="20.0" prefWidth="260.0" styleClass="subtitle" text="Login to your account" textAlignment="CENTER">
+                        <Label layoutX="120.0" layoutY="115.0" prefHeight="20.0" prefWidth="260.0" styleClass="subtitle" text="Login to your account" textAlignment="CENTER">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Label>
 
                         <!-- Decorative Line -->
-                        <Rectangle arcHeight="10.0" arcWidth="10.0" height="3.0" layoutX="137.0" layoutY="150.0" styleClass="decorative-line" width="100.0" />
+                        <Rectangle arcHeight="10.0" arcWidth="10.0" height="3.0" layoutX="200.0" layoutY="150.0" styleClass="decorative-line" width="100.0" />
 
-                        <Label layoutX="57.0" layoutY="185.0" styleClass="field-label" text="Username">
+                        <Label layoutX="120.0" layoutY="185.0" styleClass="field-label" text="Username">
                             <font>
                                 <Font name="System Bold" size="13.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="usernameField" layoutX="57.0" layoutY="212.0" maxWidth="260.0" prefHeight="45.0" prefWidth="260.0" promptText="Enter your username" styleClass="modern-field" />
+                        <TextField fx:id="usernameField" layoutX="120.0" layoutY="212.0" maxWidth="260.0" prefHeight="45.0" prefWidth="260.0" promptText="Enter your username" styleClass="modern-field" />
 
-                        <Label layoutX="57.0" layoutY="277.0" styleClass="field-label" text="Password">
+                        <Label layoutX="120.0" layoutY="277.0" styleClass="field-label" text="Password">
                             <font>
                                 <Font name="System Bold" size="13.0" />
                             </font>
                         </Label>
-                        <PasswordField fx:id="passwordField" layoutX="57.0" layoutY="304.0" prefHeight="45.0" prefWidth="260.0" promptText="Enter your password" styleClass="modern-field" />
+                        <PasswordField fx:id="passwordField" layoutX="120.0" layoutY="304.0" prefHeight="45.0" prefWidth="260.0" promptText="Enter your password" styleClass="modern-field" />
 
-                        <Hyperlink layoutX="192.0" layoutY="359.0" styleClass="forgot-link" text="Forgot Password?" onAction="#onForgotPassword" />
+                        <Hyperlink layoutX="255.0" layoutY="359.0" styleClass="forgot-link" text="Forgot Password?" onAction="#onForgotPassword" />
 
-                        <Button layoutX="105.0" layoutY="400.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="164.0" styleClass="login-button" text="LOGIN" onAction="#onLogin">
+                        <Button layoutX="168.0" layoutY="400.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="164.0" styleClass="login-button" text="LOGIN" onAction="#onLogin">
                             <font>
                                 <Font name="System Bold" size="16.0" />
                             </font>
                         </Button>
 
-                        <Label layoutX="85.0" layoutY="475.0" styleClass="signup-text" text="Don't have an account?">
+                        <Label layoutX="148.0" layoutY="475.0" styleClass="signup-text" text="Don't have an account?">
                             <font>
                                 <Font size="13.0" />
                             </font>
                         </Label>
-                        <Hyperlink layoutX="223.0" layoutY="473.0" styleClass="signup-link" text="Sign Up" onAction="#onSignUp" />
+                        <Hyperlink layoutX="286.0" layoutY="473.0" styleClass="signup-link" text="Sign Up" onAction="#onSignUp" />
 
                         <!-- Status label to show errors/success -->
-                        <Label fx:id="welcomeText" layoutX="57.0" layoutY="530.0" prefWidth="260.0" wrapText="true" />
+                        <Label fx:id="welcomeText" layoutX="120.0" layoutY="530.0" prefWidth="260.0" wrapText="true" />
                     </children>
                 </AnchorPane>
             </children>

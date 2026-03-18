@@ -64,7 +64,7 @@ public class HomeController {
         // Update Today's Sales
         java.util.List<SalesTracker.SaleRecord> todaysSales = SalesTracker.getAllSales();
         double totalSalesAmount = todaysSales.stream().mapToDouble(s -> s.totalAmount).sum();
-        todaysSalesLabel.setText(String.format("₹%.2f", totalSalesAmount));
+        todaysSalesLabel.setText(String.format("Tk.%.2f", totalSalesAmount));
 
         // Update Total Products (estimated from sales)
         java.util.Set<String> uniqueProducts = new java.util.HashSet<>();
@@ -153,7 +153,7 @@ public class HomeController {
             System.out.println("✓ Loaded FXML successfully");
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("💰 Sales - POS");
-            stage.setScene(new javafx.scene.Scene(page, 1400, 750));
+            stage.setScene(new javafx.scene.Scene(page, 1250, 750));
             stage.show();
             
             statusLabel.setText("✅ Sales page opened successfully");
@@ -191,7 +191,7 @@ public class HomeController {
         
         report.append(String.format("│ Total Bills Generated:       %35d │\n", sales.size()));
         report.append(String.format("│ Total Items Sold:            %35d │\n", totalItems));
-        report.append(String.format("│ Total Revenue:               ₹%33.2f │\n", totalRevenue));
+        report.append(String.format("│ Total Revenue:               Tk.%33.2f │\n", totalRevenue));
         report.append("└──────────────────────────────────────────────────────────────┘\n\n");
         
         // 2. BILLS ORGANIZED BY DATE (MAIN REPORT)
@@ -221,7 +221,7 @@ public class HomeController {
             
             for (int i = 0; i < dayRecords.size(); i++) {
                 SalesTracker.SaleRecord r = dayRecords.get(i);
-                report.append(String.format("║%3d║ %-22s ║%5d║ ₹%7.2f║ ₹%10.2f║\n",
+                report.append(String.format("║%3d║ %-22s ║%5d║ Tk.%7.2f║ Tk.%10.2f║\n",
                         i + 1,
                         r.productName.substring(0, Math.min(22, r.productName.length())),
                         r.quantity,
@@ -234,7 +234,7 @@ public class HomeController {
             report.append(String.format("║ • Bill ID: %s                                           ║\n", billId));
             report.append(String.format("║ • Date: %s                                       ║\n", date));
             report.append(String.format("║ • Total Items: %d                                        ║\n", dayItems));
-            report.append(String.format("║ • Bill Amount: ₹%.2f                                  ║\n", dayTotal));
+            report.append(String.format("║ • Bill Amount: Tk.%.2f                                  ║\n", dayTotal));
             report.append(String.format("║ • Time Range: %s to %s                    ║\n",
                     dayRecords.get(0).getFormattedDate().substring(11, 19),
                     dayRecords.get(dayRecords.size() - 1).getFormattedDate().substring(11, 19)));
@@ -252,7 +252,7 @@ public class HomeController {
             categoryRev.put(r.category, categoryRev.getOrDefault(r.category, 0.0) + r.totalAmount);
         }
         for (String cat : categoryQty.keySet()) {
-            report.append(String.format("│ %-20s │ %3d units │ ₹%14.2f     │\n", 
+            report.append(String.format("│ %-20s │ %3d units │ Tk.%14.2f     │\n", 
                     cat, categoryQty.get(cat), categoryRev.get(cat)));
         }
         report.append("└──────────────────────────────────────────────────────────────┘\n\n");
@@ -270,7 +270,7 @@ public class HomeController {
             double totalRev = records.stream().mapToDouble(r -> r.totalAmount).sum();
             
             report.append(String.format("│ 📌 %s\n", product));
-            report.append(String.format("│    Total: %d units | ₹%.2f | Transactions: %d\n", 
+            report.append(String.format("│    Total: %d units | Tk.%.2f | Transactions: %d\n", 
                     totalQty, totalRev, records.size()));
             report.append("│\n");
         }
@@ -342,6 +342,8 @@ public class HomeController {
         return text == null ? "" : text.trim();
     }
 }
+
+
 
 
 

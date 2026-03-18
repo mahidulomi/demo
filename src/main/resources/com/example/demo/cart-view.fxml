@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1000.0" styleClass="cart-page-bg" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.CartController">
+<AnchorPane prefHeight="750.0" prefWidth="1400.0" styleClass="cart-page-bg" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.CartController">
 
     <!-- Top Bar -->
     <HBox alignment="CENTER_LEFT" layoutX="0.0" layoutY="0.0" prefHeight="64.0" prefWidth="1000.0" styleClass="home-topbar">
