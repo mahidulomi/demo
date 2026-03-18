@@ -62,12 +62,12 @@
                         <TextField fx:id="personalDataField" layoutX="57.0" layoutY="447.0" prefHeight="45.0" prefWidth="260.0"
                                    promptText="e.g., your favorite color" styleClass="modern-field" />
 
-                        <Button layoutX="95.0" layoutY="515.0" prefHeight="50.0" prefWidth="190.0" styleClass="login-button"
-                                text="CREATE ACCOUNT" onAction="#onCreateAccount" />
+                        <Button layoutX="57.0" layoutY="515.0" prefHeight="50.0" prefWidth="260.0" styleClass="login-button"
+                                text="CREATE ACCOUNT" onAction="#onCreateAccount" wrapText="true" />
 
-                        <HBox layoutX="74.0" layoutY="585.0" spacing="8" alignment="CENTER_LEFT">
-                            <Label text="Already have an account?" styleClass="signup-text" />
-                            <Button text="Back to Login" onAction="#onBackToLogin" styleClass="link-button" />
+                        <HBox layoutX="57.0" layoutY="585.0" spacing="5" alignment="CENTER" prefWidth="260.0">
+                            <Label text="Already have an account?" styleClass="signup-text" wrapText="true" maxWidth="130.0" />
+                            <Button text="Back to Login" onAction="#onBackToLogin" styleClass="link-button" maxWidth="120.0" wrapText="true" />
                         </HBox>
 
                         <Label fx:id="statusLabel" layoutX="57.0" layoutY="625.0" prefWidth="260.0" wrapText="true" />

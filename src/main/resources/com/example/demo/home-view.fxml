@@ -3,73 +3,135 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1000.0"
-            stylesheets="@style.css"
+<AnchorPane prefHeight="800.0" prefWidth="1280.0" stylesheets="@style.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.demo.HomeController">
 
-    <!-- Top Bar -->
-    <HBox layoutX="0.0" layoutY="0.0" prefHeight="64.0" prefWidth="1000.0" styleClass="home-topbar" alignment="CENTER_LEFT">
-        <padding>
-            <Insets left="20" right="20" top="12" bottom="12" />
-        </padding>
-        <spacing>12</spacing>
+    <!-- Sidebar Navigation -->
+    <VBox layoutX="0.0" layoutY="0.0" prefHeight="800.0" prefWidth="168.0" styleClass="dashboard-sidebar">
+        <padding><Insets top="20" left="10" right="10" bottom="20" /></padding>
+        <spacing>15</spacing>
         <children>
-            <Label text="HATBAZARx" styleClass="home-brand" />
+            <!-- Logo -->
+            <Circle radius="20" fill="#ffffff" styleClass="sidebar-logo" />
 
-            <TextField fx:id="searchField" promptText="Search products..." styleClass="home-search" HBox.hgrow="ALWAYS" />
+            <!-- Navigation Items -->
+            <Button text="🏠 Home" prefWidth="150" onAction="#onNavHome" styleClass="sidebar-btn-active" />
+            <Button fx:id="productsBtn" text="📦 Products" prefWidth="150" onAction="#onProductsClick" styleClass="sidebar-btn" />
+            <Button text="💰 Sales" prefWidth="150" onAction="#onSalesClick" styleClass="sidebar-btn" />
+            <Button text="👥 Customers" prefWidth="150" onAction="#openFashion" styleClass="sidebar-btn" />
+            <Button text="📊 Reports" prefWidth="150" onAction="#onReportsClick" styleClass="sidebar-btn" />
 
-            <Label fx:id="userLabel" text="Hello!" styleClass="home-user" />
+            <Separator />
 
-            <!-- Circular Profile Button -->
-            <StackPane styleClass="profile-circle" onMouseClicked="#onProfileClick">
-                <Label text="👤" style="-fx-font-size: 18px;" />
-            </StackPane>
+            <Button text="⚙️ Settings" prefWidth="150" onAction="#onProfileClick" styleClass="sidebar-btn" />
+        </children>
+    </VBox>
 
-            <!-- stays at the far top-right corner due to HBox growth on searchField -->
-            <Button text="Logout" onAction="#onLogout" styleClass="home-logout" />
+    <!-- Header -->
+    <HBox layoutX="168.0" layoutY="0.0" prefHeight="60.0" prefWidth="1112.0" styleClass="dashboard-header">
+        <padding><Insets left="30" right="30" top="15" bottom="15" /></padding>
+        <spacing>30</spacing>
+        <alignment>CENTER_LEFT</alignment>
+        <children>
+            <Label text="Dashboard" styleClass="dashboard-title" HBox.hgrow="ALWAYS" />
+            <Label fx:id="userLabel" text="Welcome, Admin" styleClass="dashboard-welcome" />
+            <Button text="Logout" onAction="#onLogout" styleClass="logout-btn" />
         </children>
     </HBox>
 
-    <!-- Content -->
-    <VBox layoutX="0.0" layoutY="84.0" prefWidth="1000.0" spacing="18">
-        <padding>
-            <Insets left="28" right="28" top="20" bottom="20" />
-        </padding>
+    <!-- Main Content -->
+    <VBox layoutX="168.0" layoutY="60.0" prefHeight="740.0" prefWidth="1112.0" spacing="20">
+        <padding><Insets left="20" right="20" top="20" bottom="20" /></padding>
 
-        <StackPane prefHeight="140" styleClass="home-hero">
-            <VBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 22;">
-                <Label text="Big Deals Today" styleClass="home-title" />
-                <Label text="Up to 50% off in selected categories." styleClass="home-subtitle" />
-                <HBox spacing="10">
-                    <Button text="Shop Now" onAction="#openFashion" styleClass="home-cta" />
-                    <Button text="🛒 View Cart" onAction="#openCart" styleClass="home-cta-secondary" />
-                </HBox>
+        <!-- Stats Cards Row -->
+        <HBox spacing="20" prefHeight="120.0">
+            <!-- Today's Sales -->
+            <AnchorPane prefWidth="260.0" prefHeight="120.0" styleClass="stat-card-green">
+                <Label layoutX="20" layoutY="15" text="Today's Sales" styleClass="stat-label" />
+                <Label fx:id="todaysSalesLabel" layoutX="20" layoutY="50" text="₹0.00" styleClass="stat-value" />
+            </AnchorPane>
+
+            <!-- Total Products -->
+            <AnchorPane prefWidth="260.0" prefHeight="120.0" styleClass="stat-card-blue">
+                <Label layoutX="20" layoutY="15" text="Total Products" styleClass="stat-label" />
+                <Label fx:id="totalProductsLabel" layoutX="20" layoutY="50" text="0" styleClass="stat-value" />
+            </AnchorPane>
+
+            <!-- Low Stock Alert -->
+            <AnchorPane prefWidth="260.0" prefHeight="120.0" styleClass="stat-card-red">
+                <Label layoutX="20" layoutY="15" text="Low Stock Alert" styleClass="stat-label" />
+                <Label fx:id="lowStockLabel" layoutX="20" layoutY="50" text="0 Items" styleClass="stat-value" />
+            </AnchorPane>
+
+            <!-- Total Customers -->
+            <AnchorPane prefWidth="260.0" prefHeight="120.0" styleClass="stat-card-orange">
+                <Label layoutX="20" layoutY="15" text="Total Customers" styleClass="stat-label" />
+                <Label fx:id="totalCustomersLabel" layoutX="20" layoutY="50" text="0" styleClass="stat-value" />
+            </AnchorPane>
+        </HBox>
+
+        <!-- Action Buttons -->
+        <HBox spacing="15" prefHeight="50.0">
+            <Button text="➕ Add Product" prefWidth="150" onAction="#openElectronics" styleClass="action-btn-blue" />
+            <Button text="🛒 New Sale" prefWidth="150" onAction="#openCart" styleClass="action-btn-green" />
+            <Button text="👤 Add Customer" prefWidth="150" onAction="#openFashion" styleClass="action-btn-orange" />
+            <Button text="📦 Restock Items" prefWidth="150" onAction="#openStock" styleClass="action-btn-purple" />
+        </HBox>
+
+        <!-- Content Area: Sales Overview and Recent Activity -->
+        <HBox spacing="20" prefHeight="350.0" VBox.vgrow="ALWAYS">
+            <!-- Sales Overview (Left) -->
+            <AnchorPane prefWidth="700.0" styleClass="content-card">
+                <Label layoutX="20" layoutY="15" text="Sales Overview" styleClass="section-title" />
+                <Label layoutX="20" layoutY="45" prefWidth="660" prefHeight="280" text="[Chart Area - Sales by Day]"
+                       styleClass="chart-placeholder" wrapText="true" />
+            </AnchorPane>
+
+            <!-- Recent Activity (Right) -->
+            <VBox spacing="20" prefWidth="370.0">
+                <!-- Latest Sales -->
+                <AnchorPane prefHeight="170.0" styleClass="content-card">
+                    <Label layoutX="15" layoutY="12" text="Latest Sales" styleClass="section-title" />
+                    <VBox layoutX="15" layoutY="45" spacing="12" prefWidth="340.0">
+                        <Label text="🔵 Sale #1021" styleClass="activity-item" />
+                        <Label text="₹ 3,200" styleClass="activity-amount" />
+                        <Separator />
+                        <Label text="🔵 Sale #1020" styleClass="activity-item" />
+                        <Label text="₹ 5,500" styleClass="activity-amount" />
+                        <Separator />
+                        <Label text="🔵 Sale #1019" styleClass="activity-item" />
+                        <Label text="₹ 1,800" styleClass="activity-amount" />
+                    </VBox>
+                </AnchorPane>
+
+                <!-- Recent Products -->
+                <AnchorPane prefHeight="140.0" styleClass="content-card">
+                    <Label layoutX="15" layoutY="12" text="Recent Products" styleClass="section-title" />
+                    <VBox layoutX="15" layoutY="45" spacing="10" prefWidth="340.0">
+                        <Label text="🟢 Wireless Mouse" styleClass="activity-item" />
+                        <Label text="🟢 Apple Juice" styleClass="activity-item" />
+                        <Label text="🟢 LED TV" styleClass="activity-item" />
+                    </VBox>
+                </AnchorPane>
+
+                <!-- New Customers -->
+                <AnchorPane prefHeight="140.0" styleClass="content-card">
+                    <Label layoutX="15" layoutY="12" text="New Customers" styleClass="section-title" />
+                    <VBox layoutX="15" layoutY="45" spacing="10" prefWidth="340.0">
+                        <Label text="👤 Rahim Khan" styleClass="activity-item" />
+                        <Label text="👤 Mina Akter" styleClass="activity-item" />
+                        <Label text="👤 S. Alam" styleClass="activity-item" />
+                    </VBox>
+                </AnchorPane>
             </VBox>
-        </StackPane>
-
-        <Label text="Shop by Category" styleClass="home-section-title" />
-
-        <GridPane hgap="14" vgap="14">
-            <Button text="Fashion" prefWidth="220" prefHeight="90" onAction="#openFashion" styleClass="home-card" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <Button text="Electronics" prefWidth="220" prefHeight="90" onAction="#openElectronics" styleClass="home-card" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-            <Button text="Home &amp; Living" prefWidth="220" prefHeight="90" onAction="#openHomeLiving" styleClass="home-card" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-            <Button text="Beauty" prefWidth="220" prefHeight="90" onAction="#openBeauty" styleClass="home-card" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-        </GridPane>
-
-        <Label text="Offers &amp; Services" styleClass="home-section-title" />
-        <HBox spacing="14">
-            <Button text="My Orders" prefWidth="220" onAction="#openOrders" styleClass="home-tile" />
-            <Button text="Free Delivery" prefWidth="220" onAction="#openFreeDelivery" styleClass="home-tile" />
-            <Button text="New Arrivals" prefWidth="220" onAction="#openNewArrivals" styleClass="home-tile" />
-            <Button text="📦 Stock" prefWidth="220" onAction="#openStock" styleClass="home-tile" />
         </HBox>
 
         <Label fx:id="statusLabel" text="" styleClass="home-status" />

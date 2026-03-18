@@ -39,6 +39,14 @@ public class SignUpController {
             return;
         }
 
+        // Validate password length (6-8 characters)
+        if (password.length() < 6 || password.length() > 8) {
+            setError("Password must be 6-8 characters long.");
+            passwordField.clear();
+            confirmPasswordField.clear();
+            return;
+        }
+
         if (!password.equals(confirm)) {
             setError("Password and Confirm Password must match.");
             confirmPasswordField.clear();

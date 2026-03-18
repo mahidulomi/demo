@@ -1,11 +1,12 @@
 package com.example.demo;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-
-import java.time.LocalTime;
-import java.util.Locale;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
 public class HomeController {
 
@@ -16,71 +17,241 @@ public class HomeController {
     private Label statusLabel;
 
     @FXML
-    private TextField searchField;
+    private Button productsBtn;
+
+    @FXML
+    private Label todaysSalesLabel;
+
+    @FXML
+    private Label totalProductsLabel;
+
+    @FXML
+    private Label lowStockLabel;
+
+    @FXML
+    private Label totalCustomersLabel;
+
+    private static HomeController currentInstance;
 
     @FXML
     private void initialize() {
+        currentInstance = this;
         String user = Session.getCurrentUser();
-        userLabel.setText(buildGreeting(user));
+        userLabel.setText("Welcome, " + (user == null ? "Admin" : user));
+        statusLabel.setText("");
+        updateDashboardStats();
+    }
 
-        statusLabel.setText("Welcome! Try search: fashion, electronics, beauty, cart, free delivery.");
-
-        if (searchField != null) {
-            searchField.setOnAction(e -> onSearch());
+    /**
+     * Refresh dashboard from other controllers (e.g., after purchase)
+     */
+    public static void refreshDashboard() {
+        if (currentInstance != null) {
+            currentInstance.updateDashboardStats();
         }
     }
 
     @FXML
-    private void onSearch() {
-        String q = safe(searchField.getText()).toLowerCase(Locale.ROOT);
+    private void onNavHome() {
+        statusLabel.setText("You are on the Home Dashboard");
+        updateDashboardStats();
+    }
 
-        if (q.isEmpty()) {
-            statusLabel.setText("Type a category name to jump quickly.");
-            return;
-        }
+    /**
+     * Update all dashboard stat cards with real data
+     */
+    private void updateDashboardStats() {
+        // Update Today's Sales
+        java.util.List<SalesTracker.SaleRecord> todaysSales = SalesTracker.getAllSales();
+        double totalSalesAmount = todaysSales.stream().mapToDouble(s -> s.totalAmount).sum();
+        todaysSalesLabel.setText(String.format("₹%.2f", totalSalesAmount));
 
-        if (q.contains("fashion")) {
-            statusLabel.setText("Opening Fashion...");
-            Session.goToFashion(statusLabel);
-            return;
+        // Update Total Products (estimated from sales)
+        java.util.Set<String> uniqueProducts = new java.util.HashSet<>();
+        for (SalesTracker.SaleRecord sale : todaysSales) {
+            uniqueProducts.add(sale.productName);
         }
-        if (q.contains("electronic") || q.contains("mobile") || q.contains("laptop")) {
-            statusLabel.setText("Opening Electronics...");
-            Session.goToElectronics(statusLabel);
-            return;
-        }
-        if (q.contains("beauty") || q.contains("cosmetic")) {
-            statusLabel.setText("Opening Beauty...");
-            Session.goToBeauty(statusLabel);
-            return;
-        }
-        if (q.contains("home") || q.contains("living")) {
-            statusLabel.setText("Opening Home & Living...");
-            Session.goToHomeLiving(statusLabel);
-            return;
-        }
-        if (q.contains("arrival") || q.contains("new")) {
-            statusLabel.setText("Opening New Arrivals...");
-            Session.goToNewArrivals(statusLabel);
-            return;
-        }
-        if (q.contains("free") || q.contains("delivery")) {
-            statusLabel.setText("Opening Free Delivery...");
-            Session.goToFreeDelivery(statusLabel);
-            return;
-        }
-        if (q.contains("stock")) {
-            statusLabel.setText("Opening Stock...");
-            Session.goToStock(statusLabel);
-            return;
-        }
-        if (q.contains("cart")) {
-            statusLabel.setText("Opening Cart...");
-            Session.goToCartFrom(statusLabel, "home-view.fxml");
-            return;
-        }
+        int totalProducts = Math.max(uniqueProducts.size(), 0);
+        totalProductsLabel.setText(String.valueOf(totalProducts));
 
-        statusLabel.setText("No quick match for: " + q + " (try: fashion, electronics, beauty, cart)");
+        // Update Low Stock Alert (simplified - show 0 for now unless low stock detected)
+        int lowStockCount = 0;
+        // This can be enhanced if you have a way to check all products' stock
+        lowStockLabel.setText(lowStockCount + " Items");
+
+        // Update Total Customers (count transactions)
+        totalCustomersLabel.setText(String.valueOf(Math.max(1, todaysSales.size())));
+    }
+
+    /**
+     * Shows a context menu with 4 product categories
+     */
+    @FXML
+    private void onProductsClick() {
+        if (productsBtn != null) {
+            ContextMenu menu = new ContextMenu();
+            
+            MenuItem beautyItem = new MenuItem("💄 Beauty");
+            beautyItem.setOnAction(e -> {
+                statusLabel.setText("Opening Beauty products...");
+                Session.goToBeauty(statusLabel);
+            });
+
+            MenuItem electronicsItem = new MenuItem("📱 Electronics");
+            electronicsItem.setOnAction(e -> {
+                statusLabel.setText("Opening Electronics products...");
+                Session.goToElectronics(statusLabel);
+            });
+
+            MenuItem homeLivingItem = new MenuItem("🏠 Home & Living");
+            homeLivingItem.setOnAction(e -> {
+                statusLabel.setText("Opening Home & Living products...");
+                Session.goToHomeLiving(statusLabel);
+            });
+
+            MenuItem fashionItem = new MenuItem("👗 Fashion");
+            fashionItem.setOnAction(e -> {
+                statusLabel.setText("Opening Fashion products...");
+                Session.goToFashion(statusLabel);
+            });
+
+            menu.getItems().addAll(beautyItem, electronicsItem, homeLivingItem, fashionItem);
+            
+            Bounds bounds = productsBtn.localToScreen(productsBtn.getBoundsInLocal());
+            menu.show(productsBtn, bounds.getCenterX(), bounds.getCenterY() + 30);
+        }
+    }
+
+    /**
+     * Shows Sales section - products that have been purchased
+     */
+    @FXML
+    private void onSalesClick() {
+        // Open Sales POS interface
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("sales-view.fxml"));
+            javafx.scene.layout.AnchorPane page = loader.load();
+            
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("💰 Sales - POS");
+            stage.setScene(new javafx.scene.Scene(page, 1400, 750));
+            stage.show();
+        } catch (Exception e) {
+            statusLabel.setText("Error opening sales: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Shows Reports section - Professional bill reports with IDs and dates
+     */
+    @FXML
+    private void onReportsClick() {
+        java.util.List<SalesTracker.SaleRecord> sales = SalesTracker.getAllSales();
+        
+        if (sales.isEmpty()) {
+            statusLabel.setText("📈 Reports: No sales data available yet.");
+            return;
+        }
+        
+        StringBuilder report = new StringBuilder();
+        report.append("╔═════════════════════════════════════════════════════════════╗\n");
+        report.append("║         📊 SHOP MANAGEMENT REPORT SYSTEM                    ║\n");
+        report.append("╚═════════════════════════════════════════════════════════════╝\n\n");
+        
+        // 1. SUMMARY STATISTICS
+        report.append("┌─ 📈 SUMMARY STATISTICS ─────────────────────────────────────┐\n");
+        double totalRevenue = SalesTracker.getTotalRevenue();
+        int totalItems = sales.stream().mapToInt(s -> s.quantity).sum();
+        
+        report.append(String.format("│ Total Bills Generated:       %35d │\n", sales.size()));
+        report.append(String.format("│ Total Items Sold:            %35d │\n", totalItems));
+        report.append(String.format("│ Total Revenue:               ₹%33.2f │\n", totalRevenue));
+        report.append("└──────────────────────────────────────────────────────────────┘\n\n");
+        
+        // 2. BILLS ORGANIZED BY DATE (MAIN REPORT)
+        report.append("┌─ 🧾 BILL REPORTS (Organized by Date) ────────────────────────┐\n\n");
+        
+        java.util.Map<String, java.util.List<SalesTracker.SaleRecord>> dateMap = new java.util.LinkedHashMap<>();
+        for (SalesTracker.SaleRecord record : sales) {
+            String dateKey = record.getFormattedDate().substring(0, 10); // YYYY-MM-DD
+            dateMap.computeIfAbsent(dateKey, k -> new java.util.ArrayList<>()).add(record);
+        }
+        
+        int billNumber = 1;
+        for (String date : dateMap.keySet()) {
+            java.util.List<SalesTracker.SaleRecord> dayRecords = dateMap.get(date);
+            double dayTotal = dayRecords.stream().mapToDouble(r -> r.totalAmount).sum();
+            int dayItems = dayRecords.stream().mapToInt(r -> r.quantity).sum();
+            
+            String billId = String.format("BILL-%05d", billNumber);
+            
+            report.append("╔════════════════════════════════════════════════════════════╗\n");
+            report.append(String.format("║ %s  │  Date: %s                       ║\n", billId, date));
+            report.append("╠════════════════════════════════════════════════════════════╣\n");
+            report.append("║ ITEMS:                                                     ║\n");
+            report.append("╠═══╦════════════════════════╦═════╦═════════╦════════════╣\n");
+            report.append("║No.║ Product Name           ║ Qty ║ Price   ║ Amount     ║\n");
+            report.append("╠═══╬════════════════════════╬═════╬═════════╬════════════╣\n");
+            
+            for (int i = 0; i < dayRecords.size(); i++) {
+                SalesTracker.SaleRecord r = dayRecords.get(i);
+                report.append(String.format("║%3d║ %-22s ║%5d║ ₹%7.2f║ ₹%10.2f║\n",
+                        i + 1,
+                        r.productName.substring(0, Math.min(22, r.productName.length())),
+                        r.quantity,
+                        r.price,
+                        r.totalAmount));
+            }
+            
+            report.append("╠═══╩════════════════════════╩═════╩═════════╩════════════╣\n");
+            report.append(String.format("║ Bill Details:                                             ║\n"));
+            report.append(String.format("║ • Bill ID: %s                                           ║\n", billId));
+            report.append(String.format("║ • Date: %s                                       ║\n", date));
+            report.append(String.format("║ • Total Items: %d                                        ║\n", dayItems));
+            report.append(String.format("║ • Bill Amount: ₹%.2f                                  ║\n", dayTotal));
+            report.append(String.format("║ • Time Range: %s to %s                    ║\n",
+                    dayRecords.get(0).getFormattedDate().substring(11, 19),
+                    dayRecords.get(dayRecords.size() - 1).getFormattedDate().substring(11, 19)));
+            report.append("╚════════════════════════════════════════════════════════════╝\n\n");
+            
+            billNumber++;
+        }
+        
+        // 3. SALES BY CATEGORY
+        report.append("┌─ 📁 SALES BY CATEGORY ──────────────────────────────────────┐\n");
+        java.util.Map<String, Integer> categoryQty = new java.util.HashMap<>();
+        java.util.Map<String, Double> categoryRev = new java.util.HashMap<>();
+        for (SalesTracker.SaleRecord r : sales) {
+            categoryQty.put(r.category, categoryQty.getOrDefault(r.category, 0) + r.quantity);
+            categoryRev.put(r.category, categoryRev.getOrDefault(r.category, 0.0) + r.totalAmount);
+        }
+        for (String cat : categoryQty.keySet()) {
+            report.append(String.format("│ %-20s │ %3d units │ ₹%14.2f     │\n", 
+                    cat, categoryQty.get(cat), categoryRev.get(cat)));
+        }
+        report.append("└──────────────────────────────────────────────────────────────┘\n\n");
+        
+        // 4. PRODUCT-WISE HISTORY
+        report.append("┌─ 📦 PRODUCT-WISE HISTORY ───────────────────────────────────┐\n");
+        java.util.Map<String, java.util.List<SalesTracker.SaleRecord>> productMap = new java.util.LinkedHashMap<>();
+        for (SalesTracker.SaleRecord record : sales) {
+            productMap.computeIfAbsent(record.productName, k -> new java.util.ArrayList<>()).add(record);
+        }
+        
+        for (String product : productMap.keySet()) {
+            java.util.List<SalesTracker.SaleRecord> records = productMap.get(product);
+            int totalQty = records.stream().mapToInt(r -> r.quantity).sum();
+            double totalRev = records.stream().mapToDouble(r -> r.totalAmount).sum();
+            
+            report.append(String.format("│ 📌 %s\n", product));
+            report.append(String.format("│    Total: %d units | ₹%.2f | Transactions: %d\n", 
+                    totalQty, totalRev, records.size()));
+            report.append("│\n");
+        }
+        report.append("└──────────────────────────────────────────────────────────────┘\n");
+        
+        statusLabel.setText(report.toString());
     }
 
     @FXML
@@ -120,11 +291,6 @@ public class HomeController {
     }
 
     @FXML
-    private void openOrders() {
-        statusLabel.setText("Orders: demo screen");
-    }
-
-    @FXML
     private void openFreeDelivery() {
         Session.goToFreeDelivery(statusLabel);
     }
@@ -139,13 +305,12 @@ public class HomeController {
         Session.goToStock(statusLabel);
     }
 
-    private static String buildGreeting(String user) {
-        int hour = LocalTime.now().getHour();
-        String prefix = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-        return user == null ? prefix + "!" : prefix + ", " + user + "!";
-    }
 
     private static String safe(String text) {
         return text == null ? "" : text.trim();
     }
 }
+
+
+
+

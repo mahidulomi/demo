@@ -156,6 +156,9 @@ public class CartController {
             int newStock = Math.max(0, currentStock - item.getQuantity());
             StockManager.updateStock(canonicalProductId, newStock);
             NetworkManager.getInstance().broadcastStockUpdate(canonicalProductId, newStock);
+            
+            // Record sale in SalesTracker for dashboard
+            SalesTracker.addSale(item.getProductName(), item.getCategory(), item.getUnitPrice(), item.getQuantity());
         }
 
         SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(purchasedItems, totalQty, totalAmount);
@@ -167,6 +170,9 @@ public class CartController {
         refreshCart();
         statusLabel.setText("✅ Purchase successful!  " + totalQty
                 + " item(s) bought — Total: " + total + "  Thank you! 🎉");
+        
+        // Refresh dashboard stats
+        HomeController.refreshDashboard();
     }
 
     @FXML

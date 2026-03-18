@@ -44,6 +44,14 @@ public class ForgotPasswordController {
             return;
         }
 
+        // Validate password length (6-8 characters)
+        if (newPassword.length() < 6 || newPassword.length() > 8) {
+            setError("New password must be 6-8 characters long.");
+            newPasswordField.clear();
+            confirmPasswordField.clear();
+            return;
+        }
+
         if (!newPassword.equals(confirm)) {
             setError("New password and confirmation must match.");
             confirmPasswordField.clear();

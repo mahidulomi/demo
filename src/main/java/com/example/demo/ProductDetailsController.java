@@ -582,6 +582,9 @@ public class ProductDetailsController {
         SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(java.util.List.of(purchasedItem), quantity, totalAmount);
         SalesManager.recordSale(sale);
         NetworkManager.getInstance().broadcastSaleRecord(sale);
+        
+        // Record sale in SalesTracker for dashboard
+        SalesTracker.addSale(currentProduct.getName(), "Electronics", unitPrice, quantity);
 
         String message = """
                 🎉 Order Confirmed!
@@ -606,6 +609,9 @@ public class ProductDetailsController {
         );
 
         showStatus(message, true);
+        
+        // Refresh dashboard stats
+        HomeController.refreshDashboard();
     }
 
     private double parseUnitPrice(String priceText) {
