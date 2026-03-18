@@ -12,6 +12,8 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.ComboBox?>
 
 <AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.FashionController">
 
@@ -27,6 +29,11 @@
                 <Insets right="15" />
             </HBox.margin>
         </TextField>
+        <Button text="➕ Add Product" onAction="#onToggleAddProduct" styleClass="admin-add-btn">
+            <HBox.margin>
+                <Insets right="15" />
+            </HBox.margin>
+        </Button>
         <Button text="🛒 Cart" onAction="#onOpenCart" styleClass="fashion-cart-btn">
             <HBox.margin>
                 <Insets right="30" />
@@ -310,9 +317,78 @@
             </GridPane>
 
             <!-- Status -->
-            <Label fx:id="statusLabel" text="✨ 12 Beautiful Products - All with Amazing Discounts!" styleClass="fashion-status" />
-
+            <Label fx:id="statusLabel" text="👗 12 Fashion Items - All with Amazing Discounts!" styleClass="fashion-status" />
         </VBox>
     </ScrollPane>
+
+    <!-- Background Overlay (dims the page when panel is open) - MUST be after ScrollPane to appear on top -->
+    <StackPane fx:id="overlayPane" managed="false" visible="false" styleClass="overlay-bg" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    </StackPane>
+
+    <!-- Add Product Panel (Hidden by default) - MUST be after Overlay to appear on top of everything -->
+    <VBox fx:id="addProductPanel" alignment="CENTER" managed="false" prefHeight="520" prefWidth="500" spacing="0" styleClass="add-product-panel" visible="false" AnchorPane.leftAnchor="250.0" AnchorPane.topAnchor="90.0">
+
+        <!-- Panel Header (Fixed) -->
+        <HBox alignment="CENTER" styleClass="add-product-header">
+            <padding>
+                <Insets bottom="15" left="20" right="20" top="15" />
+            </padding>
+            <Label styleClass="add-product-title" text="➕ Add New Fashion Item" />
+        </HBox>
+
+        <!-- Scrollable Content -->
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="add-product-scroll" VBox.vgrow="ALWAYS">
+            <VBox alignment="CENTER" spacing="15">
+                <padding>
+                    <Insets bottom="20" left="30" right="30" top="15" />
+                </padding>
+
+                <!-- Image Preview -->
+                <VBox alignment="CENTER" spacing="10">
+                    <StackPane prefHeight="140" prefWidth="180" styleClass="image-preview-box">
+                        <javafx.scene.image.ImageView fx:id="previewImageView" fitHeight="130" fitWidth="170" preserveRatio="true" />
+                        <Label fx:id="noImageLabel" text="📷 No Image Selected" styleClass="no-image-label" />
+                    </StackPane>
+                    <Button onAction="#onChooseImage" styleClass="choose-image-btn" text="📁 Choose Image" />
+                </VBox>
+
+                <!-- Product Name -->
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label styleClass="form-label" text="Product Name:" />
+                    <TextField fx:id="productNameField" prefHeight="40" prefWidth="420" promptText="Enter product name..." styleClass="form-textfield" />
+                </VBox>
+
+                <!-- Product Price -->
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label styleClass="form-label" text="Product Price (৳):" />
+                    <TextField fx:id="productPriceField" prefHeight="40" prefWidth="420" promptText="Enter price (e.g., 500)" styleClass="form-textfield" />
+                </VBox>
+
+                <!-- Stock Quantity -->
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label styleClass="form-label" text="Stock Quantity:" />
+                    <TextField fx:id="stockQuantityField" prefHeight="40" prefWidth="420" promptText="Enter stock quantity (e.g., 20)" styleClass="form-textfield" />
+                </VBox>
+
+                <!-- Product Category -->
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label styleClass="form-label" text="Category:" />
+                    <javafx.scene.control.ComboBox fx:id="categoryComboBox" prefHeight="40" prefWidth="420" promptText="Select Category" styleClass="form-combobox" />
+                </VBox>
+
+                <!-- Action Buttons -->
+                <HBox alignment="CENTER" spacing="20">
+                    <padding>
+                        <Insets top="15" />
+                    </padding>
+                    <Button onAction="#onCancelAddProduct" styleClass="cancel-btn" text="❌ Cancel" />
+                    <Button onAction="#onSubmitProduct" styleClass="submit-btn" text="✓ Add Product" />
+                </HBox>
+
+                <!-- Status Message -->
+                <Label fx:id="addProductStatus" styleClass="add-product-status" text="" />
+            </VBox>
+        </ScrollPane>
+    </VBox>
 
 </AnchorPane>

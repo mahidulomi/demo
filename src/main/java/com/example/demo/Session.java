@@ -106,6 +106,7 @@ public final class Session {
             stage.setScene(scene);
             stage.centerOnScreen();
         } catch (IOException e) {
+            e.printStackTrace(); // Print full stack trace
             throw new RuntimeException("Failed to load " + fxml, e);
         }
     }
