@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<AnchorPane prefHeight="750.0" prefWidth="1400.0" stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.demo.SalesController">
+
+    <!-- Header -->
+    <HBox layoutX="0.0" layoutY="0.0" prefHeight="70.0" prefWidth="1400.0" styleClass="dashboard-header">
+        <padding><Insets left="20" right="20" top="15" bottom="15" /></padding>
+        <spacing>30</spacing>
+        <children>
+            <Label text="💰 Sales" styleClass="dashboard-title" HBox.hgrow="ALWAYS" />
+            <Button text="← Back" onAction="#onBackClick" styleClass="logout-btn" />
+        </children>
+    </HBox>
+
+    <!-- Main Content -->
+    <HBox layoutX="0.0" layoutY="70.0" prefHeight="680.0" prefWidth="1400.0" spacing="20">
+        <padding><Insets left="15" right="15" top="15" bottom="15" /></padding>
+
+        <!-- Left Side: Products -->
+        <VBox prefWidth="900.0" spacing="15" HBox.hgrow="ALWAYS">
+            <!-- Search and Categories -->
+            <HBox spacing="10" prefHeight="50.0">
+                <TextField fx:id="searchField" prefHeight="40.0" promptText="Search Product..." prefWidth="300.0" />
+
+                <Button text="📦 All" onAction="#onCategoryClick" styleClass="category-btn-active" prefWidth="80.0" />
+                <Button text="💄 Beauty" onAction="#onCategoryClick" styleClass="category-btn" prefWidth="100.0" />
+                <Button text="📱 Electronics" onAction="#onCategoryClick" styleClass="category-btn" prefWidth="120.0" />
+                <Button text="🏠 Home and Living" onAction="#onCategoryClick" styleClass="category-btn" prefWidth="140.0" />
+                <Button text="👗 Fashion" onAction="#onCategoryClick" styleClass="category-btn" prefWidth="100.0" />
+            </HBox>
+
+            <!-- Products Grid -->
+            <ScrollPane fitToWidth="true" prefHeight="600.0" styleClass="products-scroll">
+                <GridPane fx:id="productsGrid" hgap="15" vgap="15" prefWidth="850.0">
+                    <padding><Insets all="10" /></padding>
+                </GridPane>
+            </ScrollPane>
+        </VBox>
+
+        <!-- Right Side: Shopping Cart -->
+        <VBox prefWidth="480.0" spacing="15" styleClass="cart-section">
+            <Label text="🛒 Shopping Cart" styleClass="section-title" />
+
+            <!-- Cart Items -->
+            <ScrollPane fitToWidth="true" prefHeight="350.0" styleClass="cart-scroll">
+                <VBox fx:id="cartItemsContainer" spacing="10">
+                    <padding><Insets all="10" /></padding>
+                </VBox>
+            </ScrollPane>
+
+            <!-- Summary -->
+            <VBox spacing="10" styleClass="cart-summary">
+                <HBox spacing="200">
+                    <Label text="Subtotal:" styleClass="summary-label" />
+                    <Label fx:id="subtotalLabel" text="₹0.00" styleClass="summary-value" />
+                </HBox>
+                <HBox spacing="200">
+                    <Label text="Discount:" styleClass="summary-label" />
+                    <Label fx:id="discountLabel" text="₹0.00" styleClass="summary-value" />
+                </HBox>
+                <HBox spacing="200">
+                    <Label text="Total:" styleClass="summary-value-total" />
+                    <Label fx:id="totalLabel" text="₹0.00" styleClass="summary-value-total" />
+                </HBox>
+            </VBox>
+
+            <!-- Action Buttons -->
+            <HBox spacing="10" prefHeight="50.0">
+                <Button text="✓ Confirm Sale" onAction="#onConfirmSale" styleClass="confirm-btn" prefWidth="220.0" />
+                <Button text="✕ Clear Cart" onAction="#onClearCart" styleClass="cancel-btn" prefWidth="220.0" />
+            </HBox>
+        </VBox>
+    </HBox>
+
+</AnchorPane>
+
