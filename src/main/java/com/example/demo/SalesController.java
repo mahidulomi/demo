@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
+import javafx.stage.Stage;
 import java.util.*;
 
 /**
@@ -37,8 +38,40 @@ public class SalesController {
 
     @FXML
     private void initialize() {
-        loadProducts("All");
-        updateCartDisplay();
+        try {
+            System.out.println("🔄 SalesController initializing...");
+            
+            if (productsGrid == null) {
+                System.err.println("⚠️ ERROR: productsGrid not injected!");
+            }
+             if (cartItemsContainer == null) {
+                System.err.println("⚠️ ERROR: cartItemsContainer not injected!");
+            }
+
+            // Safe check for nulls
+            if (productsGrid != null) {
+                loadProducts("All");
+            }
+            
+            if (cartItemsContainer != null) {
+               updateCartDisplay();
+            }
+            
+            if (searchField != null) {
+                searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal == null || newVal.trim().isEmpty()) {
+                        loadProducts(currentCategory);
+                    } else {
+                        searchProducts(newVal.trim());
+                    }
+                });
+            }
+            
+            System.out.println("✅ SalesController initialized successfully!");
+        } catch (Exception e) {
+            System.err.println("❌ Error in initialize: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -57,7 +90,7 @@ public class SalesController {
         } else if (category.contains("Electronics")) {
             currentCategory = "Electronics";
         } else if (category.contains("Home")) {
-            currentCategory = "Home & Living";
+            currentCategory = "Home and Living";
         } else if (category.contains("Fashion")) {
             currentCategory = "Fashion";
         }
@@ -69,19 +102,27 @@ public class SalesController {
      * Load products for category
      */
     private void loadProducts(String category) {
-        productsGrid.getChildren().clear();
-        List<Product> products = getProductsByCategory(category);
+        if (productsGrid == null) {
+            return;
+        }
+        
+        try {
+            productsGrid.getChildren().clear();
+            List<Product> products = getProductsByCategory(category);
 
-        int col = 0, row = 0;
-        for (Product product : products) {
-            VBox productCard = createProductCard(product);
-            productsGrid.add(productCard, col, row);
-            
-            col++;
-            if (col >= 3) { // 3 columns
-                col = 0;
-                row++;
+            int col = 0, row = 0;
+            for (Product product : products) {
+                VBox productCard = createProductCard(product);
+                productsGrid.add(productCard, col, row);
+                
+                col++;
+                if (col >= 3) {
+                    col = 0;
+                    row++;
+                }
             }
+        } catch (Exception e) {
+            System.err.println("Error loading products: " + e.getMessage());
         }
     }
 
@@ -143,7 +184,7 @@ public class SalesController {
             CartItem item = cartMap.get(key);
             item.quantity += quantity;
         } else {
-            CartItem item = new CartItem(product.getName(), product.getPrice(), quantity);
+            CartItem item = new CartItem(product.getName(), product.getPrice(), quantity, product.getCategory());
             cartMap.put(key, item);
         }
         
@@ -154,22 +195,30 @@ public class SalesController {
      * Update cart display
      */
     private void updateCartDisplay() {
-        cartItemsContainer.getChildren().clear();
-
-        double subtotal = 0;
-        
-        for (CartItem item : cartMap.values()) {
-            HBox itemRow = createCartItemRow(item);
-            cartItemsContainer.getChildren().add(itemRow);
-            subtotal += item.getTotalPrice();
+        if (cartItemsContainer == null || subtotalLabel == null || discountLabel == null || totalLabel == null) {
+            return;
         }
+        
+        try {
+            cartItemsContainer.getChildren().clear();
 
-        double discount = subtotal * 0.05; // 5% discount
-        double total = subtotal - discount;
+            double subtotal = 0;
+            
+            for (CartItem item : cartMap.values()) {
+                HBox itemRow = createCartItemRow(item);
+                cartItemsContainer.getChildren().add(itemRow);
+                subtotal += item.getTotalPrice();
+            }
 
-        subtotalLabel.setText(String.format("₹%.2f", subtotal));
-        discountLabel.setText(String.format("₹%.2f", discount));
-        totalLabel.setText(String.format("₹%.2f", total));
+            double discount = subtotal * 0.05;
+            double total = subtotal - discount;
+
+            subtotalLabel.setText(String.format("₹%.2f", subtotal));
+            discountLabel.setText(String.format("₹%.2f", discount));
+            totalLabel.setText(String.format("₹%.2f", total));
+        } catch (Exception e) {
+            System.err.println("Error updating cart: " + e.getMessage());
+        }
     }
 
     /**
@@ -196,9 +245,9 @@ public class SalesController {
             updateCartDisplay();
         });
 
-        Label totalLabel = new Label("₹" + String.format("%.2f", item.getTotalPrice()));
-        totalLabel.setPrefWidth(80);
-        totalLabel.setStyle("-fx-font-weight: bold;");
+        Label totalAmountLabel = new Label("₹" + String.format("%.2f", item.getTotalPrice()));
+        totalAmountLabel.setPrefWidth(80);
+        totalAmountLabel.setStyle("-fx-font-weight: bold;");
 
         Button removeBtn = new Button("Remove");
         removeBtn.setPrefWidth(80);
@@ -208,7 +257,7 @@ public class SalesController {
             updateCartDisplay();
         });
 
-        row.getChildren().addAll(nameLabel, priceLabel, qtySpinner, totalLabel, removeBtn);
+        row.getChildren().addAll(nameLabel, priceLabel, qtySpinner, totalAmountLabel, removeBtn);
         return row;
     }
 
@@ -226,9 +275,9 @@ public class SalesController {
         double discount = subtotal * 0.05;
         double total = subtotal - discount;
 
-        // Record sales
+        // Record sales with actual product categories
         for (CartItem item : cartMap.values()) {
-            SalesTracker.addSale(item.productName, "Sales", item.price, item.quantity);
+            SalesTracker.addSale(item.productName, item.category, item.price, item.quantity);
         }
 
         showAlert("Sale Confirmed", String.format(
@@ -255,7 +304,9 @@ public class SalesController {
      */
     @FXML
     private void onBackClick() {
-        Session.goBackFromCart(searchField);
+        // Close the current sales window
+        Stage stage = (Stage) searchField.getScene().getWindow();
+        stage.close();
     }
 
     /**
@@ -283,6 +334,34 @@ public class SalesController {
         }
 
         return filtered;
+    }
+
+    /**
+     * Search for products by name
+     */
+    private void searchProducts(String query) {
+        productsGrid.getChildren().clear();
+        List<Product> allProducts = getAllProducts();
+        List<Product> searchResults = new ArrayList<>();
+
+        String queryLower = query.toLowerCase();
+        for (Product p : allProducts) {
+            if (p.getName().toLowerCase().contains(queryLower)) {
+                searchResults.add(p);
+            }
+        }
+
+        int col = 0, row = 0;
+        for (Product product : searchResults) {
+            VBox productCard = createProductCard(product);
+            productsGrid.add(productCard, col, row);
+            
+            col++;
+            if (col >= 3) {
+                col = 0;
+                row++;
+            }
+        }
     }
 
     /**
@@ -345,11 +424,13 @@ public class SalesController {
         public String productName;
         public double price;
         public int quantity;
+        public String category;
 
-        public CartItem(String productName, double price, int quantity) {
+        public CartItem(String productName, double price, int quantity, String category) {
             this.productName = productName;
             this.price = price;
             this.quantity = quantity;
+            this.category = category;
         }
 
         public double getTotalPrice() {
@@ -357,4 +438,3 @@ public class SalesController {
         }
     }
 }
-

@@ -127,18 +127,43 @@ public class HomeController {
      */
     @FXML
     private void onSalesClick() {
-        // Open Sales POS interface
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
-                getClass().getResource("sales-view.fxml"));
+            System.out.println("🔄 Opening Sales page...");
+            statusLabel.setText("Opening Sales page...");
+            
+            java.net.URL salesViewUrl = HelloApplication.class.getResource("sales-view.fxml");
+            if (salesViewUrl == null) {
+                salesViewUrl = getClass().getResource("/com/example/demo/sales-view.fxml");
+            }
+            
+            if (salesViewUrl == null) {
+                String error = "CRITICAL: sales-view.fxml not found in resources!";
+                statusLabel.setText(error);
+                System.err.println("❌ " + error);
+                
+                // Construct a helpful tip
+                System.err.println("  Expected path: /com/example/demo/sales-view.fxml");
+                return;
+            }
+
+            System.out.println("✓ Found sales-view.fxml");
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(salesViewUrl);
             javafx.scene.layout.AnchorPane page = loader.load();
             
+            System.out.println("✓ Loaded FXML successfully");
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("💰 Sales - POS");
             stage.setScene(new javafx.scene.Scene(page, 1400, 750));
             stage.show();
+            
+            statusLabel.setText("✅ Sales page opened successfully");
+            System.out.println("✅ Sales page opened successfully");
         } catch (Exception e) {
-            statusLabel.setText("Error opening sales: " + e.getMessage());
+            String errorMsg = "Could not open Sales page: " + e.getMessage();
+            statusLabel.setText(errorMsg);
+            System.err.println("❌ " + errorMsg);
+            System.err.println("Exception type: " + e.getClass().getName());
+            e.printStackTrace();
         }
     }
 
