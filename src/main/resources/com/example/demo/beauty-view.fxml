@@ -37,11 +37,6 @@
                 <Insets right="15" />
             </HBox.margin>
         </Button>
-        <Button onAction="#onOpenCart" styleClass="beauty-cart-btn" text="🛒 Cart">
-            <HBox.margin>
-                <Insets right="30" />
-            </HBox.margin>
-        </Button>
         <Button onAction="#onBackToHome" styleClass="beauty-back-btn" text="🏠 Back to Home" />
     </HBox>
 
@@ -71,309 +66,146 @@
                 <Button fx:id="btnHaircare" onAction="#onFilterHaircare" styleClass="beauty-filter" text="💇 Haircare" />
             </HBox>
 
-            <!-- Product Grid - 12 Beauty Products -->
-            <GridPane fx:id="productGrid" alignment="CENTER" hgap="20" vgap="20">
+            <!-- Product List - 12 Beauty Products -->
+            <VBox fx:id="productList" spacing="10">
 
                 <!-- Row 1: Skincare Products -->
                 <!-- Product 1 - Face Cream -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Skincare" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <VBox styleClass="beauty-list-row" userData="Skincare" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/facecream.png" />
-                        </ImageView>
-                        <Label styleClass="product-discount-badge" text="🔥 25% OFF" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets right="0" top="0" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Vitamin C Face Cream" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳1,125 (was ৳1,500)" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Vitamin C Face Cream" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳1,125 | was ৳1,500" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Product 2 - Serum -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Skincare" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <VBox styleClass="beauty-list-row" userData="Skincare" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/acidserum.png" />
-                        </ImageView>
-                        <Label styleClass="product-discount-badge" text="🔥 30% OFF" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets right="0" top="0" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Hyaluronic Acid Serum" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳1,400 (was ৳2,000)" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Hyaluronic Acid Serum" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳1,400 | was ৳2,000" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Product 3 - Face Wash -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Skincare" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <VBox styleClass="beauty-list-row" userData="Skincare" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/foamcleanser.png" />
-                        </ImageView>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Gentle Foam Cleanser" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳800" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Gentle Foam Cleanser" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳800" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Row 2: Makeup Products -->
                 <!-- Product 4 - Lipstick -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Makeup" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <VBox styleClass="beauty-list-row" userData="Makeup" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/hairoil_cropped.png" />
-                        </ImageView>
-                        <Label styleClass="product-discount-badge" text="🔥 15% OFF" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets right="0" top="0" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Matte Lipstick Set" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳850 (was ৳1,000)" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Matte Lipstick Set" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳850 | was ৳1,000" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Product 5 - Foundation -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Makeup" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <VBox styleClass="beauty-list-row" userData="Makeup" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/foundation_cropped.png" />
-                        </ImageView>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="HD Foundation" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳2,000" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="HD Foundation" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳2,000" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Product 6 - Eyeshadow -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Makeup" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                <VBox styleClass="beauty-list-row" userData="Makeup" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/eyeshadow.png" />
-                        </ImageView>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Eyeshadow Palette" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳2,000" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Eyeshadow Palette" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳2,000" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Row 3: Haircare Products -->
                 <!-- Product 7 - Shampoo -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Haircare" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <VBox styleClass="beauty-list-row" userData="Haircare" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/shampp_1_cropped.png" />
-                        </ImageView>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Keratin Repair Shampoo" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳900" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Keratin Repair Shampoo" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳900" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Product 8 - Conditioner -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Haircare" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <VBox styleClass="beauty-list-row" userData="Haircare" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/deepconditioner.png" />
-                        </ImageView>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Deep Conditioner" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳1,000" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Deep Conditioner" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳1,000" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Product 9 - Hair Oil -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Haircare" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                <VBox styleClass="beauty-list-row" userData="Haircare" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/lipstickset_cropped.png" />
-                        </ImageView>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Argan Hair Oil" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳1,200" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Argan Hair Oil" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳1,200" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Row 4: Mixed Premium Products -->
                 <!-- Product 10 - Sunscreen -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Skincare" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                <VBox styleClass="beauty-list-row" userData="Skincare" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/sunscreen_1_cropped.png" />
-                        </ImageView>
-                        <Label styleClass="product-discount-badge" text="🔥 30% OFF" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets right="0" top="0" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="SPF 50+ Sunscreen" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳910 (was ৳1,300)" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="SPF 50+ Sunscreen" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳910 | was ৳1,300" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Product 11 - Mascara -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Makeup" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <VBox styleClass="beauty-list-row" userData="Makeup" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/mashkara_cropped.png" />
-                        </ImageView>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Volumizing Mascara" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳800" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Volumizing Mascara" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳800" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
 
                 <!-- Product 12 - Gents Face Wash -->
-                <VBox alignment="TOP_CENTER" prefHeight="340" prefWidth="290" spacing="8" styleClass="product-card" userData="Skincare" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                <VBox styleClass="beauty-list-row" userData="Skincare" alignment="CENTER_LEFT" spacing="6">
                     <padding>
-                        <Insets bottom="15" left="15" right="15" top="15" />
+                        <Insets bottom="14" left="14" right="14" top="14" />
                     </padding>
-                    <StackPane prefHeight="180" prefWidth="260" styleClass="product-image">
-                        <ImageView fitHeight="180" fitWidth="260" preserveRatio="true">
-                            <Image url="@../../../beautyimages/gernierman_1_cropped.png" />
-                        </ImageView>
-                    </StackPane>
-                    <Label alignment="CENTER" maxWidth="260" styleClass="product-name" text="Gents Face Wash" wrapText="true" />
-                    <Label styleClass="product-price-discount" text="৳1,500" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <HBox alignment="CENTER" spacing="8">
-                        <Button onAction="#onAddToCart" styleClass="add-cart-btn" text="🛒 Add to Cart" />
-                        <HBox alignment="CENTER" spacing="4" styleClass="qty-box">
-                            <Button styleClass="arrow-btn" text="▼" />
-                            <Label styleClass="qty-count" text="1" />
-                            <Button styleClass="arrow-btn" text="▲" />
-                        </HBox>
-                    </HBox>
+                    <Label styleClass="product-name" text="Gents Face Wash" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT"/>
+                    <Label styleClass="product-id-label" text="ID: Loading..." />
+                    <Label styleClass="product-price-discount" text="Price: ৳1,500" wrapText="true" maxWidth="Infinity" alignment="CENTER_LEFT" />
+                    <Label styleClass="stock-label" text="Stock: 25" maxWidth="Infinity" alignment="CENTER_LEFT" />
                 </VBox>
-            <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
 
-            </GridPane>
+            </VBox>
 
             <!-- Status -->
             <Label fx:id="statusLabel" styleClass="beauty-status" text="✨ 12 Premium Beauty Products - 5 with Amazing Discounts!" />

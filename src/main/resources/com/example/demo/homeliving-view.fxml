@@ -2,10 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -25,11 +28,6 @@
         <Button text="➕ Add Product" onAction="#onToggleAddProduct" styleClass="admin-add-btn">
             <HBox.margin>
                 <Insets right="15" />
-            </HBox.margin>
-        </Button>
-        <Button text="🛒 Cart" onAction="#onOpenCart" styleClass="homeliving-cart-btn">
-            <HBox.margin>
-                <Insets right="30" />
             </HBox.margin>
         </Button>
         <Button text="🏠 Back to Home" onAction="#onBackToHome" styleClass="homeliving-back-btn" />
@@ -60,217 +58,108 @@
                 <Button fx:id="btnKitchen" text="🍳 Kitchen" onAction="#onFilterKitchen" styleClass="homeliving-filter" />
             </HBox>
 
-            <!-- Product Grid - 12 Home & Living Products -->
-            <GridPane fx:id="productGrid" hgap="20" vgap="20" alignment="CENTER">
+            <!-- Product List - 12 Home & Living Products -->
+            <GridPane fx:id="productGrid" hgap="0" vgap="10" alignment="TOP_LEFT">
 
-                <!-- Row 1: Furniture Products -->
-                <!-- Product 1 - Sofa Set -->
-                <VBox userData="Furniture" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🛋️" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 20% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="3-Seater Sofa Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳32,000 (was ৳40,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
+                <VBox userData="Furniture" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="3-Seater Sofa Set" styleClass="product-name" />
+                    <Label text="ID: H_SofaSet" styleClass="product-id-label" />
+                    <Label text="Price: ৳32,000 (was ৳40,000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 2 - Dining Table -->
-                <VBox userData="Furniture" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🪑" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Dining Table 6-Seater" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳22,500 (was ৳30,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
+                <VBox userData="Furniture" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Dining Table 6-Seater" styleClass="product-name" />
+                    <Label text="ID: H_DiningTable" styleClass="product-id-label" />
+                    <Label text="Price: ৳22,500 (was ৳30,000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 3 - Bed Frame -->
-                <VBox userData="Furniture" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🛏️" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 18% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="King Size Bed Frame" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳24,600 (was ৳30,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
+                <VBox userData="Furniture" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="King Size Bed Frame" styleClass="product-name" />
+                    <Label text="ID: H_BedFrame" styleClass="product-id-label" />
+                    <Label text="Price: ৳24,600 (was ৳30,000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Row 2: Decor Products -->
-                <!-- Product 4 - Wall Art -->
-                <VBox userData="Decor" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🖼️" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 30% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Modern Wall Art Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳2,800 (was ৳4,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
+                <VBox userData="Decor" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Modern Wall Art Set" styleClass="product-name" />
+                    <Label text="ID: H_WallArt" styleClass="product-id-label" />
+                    <Label text="Price: ৳2,800 (was ৳4,000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 5 - Table Lamp -->
-                <VBox userData="Decor" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="💡" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 22% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Designer Table Lamp" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳1,560 (was ৳2,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
+                <VBox userData="Decor" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Designer Table Lamp" styleClass="product-name" />
+                    <Label text="ID: H_TableLamp" styleClass="product-id-label" />
+                    <Label text="Price: ৳1,560 (was ৳2,000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 6 - Curtains -->
-                <VBox userData="Decor" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🪟" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Blackout Curtains Pair" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳3,000 (was ৳4,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
+                <VBox userData="Decor" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Blackout Curtains Pair" styleClass="product-name" />
+                    <Label text="ID: H_Curtains" styleClass="product-id-label" />
+                    <Label text="Price: ৳3,000 (was ৳4,000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Row 3: Kitchen Products -->
-                <!-- Product 7 - Cookware Set -->
-                <VBox userData="Kitchen" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🍳" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 28% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Non-Stick Cookware Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳3,600 (was ৳5,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
+                <VBox userData="Kitchen" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="6">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Non-Stick Cookware Set" styleClass="product-name" />
+                    <Label text="ID: H_Cookware" styleClass="product-id-label" />
+                    <Label text="Price: ৳3,600 (was ৳5,000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 8 - Blender -->
-                <VBox userData="Kitchen" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🥤" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 20% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Multi-Speed Blender" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳4,000 (was ৳5,000)" styleClass="product-price-discount" wrapText="true" maxWidth="260" alignment="CENTER" />
+                <VBox userData="Kitchen" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="7">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Multi-Speed Blender" styleClass="product-name" />
+                    <Label text="ID: H_Blender" styleClass="product-id-label" />
+                    <Label text="Price: ৳4,000 (was ৳5,000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 9 - Knife Set -->
-                <VBox userData="Kitchen" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🔪" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Professional Knife Set" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳2250  (was ৳3000)" styleClass="product-price-discount" />
+                <VBox userData="Kitchen" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="8">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Professional Knife Set" styleClass="product-name" />
+                    <Label text="ID: H_KnifeSet" styleClass="product-id-label" />
+                    <Label text="Price: ৳2250 (was ৳3000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Row 4: Mixed Premium Products -->
-                <!-- Product 10 - Wardrobe -->
-                <VBox userData="Furniture" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="3">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🚪" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 22% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="3-Door Wardrobe" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳27300  (was ৳35000)" styleClass="product-price-discount" />
+                <VBox userData="Furniture" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="9">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="3-Door Wardrobe" styleClass="product-name" />
+                    <Label text="ID: H_Wardrobe" styleClass="product-id-label" />
+                    <Label text="Price: ৳27300 (was ৳35000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 11 - Rug -->
-                <VBox userData="Decor" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="🧶" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 30% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Persian Style Rug 6x9" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳7000  (was ৳10000)" styleClass="product-price-discount" />
+                <VBox userData="Decor" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="10">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Persian Style Rug 6x9" styleClass="product-name" />
+                    <Label text="ID: H_Rug" styleClass="product-id-label" />
+                    <Label text="Price: ৳7000 (was ৳10000)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
-                <!-- Product 12 - Coffee Maker -->
-                <VBox userData="Kitchen" styleClass="product-card" prefWidth="290" prefHeight="360" alignment="TOP_CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-                    <StackPane prefWidth="260" prefHeight="200" styleClass="product-image">
-                        <Label text="☕" style="-fx-font-size: 64px;" />
-                        <Label text="🔥 25% OFF" styleClass="product-discount-badge" StackPane.alignment="TOP_RIGHT">
-                            <StackPane.margin>
-                                <Insets top="10" right="10" />
-                            </StackPane.margin>
-                        </Label>
-                    </StackPane>
-                    <Label text="Automatic Coffee Maker" styleClass="product-name" wrapText="true" maxWidth="260" alignment="CENTER" />
-                    <Label text="৳5625  (was ৳7500)" styleClass="product-price-discount" />
+                <VBox userData="Kitchen" styleClass="product-card" prefWidth="920" prefHeight="120" alignment="CENTER_LEFT" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="11">
+                    <padding><Insets top="14" right="14" bottom="14" left="14" /></padding>
+                    <Label text="Automatic Coffee Maker" styleClass="product-name" />
+                    <Label text="ID: H_CoffeeMaker" styleClass="product-id-label" />
+                    <Label text="Price: ৳5625 (was ৳7500)" styleClass="product-price-discount" />
+                    <Label text="Stock: 25" styleClass="stock-label" />
                 </VBox>
 
+                <columnConstraints>
+                    <ColumnConstraints />
+                </columnConstraints>
             </GridPane>
 
             <!-- Status -->
@@ -304,7 +193,7 @@
                 <!-- Image Preview -->
                 <VBox alignment="CENTER" spacing="10">
                     <StackPane prefHeight="140" prefWidth="180" styleClass="image-preview-box">
-                        <javafx.scene.image.ImageView fx:id="previewImageView" fitHeight="130" fitWidth="170" preserveRatio="true" />
+                        <ImageView fx:id="previewImageView" fitHeight="130" fitWidth="170" preserveRatio="true" />
                         <Label fx:id="noImageLabel" text="📷 No Image Selected" styleClass="no-image-label" />
                     </StackPane>
                     <Button onAction="#onChooseImage" styleClass="choose-image-btn" text="📁 Choose Image" />
@@ -331,7 +220,7 @@
                 <!-- Product Category -->
                 <VBox alignment="CENTER_LEFT" spacing="5">
                     <Label styleClass="form-label" text="Category:" />
-                    <javafx.scene.control.ComboBox fx:id="categoryComboBox" prefHeight="40" prefWidth="420" promptText="Select Category" styleClass="form-combobox" />
+                    <ComboBox fx:id="categoryComboBox" prefHeight="40" prefWidth="420" promptText="Select Category" styleClass="form-combobox" />
                 </VBox>
 
                 <!-- Action Buttons -->

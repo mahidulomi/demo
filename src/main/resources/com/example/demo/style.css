@@ -2410,3 +2410,24 @@
     -fx-background-color: #c0392b;
 }
 
+/* Beauty page list-only rows */
+.beauty-list-row {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-color: #e7eaf0;
+    -fx-border-radius: 10;
+    -fx-padding: 14;
+}
+
+.beauty-list-row .product-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1f2937;
+}
+
+.product-id-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7280;
+    -fx-font-weight: 600;
+}
+
