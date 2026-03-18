@@ -277,7 +277,14 @@ public class HomeController {
 
     @FXML
     private void openHomeLiving() {
-        Session.goToHomeLiving(statusLabel);
+        try {
+            System.out.println("Opening Home & Living...");
+            statusLabel.setText("Opening Home & Living...");
+            Session.goToHomeLiving(statusLabel);
+        } catch (Exception e) {
+            e.printStackTrace();
+            statusLabel.setText("Error: " + e.getMessage());
+        }
     }
 
     @FXML

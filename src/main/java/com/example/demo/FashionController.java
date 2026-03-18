@@ -6,6 +6,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.control.ComboBox;
+import java.io.File;
+import java.net.URI;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 
 import java.util.Locale;
 
@@ -35,23 +45,58 @@ public class FashionController {
     @FXML
     private TextField searchField;
 
+    // Add Product Panel fields
+    @FXML
+    private VBox addProductPanel;
+
+    @FXML
+    private StackPane overlayPane;
+
+    @FXML
+    private ImageView previewImageView;
+
+    @FXML
+    private Label noImageLabel;
+
+    @FXML
+    private TextField productNameField;
+
+    @FXML
+    private TextField productPriceField;
+
+    @FXML
+    private TextField stockQuantityField;
+
+    @FXML
+    private ComboBox<String> categoryComboBox;
+
+    @FXML
+    private Label addProductStatus;
+
+    // Store selected image file
+    private File selectedImageFile = null;
+
     // Store all products on initialization
-    private java.util.List<javafx.scene.layout.VBox> allProductCards = null;
+    private java.util.List<VBox> allProductCards = null;
+
+    // ── Networking: productId → UI node maps ─────────────────────────────────
+    private final java.util.Map<String, Label>  netStockLabels  = new java.util.HashMap<>();
+    private final java.util.Map<String, Button> netAddBtns      = new java.util.HashMap<>();
+    private final java.util.Map<VBox, String>   cardProductIds  = new java.util.HashMap<>();
+    private final java.util.Map<String, Label>  cartStatusLabels = new java.util.HashMap<>();
 
     @FXML
     private void initialize() {
         statusLabel.setText("✨ 12 Beautiful Products - All with Amazing Discounts!");
 
-        // Store all products on initialization before any filtering
-        if (productGrid != null) {
-            allProductCards = new java.util.ArrayList<>();
-            for (javafx.scene.Node node : productGrid.getChildren()) {
-                if (node instanceof javafx.scene.layout.VBox) {
-                    allProductCards.add((javafx.scene.layout.VBox) node);
-                }
-            }
-            System.out.println("✓ Fashion: Stored " + allProductCards.size() + " products for search");
+        // Initialize category combo box
+        if (categoryComboBox != null) {
+            categoryComboBox.getItems().addAll("Baby", "Male", "Female");
+            categoryComboBox.setValue("Baby");
         }
+
+        // Setup arrow button click handlers for quantity increase/decrease
+        setupArrowButtons();
 
         // Setup search field action
         if (searchField != null) {
@@ -133,6 +178,613 @@ public class FashionController {
         System.out.println("✓ Search completed: " + matchCount + " matches for \"" + query + "\"");
     }
 
+    // ==================== ADD PRODUCT METHODS ====================
+
+    @FXML
+    private void onToggleAddProduct() {
+        if (addProductPanel != null) {
+            boolean isVisible = addProductPanel.isVisible();
+            showAddProductPanel(!isVisible);
+        }
+    }
+
+    private void showAddProductPanel(boolean show) {
+        if (addProductPanel != null) {
+            addProductPanel.setVisible(show);
+            addProductPanel.setManaged(show);
+        }
+        if (overlayPane != null) {
+            overlayPane.setVisible(show);
+            overlayPane.setManaged(show);
+        }
+        if (show) {
+            resetAddProductForm();
+        }
+    }
+
+    @FXML
+    private void onChooseImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Product Image");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        File file = fileChooser.showOpenDialog(addProductPanel.getScene().getWindow());
+
+        if (file != null) {
+            selectedImageFile = file;
+            try {
+                Image image = new Image(file.toURI().toString());
+                previewImageView.setImage(image);
+                noImageLabel.setVisible(false);
+                addProductStatus.setText("✓ Image selected: " + file.getName());
+                addProductStatus.setStyle("-fx-text-fill: #27ae60;");
+            } catch (Exception e) {
+                addProductStatus.setText("❌ Error loading image!");
+                addProductStatus.setStyle("-fx-text-fill: #e74c3c;");
+            }
+        }
+    }
+
+    @FXML
+    private void onCancelAddProduct() {
+        showAddProductPanel(false);
+    }
+
+    @FXML
+    private void onSubmitProduct() {
+        String productName = productNameField.getText().trim();
+        String priceText = productPriceField.getText().trim();
+        String stockText = stockQuantityField.getText().trim();
+        String category = categoryComboBox.getValue();
+
+        if (productName.isEmpty()) {
+            addProductStatus.setText("❌ Please enter product name!");
+            addProductStatus.setStyle("-fx-text-fill: #e74c3c;");
+            return;
+        }
+
+        if (priceText.isEmpty()) {
+            addProductStatus.setText("❌ Please enter product price!");
+            addProductStatus.setStyle("-fx-text-fill: #e74c3c;");
+            return;
+        }
+
+        double price;
+        try {
+            price = Double.parseDouble(priceText.replace(",", ""));
+        } catch (NumberFormatException e) {
+            addProductStatus.setText("❌ Invalid price format!");
+            addProductStatus.setStyle("-fx-text-fill: #e74c3c;");
+            return;
+        }
+
+        if (stockText.isEmpty()) {
+            addProductStatus.setText("❌ Please enter stock quantity!");
+            addProductStatus.setStyle("-fx-text-fill: #e74c3c;");
+            return;
+        }
+
+        int stockQuantity;
+        try {
+            stockQuantity = Integer.parseInt(stockText.replace(",", ""));
+            if (stockQuantity < 0) {
+                addProductStatus.setText("❌ Stock quantity cannot be negative!");
+                addProductStatus.setStyle("-fx-text-fill: #e74c3c;");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            addProductStatus.setText("❌ Invalid stock quantity!");
+            addProductStatus.setStyle("-fx-text-fill: #e74c3c;");
+            return;
+        }
+
+        if (category == null || category.isEmpty()) {
+            addProductStatus.setText("❌ Please select a category!");
+            addProductStatus.setStyle("-fx-text-fill: #e74c3c;");
+            return;
+        }
+
+        // Create new product card with stock
+        VBox newProductCard = createProductCard(productName, price, category, selectedImageFile, stockQuantity);
+
+        // Register in StockManager with unique ID
+        String newProductId = "F_custom_" + System.currentTimeMillis();
+        String imagePath = selectedImageFile != null ? selectedImageFile.toURI().toString() : "";
+        StockManager.addStock(newProductId, productName, "Fashion", category, stockQuantity, price, imagePath);
+
+        // Add to network maps so real-time updates work for this card too
+        Label  newStockLabel = getStockLabelFromCard(newProductCard);
+        Button newAddBtn     = getAddBtnFromCard(newProductCard);
+        if (newStockLabel != null) netStockLabels.put(newProductId, newStockLabel);
+        if (newAddBtn     != null) netAddBtns.put(newProductId, newAddBtn);
+        cardProductIds.put(newProductCard, newProductId);
+
+        StockItem createdItem = new StockItem(newProductId, productName, "Fashion", category, stockQuantity, price, imagePath);
+        applyStockToCard(newProductId, stockQuantity);
+
+        // Broadcast new product to other machines
+        NetworkManager.getInstance().broadcastNewProduct(createdItem);
+
+        // Add to allProductCards list
+        allProductCards.add(newProductCard);
+
+        // Refresh the grid
+        refreshProductGrid();
+
+        // Show success message
+        addProductStatus.setText("✓ Product added successfully!");
+        addProductStatus.setStyle("-fx-text-fill: #27ae60;");
+        statusLabel.setText("✓ Added: " + productName + " (Stock: " + stockQuantity + ") | Total: " + allProductCards.size() + " products");
+
+        // Close panel after delay
+        new Thread(() -> {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+            javafx.application.Platform.runLater(() -> {
+                showAddProductPanel(false);
+            });
+        }).start();
+    }
+
+    private VBox createProductCard(String name, double price, String category, File imageFile, int stockQuantity) {
+        VBox card = new VBox(8);
+        card.setAlignment(Pos.TOP_CENTER);
+        card.setPrefWidth(290);
+        card.setPrefHeight(360);
+        card.getStyleClass().add("product-card");
+        card.setUserData(category);
+        card.setPadding(new Insets(15));
+
+        // Image StackPane
+        StackPane imagePane = new StackPane();
+        imagePane.setPrefSize(260, 200);
+        imagePane.getStyleClass().add("product-image");
+
+        ImageView imageView = new ImageView();
+        imageView.setFitWidth(260);
+        imageView.setFitHeight(200);
+        imageView.setPreserveRatio(true);
+
+        if (imageFile != null) {
+            try {
+                Image image = new Image(imageFile.toURI().toString());
+                imageView.setImage(image);
+                imagePane.getChildren().add(imageView);
+            } catch (Exception e) {
+                Label emojiLabel = new Label(getCategoryEmoji(category));
+                emojiLabel.setStyle("-fx-font-size: 64px;");
+                imagePane.getChildren().add(emojiLabel);
+            }
+        } else {
+            Label emojiLabel = new Label(getCategoryEmoji(category));
+            emojiLabel.setStyle("-fx-font-size: 64px;");
+            imagePane.getChildren().add(emojiLabel);
+        }
+
+        // NEW badge
+        Label newBadge = new Label("✨ NEW");
+        newBadge.getStyleClass().add("product-discount-badge");
+        StackPane.setAlignment(newBadge, Pos.TOP_RIGHT);
+        StackPane.setMargin(newBadge, new Insets(10, 10, 0, 0));
+        imagePane.getChildren().add(newBadge);
+
+        // Product Name
+        Label nameLabel = new Label(name);
+        nameLabel.getStyleClass().add("product-name");
+        nameLabel.setWrapText(true);
+        nameLabel.setMaxWidth(260);
+        nameLabel.setAlignment(Pos.CENTER);
+
+        // Product Price
+        Label priceLabel = new Label(String.format("৳%.0f", price));
+        priceLabel.getStyleClass().add("product-price-discount");
+        priceLabel.setWrapText(true);
+        priceLabel.setMaxWidth(260);
+        priceLabel.setAlignment(Pos.CENTER);
+
+        // Stock Label
+        Label stockLabel = new Label("📦 Stock: " + stockQuantity);
+        stockLabel.getStyleClass().add(getStockStyleClass(stockQuantity));
+
+        // Add to Cart section
+        HBox cartSection = new HBox(8);
+        cartSection.setAlignment(Pos.CENTER);
+
+        Button addBtn = new Button("🛒 Add to Cart");
+        addBtn.getStyleClass().add("add-cart-btn");
+        if (stockQuantity <= 0) {
+            addBtn.setText("❌ Out of Stock");
+            addBtn.setDisable(true);
+        }
+        addBtn.setOnAction(this::onAddToCart);
+
+        // Quantity box
+        HBox qtyBox = new HBox(4);
+        qtyBox.setAlignment(Pos.CENTER);
+        qtyBox.getStyleClass().add("qty-box");
+
+        Button downBtn = new Button("▼");
+        downBtn.getStyleClass().add("arrow-btn");
+
+        Label qtyLabel = new Label("1");
+        qtyLabel.getStyleClass().add("qty-count");
+
+        Button upBtn = new Button("▲");
+        upBtn.getStyleClass().add("arrow-btn");
+
+        final int maxStock = stockQuantity;
+        upBtn.setOnAction(e -> {
+            int qty = Integer.parseInt(qtyLabel.getText());
+            if (qty < maxStock) {
+                qtyLabel.setText(String.valueOf(qty + 1));
+            }
+        });
+
+        downBtn.setOnAction(e -> {
+            int qty = Integer.parseInt(qtyLabel.getText());
+            if (qty > 1) {
+                qtyLabel.setText(String.valueOf(qty - 1));
+            }
+        });
+
+        qtyBox.getChildren().addAll(downBtn, qtyLabel, upBtn);
+        cartSection.getChildren().addAll(addBtn, qtyBox);
+
+        card.getChildren().addAll(imagePane, nameLabel, priceLabel, stockLabel, cartSection);
+
+        return card;
+    }
+
+
+    private String getCategoryEmoji(String category) {
+        return switch (category) {
+            case "Baby" -> "👶";
+            case "Male" -> "👔";
+            case "Female" -> "👗";
+            default -> "✨";
+        };
+    }
+
+    private void refreshProductGrid() {
+        if (productGrid == null) return;
+
+        productGrid.getChildren().clear();
+
+        int row = 0;
+        int col = 0;
+        for (VBox productCard : allProductCards) {
+            productGrid.add(productCard, col, row);
+            col++;
+            if (col >= 3) {
+                col = 0;
+                row++;
+            }
+        }
+    }
+
+    private void resetAddProductForm() {
+        if (productNameField != null) productNameField.clear();
+        if (productPriceField != null) productPriceField.clear();
+        if (stockQuantityField != null) stockQuantityField.clear();
+        if (categoryComboBox != null) categoryComboBox.setValue("Baby");
+        if (previewImageView != null) previewImageView.setImage(null);
+        if (noImageLabel != null) noImageLabel.setVisible(true);
+        if (addProductStatus != null) addProductStatus.setText("");
+        selectedImageFile = null;
+    }
+
+    private File parseImageFile(String imagePath) {
+        if (imagePath == null || imagePath.isBlank()) return null;
+        try {
+            if (imagePath.startsWith("file:/")) {
+                return new File(new URI(imagePath));
+            }
+            return new File(imagePath);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get appropriate style class based on stock level
+     */
+    private String getStockStyleClass(int stock) {
+        if (stock <= 0) {
+            return "stock-label-out";
+        } else if (stock <= 10) {
+            return "stock-label-low";
+        } else {
+            return "stock-label";
+        }
+    }
+
+    private void syncCustomProductsFromStock() {
+        if (allProductCards == null) return;
+
+        boolean changed = false;
+        for (StockItem item : StockManager.getAllStockItems()) {
+            if (!"Fashion".equals(item.getCategory()) || !item.getProductId().startsWith("F_custom_")) {
+                continue;
+            }
+
+            if (!netStockLabels.containsKey(item.getProductId())) {
+                VBox productCard = createProductCard(
+                        item.getProductName(),
+                        item.getPrice(),
+                        item.getSubCategory(),
+                        parseImageFile(item.getImagePath()),
+                        item.getQuantity()
+                );
+
+                Label newStockLabel = getStockLabelFromCard(productCard);
+                Button newAddBtn = getAddBtnFromCard(productCard);
+                if (newStockLabel != null) netStockLabels.put(item.getProductId(), newStockLabel);
+                if (newAddBtn != null) netAddBtns.put(item.getProductId(), newAddBtn);
+                cardProductIds.put(productCard, item.getProductId());
+                allProductCards.add(productCard);
+                setupArrowButtons(productCard);
+                changed = true;
+            }
+
+            applyStockToCard(item.getProductId(), item.getQuantity());
+        }
+
+        if (changed) {
+            refreshProductGrid();
+        }
+    }
+
+    /**
+     * Setup arrow button click handlers for quantity increase/decrease
+     * Layout: [Add to Cart] [▼ 1 ▲]
+     */
+    private void setupArrowButtons() {
+        // Store all products on initialization before any filtering
+        if (productGrid != null) {
+            allProductCards = new java.util.ArrayList<>();
+            for (javafx.scene.Node node : productGrid.getChildren()) {
+                if (node instanceof VBox) {
+                    VBox productCard = (VBox) node;
+                    allProductCards.add(productCard);
+
+                    // Setup arrow button handlers for each product card
+                    setupArrowButtons(productCard);
+                }
+            }
+            System.out.println("✓ Fashion: Stored " + allProductCards.size() + " products for search");
+            // Wire up network UI maps (FXML-defined products)
+            buildNetworkMaps();
+        }
+
+        // Register as network listener
+        NetworkManager.getInstance().setCurrentListener(new StockUpdateListener() {
+            @Override
+            public void onStockUpdated(String productId, int newQuantity) {
+                handleNetworkStockUpdate(productId, newQuantity);
+            }
+
+            @Override
+            public void onProductCatalogChanged() {
+                syncCustomProductsFromStock();
+                refreshAllStockFromManager();
+            }
+        });
+        syncCustomProductsFromStock();
+        refreshAllStockFromManager();
+    }
+
+    private void setupArrowButtons(VBox productCard) {
+        // 1. Ensure there is an HBox with "Add to Cart" button
+        javafx.scene.layout.HBox actionBox = null;
+        Button addBtn = null;
+
+        // Search for existing
+        for (javafx.scene.Node node : productCard.getChildren()) {
+            if (node instanceof javafx.scene.layout.HBox hbox) {
+                for (javafx.scene.Node child : hbox.getChildren()) {
+                    if (child instanceof Button btn && (btn.getStyleClass().contains("add-cart-btn") || btn.getText().contains("Cart"))) {
+                        actionBox = hbox;
+                        addBtn = btn;
+                        break;
+                    }
+                }
+            }
+            if (actionBox != null) break;
+        }
+
+        // If not found, create it (Dynamically injecting UI!)
+        if (actionBox == null) {
+            addBtn = new Button("🛒 Add to Cart");
+            addBtn.getStyleClass().add("add-cart-btn");
+            addBtn.setOnAction(this::onAddToCart); 
+            
+            actionBox = new javafx.scene.layout.HBox(8, addBtn);
+            actionBox.setAlignment(javafx.geometry.Pos.CENTER);
+            productCard.getChildren().add(actionBox);
+        }
+
+        // 2. Add Quantity Controls if missing
+        boolean hasQty = false;
+        for (javafx.scene.Node child : actionBox.getChildren()) {
+            if (child.getStyleClass().contains("qty-box")) {
+                hasQty = true;
+                break;
+            }
+        }
+        
+        if (!hasQty) {
+             Button btnDown = new Button("▼");
+             btnDown.getStyleClass().add("arrow-btn");
+             Label lblQty = new Label("1");
+             lblQty.getStyleClass().add("qty-count");
+             Button btnUp = new Button("▲");
+             btnUp.getStyleClass().add("arrow-btn");
+             
+             javafx.scene.layout.HBox qtyBox = new javafx.scene.layout.HBox(4, btnDown, lblQty, btnUp);
+             qtyBox.setAlignment(javafx.geometry.Pos.CENTER);
+             qtyBox.getStyleClass().add("qty-box");
+             
+             actionBox.getChildren().add(qtyBox);
+             
+             // Add handlers
+             btnDown.setOnAction(e -> {
+                 int q = Integer.parseInt(lblQty.getText());
+                 if (q > 1) lblQty.setText(String.valueOf(q - 1));
+             });
+             
+             btnUp.setOnAction(e -> {
+                 int q = Integer.parseInt(lblQty.getText());
+                 if (q < 10) lblQty.setText(String.valueOf(q + 1));
+             });
+        }
+    }
+
+    /**
+     * Build productId → stock-label / add-button / cart-status-label maps.
+     * Creates stock labels dynamically for FXML cards that don't have them.
+     * Always syncs from StockManager so stock is correct after page navigation.
+     */
+    private void buildNetworkMaps() {
+        for (VBox productCard : allProductCards) {
+            String productName = getProductNameFromCard(productCard);
+            String productId   = StockManager.findProductIdByName(productName);
+            if (productId == null) continue;
+
+            cardProductIds.put(productCard, productId);
+
+            // ── Stock label: find existing or create new one ──
+            Label stockLabel = getStockLabelFromCard(productCard);
+            if (stockLabel == null) {
+                // FXML cards don't have stock labels — add one dynamically
+                stockLabel = new Label("📦 Stock: 25");
+                stockLabel.getStyleClass().add("stock-label");
+                stockLabel.setAlignment(javafx.geometry.Pos.CENTER);
+                stockLabel.setMaxWidth(Double.MAX_VALUE);
+                // Insert before the last child (the cart-section HBox)
+                int pos = Math.max(0, productCard.getChildren().size() - 1);
+                productCard.getChildren().add(pos, stockLabel);
+            }
+            netStockLabels.put(productId, stockLabel);
+
+            Button addBtn = getAddBtnFromCard(productCard);
+            if (addBtn != null) netAddBtns.put(productId, addBtn);
+
+            // ── Cart status label ──
+            Label cartStatus = new Label("");
+            cartStatus.setStyle("-fx-text-fill:#27ae60; -fx-font-size:12px; -fx-font-weight:bold;");
+            cartStatus.setAlignment(javafx.geometry.Pos.CENTER);
+            cartStatus.setMaxWidth(Double.MAX_VALUE);
+            cartStatus.setVisible(false);
+            cartStatus.setManaged(false);
+            // Insert before the last child (the cart-section HBox)
+            int insertIdx = Math.max(0, productCard.getChildren().size() - 1);
+            productCard.getChildren().add(insertIdx, cartStatus);
+            cartStatusLabels.put(productId, cartStatus);
+
+            // Restore "In Cart" badge if user already added this product
+            if (Cart.containsItem(productId)) {
+                int qty = Cart.getItem(productId).getQuantity();
+                cartStatus.setText("✅ In Cart: " + qty + " pcs");
+                cartStatus.setVisible(true);
+                cartStatus.setManaged(true);
+            }
+
+            // Always read stock from StockManager
+            int stock = StockManager.getStock(productId);
+            applyStockToCard(productId, stock);
+        }
+    }
+
+
+
+    private void refreshAllStockFromManager() {
+        for (String pid : netStockLabels.keySet()) {
+            int currentStock = StockManager.getStock(pid);
+            applyStockToCard(pid, currentStock);
+        }
+    }
+
+    private void handleNetworkStockUpdate(String productId, int newQuantity) {
+        javafx.application.Platform.runLater(() -> {
+            applyStockToCard(productId, newQuantity);
+        });
+    }
+
+    /**
+     * Updates the UI for a single product (label text, color, button disable).
+     */
+    private void applyStockToCard(String productId, int quantity) {
+        // 1. Update Label
+        Label lbl = netStockLabels.get(productId);
+        if (lbl != null) {
+            if (quantity <= 0) {
+                lbl.setText("❌ Out of Stock");
+                lbl.getStyleClass().removeAll("stock-label", "stock-label-low");
+                if (!lbl.getStyleClass().contains("stock-label-out")) {
+                    lbl.getStyleClass().add("stock-label-out");
+                }
+            } else if (quantity <= 5) {
+                lbl.setText("🔥 Low Stock: " + quantity);
+                lbl.getStyleClass().removeAll("stock-label", "stock-label-out");
+                if (!lbl.getStyleClass().contains("stock-label-low")) {
+                    lbl.getStyleClass().add("stock-label-low");
+                }
+            } else {
+                lbl.setText("📦 Stock: " + quantity);
+                lbl.getStyleClass().removeAll("stock-label-low", "stock-label-out");
+                if (!lbl.getStyleClass().contains("stock-label")) {
+                    lbl.getStyleClass().add("stock-label");
+                }
+            }
+        }
+
+        // 2. Disable/Enable "Add to Cart" button
+        Button btn = netAddBtns.get(productId);
+        if (btn != null) {
+            btn.setDisable(quantity <= 0);
+        }
+    }
+
+    private String getProductNameFromCard(VBox card) {
+        for (javafx.scene.Node n : card.getChildren()) {
+            if (n instanceof Label lbl && lbl.getStyleClass().contains("product-name")) {
+                return lbl.getText();
+            }
+        }
+        return "";
+    }
+
+    private Label getStockLabelFromCard(VBox card) {
+        for (javafx.scene.Node n : card.getChildren()) {
+            if (n instanceof Label lbl &&
+                (lbl.getStyleClass().contains("stock-label") ||
+                 lbl.getStyleClass().contains("stock-label-low") ||
+                 lbl.getStyleClass().contains("stock-label-out"))) {
+                return lbl;
+            }
+        }
+        return null;
+    }
+
+    private Button getAddBtnFromCard(VBox card) {
+        for (javafx.scene.Node n : card.getChildren()) {
+            if (n instanceof javafx.scene.layout.HBox hbox) {
+                for (javafx.scene.Node h : hbox.getChildren()) {
+                    if (h instanceof Button btn &&
+                            (btn.getStyleClass().contains("add-cart-btn"))) { // || btn.getText().contains("Cart"))) {
+                        return btn;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     @FXML
     private void onFilterAll() {
         updateFilterButtons("All");
@@ -181,75 +833,97 @@ public class FashionController {
 
         // Get parent HBox first, then VBox (product card)
         javafx.scene.Node parent = btn.getParent();
-        javafx.scene.layout.VBox card = null;
+        VBox card = null;
         
         if (parent instanceof javafx.scene.layout.HBox) {
-            // Button is inside HBox, get HBox's parent which is VBox
-            card = (javafx.scene.layout.VBox) parent.getParent();
-        } else if (parent instanceof javafx.scene.layout.VBox) {
-            // Direct parent is VBox
-            card = (javafx.scene.layout.VBox) parent;
+            card = (VBox) parent.getParent();
+        } else if (parent instanceof VBox) {
+            card = (VBox) parent;
         }
         
-        if (card == null) {
-            System.err.println("❌ Could not find product card!");
-            statusLabel.setText("❌ Error adding to cart!");
+        if (card == null) return;
+
+        // 1. Identify Product & Quantity
+        String productName = getProductNameFromCard(card);
+        String productId   = StockManager.findProductIdByName(productName);
+        if (productId == null) {
+             System.out.println("❌ Product ID not found for: " + productName);
+             return;
+        }
+
+        // Get selected quantity from UI
+        int selectedQty = 1;
+        if (parent instanceof javafx.scene.layout.HBox hbox) {
+             for (javafx.scene.Node node : hbox.getChildren()) {
+                 if (node instanceof javafx.scene.layout.HBox qtyBox) {
+                     for (javafx.scene.Node child : qtyBox.getChildren()) {
+                         if (child instanceof Label qtyLbl && qtyLbl.getStyleClass().contains("qty-count")) {
+                             try {
+                                 selectedQty = Integer.parseInt(qtyLbl.getText());
+                             } catch (NumberFormatException ignored) {}
+                         }
+                     }
+                 }
+             }
+        }
+        
+        // 2. Check Stock
+        int currentStock = StockManager.getStock(productId);
+        if (currentStock < selectedQty) {
+            statusLabel.setText("❌ Not enough stock! Available: " + currentStock);
             return;
         }
-        
-        String productName = "Product";
-        String productPrice = "0";
-        int discountPercent = 0;
-        String productId = "";
 
+        // 3. Get Price
+        double price = 0;
         for (javafx.scene.Node node : card.getChildren()) {
-            if (node instanceof Label) {
-                Label label = (Label) node;
-                if (label.getStyleClass().contains("product-name")) {
-                    productName = label.getText();
-                    productId = "F_" + productName.hashCode();
-                } else if (label.getStyleClass().contains("product-price-discount")) {
-                    String priceText = label.getText();
-                    if (priceText.contains("(was")) {
-                        String[] parts = priceText.split("\\(was");
-                        productPrice = parts[0].replace("BDT", "").replace(",", "").trim();
-                        String originalPrice = parts[1].replace("BDT", "").replace(")", "").replace(",", "").trim();
-                        try {
-                            double discounted = Double.parseDouble(productPrice);
-                            double original = Double.parseDouble(originalPrice);
-                            discountPercent = (int) Math.round((1 - discounted / original) * 100);
-                            productPrice = originalPrice;
-                        } catch (NumberFormatException e) {
-                            productPrice = "0";
-                        }
-                    } else {
-                        productPrice = priceText.replace("BDT", "").replace(",", "").trim();
-                    }
+            if (node instanceof Label label && label.getStyleClass().contains("product-price-discount")) {
+                String priceText = label.getText();
+                // Extract price logic
+                String priceStr = "0";
+                if (priceText.contains("(was")) {
+                    priceStr = priceText.split("\\(was")[0];
+                } else {
+                    priceStr = priceText;
                 }
+                priceStr = priceStr.replaceAll("[^0-9.]", "");
+                try { price = Double.parseDouble(priceStr); } catch (Exception e) {}
+                break;
             }
         }
 
-        // Add to cart
-        try {
-            double price = Double.parseDouble(productPrice);
-            Cart.addItem(productId, productName, "Fashion", price, 1, "", discountPercent);
-        } catch (NumberFormatException e) {
-            Cart.addItem(productId, productName, "Fashion", 0, 1, "", 0);
+        // 4. Update Stock (Local + Network)
+        boolean success = StockManager.reduceStock(productId, selectedQty);
+        if (success) {
+            // Send update to server
+             NetworkManager.getInstance().broadcastStockUpdate(productId, StockManager.getStock(productId));
+
+             // Add to cart
+             Cart.addItem(productId, productName, "Fashion", price, selectedQty, "", 0);
+
+             // Update UI
+             applyStockToCard(productId, StockManager.getStock(productId));
+             
+             // Update cart status badge
+             Label cartStatus = cartStatusLabels.get(productId);
+             if (cartStatus != null) {
+                 int cartQty = Cart.getItem(productId).getQuantity();
+                 cartStatus.setText("✅ In Cart: " + cartQty + " pcs");
+                 cartStatus.setVisible(true);
+                 cartStatus.setManaged(true);
+             }
+
+             btn.setText("✓ Added!");
+             statusLabel.setText("✓ Added to cart: " + productName + " (" + selectedQty + "x)");
+
+             // Reset button text
+             new Thread(() -> {
+                 try { Thread.sleep(1500); } catch (Exception e) {}
+                 javafx.application.Platform.runLater(() -> btn.setText(originalText));
+             }).start();
+        } else {
+             statusLabel.setText("❌ Failed to update stock. Try again.");
         }
-
-        // Update button and status
-        btn.setText("✓ Added!");
-        statusLabel.setText("✓ Added to cart: " + productName + " | Cart Total: " + Cart.getTotalQuantity() + " items");
-
-        // Reset button text after delay
-        new Thread(() -> {
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-            javafx.application.Platform.runLater(() -> btn.setText(originalText));
-        }).start();
     }
 
     private void updateFilterButtons(String activeFilter) {

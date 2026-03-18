@@ -64,6 +64,34 @@ public final class StockManager {
         addDefault("B_Sunscreen",    "SPF 50+ Sunscreen",        "Beauty", 25, 1300);
         addDefault("B_Mascara",      "Volumizing Mascara",       "Beauty", 25, 800);
         addDefault("B_GentsFaceWash","Gents Face Wash",          "Beauty", 25, 1500);
+
+        // Fashion - 12 Products
+        addDefault("F_BabyRomper",   "Baby Romper Set",          "Fashion", 25, 360);
+        addDefault("F_BabyDress",    "Baby Cotton Dress",        "Fashion", 25, 468);
+        addDefault("F_BabyShorts",   "Baby Summer Shorts",       "Fashion", 25, 263);
+        addDefault("F_MenShirt",     "Men's Casual Shirt",       "Fashion", 25, 900);
+        addDefault("F_MenJeans",     "Men's Denim Jeans",        "Fashion", 25, 1260);
+        addDefault("F_MenKurta",     "Men's Premium Kurta",      "Fashion", 25, 850);
+        addDefault("F_WomenKurti",   "Women's Designer Kurti",   "Fashion", 25, 760);
+        addDefault("F_WomenSaree",   "Women's Silk Saree",       "Fashion", 25, 2125);
+        addDefault("F_WomenSalwar",  "Women's Salwar Kameez",    "Fashion", 25, 1200);
+        addDefault("F_BabyJacket",   "Baby Winter Jacket",       "Fashion", 25, 840);
+        addDefault("F_MenHoodie",    "Men's Premium Hoodie",     "Fashion", 25, 1312);
+        addDefault("F_WomenLehenga", "Women's Lehenga Choli",    "Fashion", 25, 2450);
+
+        // Home & Living - 12 Products
+        addDefault("H_SofaSet",      "3-Seater Sofa Set",        "Home & Living", 25, 32000);
+        addDefault("H_DiningTable",  "Dining Table 6-Seater",    "Home & Living", 25, 22500);
+        addDefault("H_BedFrame",     "King Size Bed Frame",      "Home & Living", 25, 24600);
+        addDefault("H_WallArt",      "Modern Wall Art Set",      "Home & Living", 25, 2800);
+        addDefault("H_TableLamp",    "Designer Table Lamp",      "Home & Living", 25, 1560);
+        addDefault("H_Curtains",     "Blackout Curtains Pair",   "Home & Living", 25, 3000);
+        addDefault("H_Cookware",     "Non-Stick Cookware Set",   "Home & Living", 25, 3600);
+        addDefault("H_Blender",      "Multi-Speed Blender",      "Home & Living", 25, 4000);
+        addDefault("H_KnifeSet",     "Professional Knife Set",   "Home & Living", 25, 2250);
+        addDefault("H_Wardrobe",     "3-Door Wardrobe",          "Home & Living", 25, 27300);
+        addDefault("H_Rug",          "Persian Style Rug 6x9",    "Home & Living", 25, 7000);
+        addDefault("H_CoffeeMaker",  "Automatic Coffee Maker",   "Home & Living", 25, 5625);
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────
