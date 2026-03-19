@@ -89,18 +89,18 @@ public class HelloController {
         String password = safe(passwordField.getText());
 
         if (username.isEmpty() || password.isEmpty()) {
-            setError("Username & password required.");
+            setError("Gmail & password required.");
             return;
         }
 
         // If no users exist or this user doesn't exist yet, block login.
         if (!UserStore.userExists(username)) {
-            setError("No account found. Please Sign Up first.");
+            setError("No account found. Check your Gmail or Sign Up.");
             return;
         }
 
         if (!UserStore.validateLogin(username, password)) {
-            setError("Wrong username or password.");
+            setError("Wrong Gmail or password.");
             return;
         }
 

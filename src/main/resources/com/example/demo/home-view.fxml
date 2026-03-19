@@ -27,7 +27,7 @@
             <Button fx:id="productsBtn" text="📦 Products" prefWidth="150" onAction="#onProductsClick" styleClass="sidebar-btn" />
             <Button text="💰 Sales" prefWidth="150" onAction="#onSalesClick" styleClass="sidebar-btn" />
             <Button text="📥 Restock" prefWidth="150" onAction="#onRestockClick" styleClass="sidebar-btn" />
-            <Button text="👥 Customers" prefWidth="150" onAction="#openFashion" styleClass="sidebar-btn" />
+            <Button text="👥 Customers" prefWidth="150" onAction="#onCustomersClick" styleClass="sidebar-btn" />
             <Button text="📊 Reports" prefWidth="150" onAction="#onReportsClick" styleClass="sidebar-btn" />
 
             <Separator />
@@ -83,7 +83,7 @@
         <HBox spacing="15" prefHeight="50.0" styleClass="dashboard-action-row">
             <Button text="➕ Add Product" prefWidth="150" onAction="#openElectronics" styleClass="action-btn-blue" />
             <Button text="🛒 New Sale" prefWidth="150" onAction="#openCart" styleClass="action-btn-green" />
-            <Button text="👤 Add Customer" prefWidth="150" onAction="#openFashion" styleClass="action-btn-orange" />
+            <Button text="👤 Add Customer" prefWidth="150" onAction="#onCustomersClick" styleClass="action-btn-orange" />
             <Button text="📦 Restock Items" prefWidth="150" onAction="#openStock" styleClass="action-btn-purple" />
         </HBox>
 

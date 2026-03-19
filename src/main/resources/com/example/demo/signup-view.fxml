@@ -57,9 +57,9 @@
                         <PasswordField fx:id="confirmPasswordField" layoutX="57.0" layoutY="357.0" prefHeight="45.0" prefWidth="260.0"
                                        promptText="Re-type password" styleClass="modern-field" />
 
-                        <Label layoutX="57.0" layoutY="420.0" styleClass="field-label" text="Personal Data (for recovery)" />
+                        <Label layoutX="57.0" layoutY="420.0" styleClass="field-label" text="Phone Number" />
                         <TextField fx:id="personalDataField" layoutX="57.0" layoutY="447.0" prefHeight="45.0" prefWidth="260.0"
-                                   promptText="e.g., your favorite color" styleClass="modern-field" />
+                                   promptText="01XXXXXXXXX" styleClass="modern-field" />
 
                         <Button layoutX="57.0" layoutY="515.0" prefHeight="50.0" prefWidth="260.0" styleClass="login-button"
                                 text="CREATE ACCOUNT" onAction="#onCreateAccount" wrapText="true" />

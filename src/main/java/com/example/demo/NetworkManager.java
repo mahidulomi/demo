@@ -112,6 +112,14 @@ public class NetworkManager {
             client.sendSaleRecord(sale);
     }
 
+    public void broadcastCustomer(Customer customer) {
+        if (customer == null || mode == Mode.OFFLINE) return;
+        if (mode == Mode.SERVER && server != null)
+            server.broadcastCustomerToAllClients(customer);
+        else if (mode == Mode.CLIENT && client != null)
+            client.sendCustomerUpdate(customer);
+    }
+
     public void broadcastUserUpdate(String username) {
         for (String u : UserStore.getAllSerializedUsers()) {
             if (u.startsWith(username.toLowerCase() + "=")) {
@@ -171,6 +179,26 @@ public class NetworkManager {
                 currentListener.onSalesDataChanged();
             }
         });
+    }
+
+    public void onFullCustomerSync(List<Customer> customers) {
+        CustomerManager.replaceAllCustomers(customers);
+        Platform.runLater(() -> {
+            if (currentListener != null) {
+                // You might need a specific listener method for customers or just refresh UI
+            }
+        });
+        System.out.println("[NetworkManager] Full customer list synced.");
+    }
+    
+    public void onCustomerUpdateFromNetwork(String encodedCustomer) {
+        try {
+            Customer c = NetworkCodec.decodeCustomer(encodedCustomer);
+            CustomerManager.saveCustomer(c);
+            System.out.println("[NetworkManager] Customer synced: " + c.getName());
+        } catch (Exception e) {
+            System.err.println("[NetworkManager] Bad customer update: " + e.getMessage());
+        }
     }
 
     public void onFullUserSync(List<String> users) {
@@ -261,13 +289,16 @@ public class NetworkManager {
         return SalesManager.getSerializedSalesData();
     }
 
+    public String getFullCustomerData() {
+        return CustomerManager.getSerializedCustomerData();
+    }
+
     public String getFullUserData() {
-        List<String> raw = UserStore.getAllSerializedUsers();
-        List<String> encoded = new ArrayList<>();
-        for (String s : raw) {
-            encoded.add(NetworkCodec.encodeText(s));
+        List<String> encodedUsers = new ArrayList<>();
+        for (String u : UserStore.getAllSerializedUsers()) {
+            encodedUsers.add(NetworkCodec.encodeText(u));
         }
-        return String.join("|", encoded);
+        return NetworkCodec.joinRecords(encodedUsers);
     }
 
     public SaleRecord buildSaleRecord(List<CartItem> items, int totalQty, double totalAmount) {

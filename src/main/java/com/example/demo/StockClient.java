@@ -86,6 +86,12 @@ public class StockClient {
         }
     }
 
+    public void sendCustomerUpdate(Customer customer) {
+        if (out != null && connected) {
+            out.println("CUSTOMER_UPSERT:" + NetworkCodec.encodeCustomer(customer));
+        }
+    }
+
     public void sendUserUpdate(String userData) {
         if (out != null && connected) {
             out.println("USER_UPSERT:" + userData);
@@ -145,6 +151,18 @@ public class StockClient {
             }
             networkManager.onFullSalesSync(sales);
             System.out.println("[CLIENT] Full sales history synced from server (" + sales.size() + " sales)");
+        } else if (line.startsWith("CUSTOMERS_ALL:")) {
+            String data = line.substring("CUSTOMERS_ALL:".length());
+            List<Customer> customers = new ArrayList<>();
+            for (String record : NetworkCodec.splitRecords(data)) {
+                try {
+                    customers.add(NetworkCodec.decodeCustomer(record));
+                } catch (RuntimeException e) {
+                    System.err.println("[CLIENT] Skipping bad customer record: " + e.getMessage());
+                }
+            }
+            networkManager.onFullCustomerSync(customers);
+            System.out.println("[CLIENT] Full customer list synced from server (" + customers.size() + " customers)");
         } else if (line.startsWith("USERS_ALL:")) {
             String data = line.substring("USERS_ALL:".length());
             List<String> users = NetworkCodec.splitRecords(data);
@@ -156,6 +174,8 @@ public class StockClient {
             networkManager.onNewProductFromNetwork(line.substring("NEW_PRODUCT:".length()));
         } else if (line.startsWith("SALE_RECORD:")) {
             networkManager.onSaleRecordFromNetwork(line.substring("SALE_RECORD:".length()));
+        } else if (line.startsWith("CUSTOMER_UPSERT:")) {
+            networkManager.onCustomerUpdateFromNetwork(line.substring("CUSTOMER_UPSERT:".length()));
         } else if (line.startsWith("USER_UPSERT:")) {
             networkManager.onUserUpdateFromNetwork(line.substring("USER_UPSERT:".length()));
         }

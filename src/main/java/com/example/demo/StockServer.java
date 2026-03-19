@@ -84,6 +84,10 @@ public class StockServer {
         broadcastRawToAllClients("SALE_RECORD:" + NetworkCodec.encodeSaleRecord(sale));
     }
 
+    public void broadcastCustomerToAllClients(Customer customer) {
+        broadcastRawToAllClients("CUSTOMER_UPSERT:" + NetworkCodec.encodeCustomer(customer));
+    }
+
     public void broadcastUserToAllClients(String userData) {
         broadcastRawToAllClients("USER_UPSERT:" + userData);
     }
@@ -144,8 +148,9 @@ public class StockServer {
                 // Send full current product and sales state to the newly connected client
                 out.println("PRODUCT_ALL:" + networkManager.getFullProductData());
                 out.println("SALES_ALL:" + networkManager.getFullSalesData());
+                out.println("CUSTOMERS_ALL:" + networkManager.getFullCustomerData());
                 out.println("USERS_ALL:" + networkManager.getFullUserData());
-                System.out.println("[SERVER] Sent full catalog/sales/users snapshot to new client");
+                System.out.println("[SERVER] Sent full catalog/sales/users/customers snapshot to new client");
 
                 String line;
                 while (active && (line = in.readLine()) != null) {
@@ -180,6 +185,7 @@ public class StockServer {
             } else if (line.equals("GET_ALL")) {
                 out.println("PRODUCT_ALL:" + networkManager.getFullProductData());
                 out.println("SALES_ALL:" + networkManager.getFullSalesData());
+                out.println("CUSTOMERS_ALL:" + networkManager.getFullCustomerData());
                 out.println("USERS_ALL:" + networkManager.getFullUserData());
             } else if (line.startsWith("PRODUCT_UPSERT:")) {
                 networkManager.onNewProductFromNetwork(line.substring("PRODUCT_UPSERT:".length()));
@@ -190,6 +196,10 @@ public class StockServer {
             } else if (line.startsWith("SALE_RECORD:")) {
                 String saleData = line.substring("SALE_RECORD:".length());
                 networkManager.onSaleRecordFromNetwork(saleData);
+                broadcastRawToOthers(this, line);
+            } else if (line.startsWith("CUSTOMER_UPSERT:")) {
+                String customerData = line.substring("CUSTOMER_UPSERT:".length());
+                networkManager.onCustomerUpdateFromNetwork(customerData);
                 broadcastRawToOthers(this, line);
             } else if (line.startsWith("USER_UPSERT:")) {
                 String userData = line.substring("USER_UPSERT:".length());

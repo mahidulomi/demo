@@ -85,6 +85,34 @@ final class NetworkCodec {
         );
     }
 
+    static String encodeCustomer(Customer customer) {
+        return String.join(";",
+                encodeText(customer.getId()),
+                encodeText(customer.getName()),
+                encodeText(customer.getPhone()),
+                encodeText(customer.getEmail()),
+                encodeText(customer.getAddress()),
+                encodeText(customer.getType()),
+                Double.toString(customer.getDueBalance())
+        );
+    }
+
+    static Customer decodeCustomer(String payload) {
+        String[] parts = payload.split(";", -1);
+        if (parts.length < 7) {
+            throw new IllegalArgumentException("Invalid customer payload: " + payload);
+        }
+        return new Customer(
+                decodeText(parts[0]),
+                decodeText(parts[1]),
+                decodeText(parts[2]),
+                decodeText(parts[3]),
+                decodeText(parts[4]),
+                decodeText(parts[5]),
+                Double.parseDouble(parts[6])
+        );
+    }
+
     static String joinRecords(Collection<String> records) {
         return String.join("|", records);
     }

@@ -24,7 +24,7 @@ public class ForgotPasswordController {
 
     @FXML
     private void initialize() {
-        statusLabel.setText("Enter username + personal data, then set a new password.");
+        statusLabel.setText("Enter Gmail + Phone Number, then set a new password.");
     }
 
     @FXML
@@ -39,8 +39,20 @@ public class ForgotPasswordController {
             return;
         }
 
+        // Validate Gmail format
+        if (!username.toLowerCase().endsWith("@gmail.com")) {
+            setError("Please enter a valid Gmail address.");
+            return;
+        }
+
+        // Validate Phone Number format
+        if (!personalData.matches("\\d{11}")) {
+            setError("Phone number must be exactly 11 digits.");
+            return;
+        }
+
         if (!UserStore.userExists(username)) {
-            setError("No account found for this username.");
+            setError("No account found for this Gmail.");
             return;
         }
 

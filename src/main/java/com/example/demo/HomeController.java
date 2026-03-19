@@ -186,6 +186,20 @@ public class HomeController {
     }
 
     @FXML
+    private void onCustomersClick() {
+        try {
+            System.out.println("🔄 Opening Customers page...");
+            statusLabel.setText("Opening Customers page...");
+            Session.goToCustomers(statusLabel);
+            statusLabel.setText("✅ Customers page opened successfully");
+        } catch (Exception e) {
+            String errorMsg = "Could not open Customers page: " + e.getMessage();
+            statusLabel.setText(errorMsg);
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void onLogout() {
         Session.logoutToLogin(userLabel);
     }

@@ -39,6 +39,18 @@ public class SignUpController {
             return;
         }
 
+        // Validate Gmail
+        if (!username.toLowerCase().endsWith("@gmail.com")) {
+            setError("Please enter a valid Gmail address.");
+            return;
+        }
+
+        // Validate Phone Number (11 digits)
+        if (!personalData.matches("\\d{11}")) {
+            setError("Phone number must be exactly 11 digits.");
+            return;
+        }
+
         // Validate password length (6-8 characters)
         if (password.length() < 6 || password.length() > 8) {
             setError("Password must be 6-8 characters long.");
