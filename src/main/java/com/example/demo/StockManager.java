@@ -34,9 +34,11 @@ public final class StockManager {
         if (!stockData.containsKey(id)) {
             stockData.put(id, new StockItem(id, name, cat, cat, qty, price, imagePath));
         } else {
-            // If item exists but has no image, and we have a default image, update it
+            // If item exists but has no image (or has old /home/ or broken /extra/ path), update it
             StockItem existing = stockData.get(id);
-            if ((existing.getImagePath() == null || existing.getImagePath().isBlank())
+            if ((existing.getImagePath() == null || existing.getImagePath().isBlank() 
+                    || existing.getImagePath().startsWith("/home/") 
+                    || existing.getImagePath().startsWith("/extra/"))
                     && imagePath != null && !imagePath.isBlank()) {
                 existing.setImagePath(imagePath);
             }
@@ -79,15 +81,15 @@ public final class StockManager {
         addDefault("F_Sneakers",        "Sneakers",              "Fashion", 25, 2500, "");
 
         // --- HOME & LIVING ---
-        addDefault("H_Sofa",            "Luxury Sofa",           "Home and Living", 5, 25000, "/home/sofa.jpeg");
-        addDefault("H_HomeDecor",       "Home Decor Set",        "Home and Living", 15, 4500, "/home/decor.jpeg");
-        addDefault("H_Swing",           "Indoor Swing",          "Home and Living", 10, 8500, "/home/swing.jpeg");
-        addDefault("H_DiningTable",     "Dining Table",          "Home and Living", 5, 15000, "/home/dining_table.jpeg");
-        addDefault("H_CornerTable",     "Corner Table",          "Home and Living", 20, 3500, "/home/table.jpeg");
-        addDefault("H_BedSheet",        "Cotton Bed Sheet",      "Home and Living", 30, 2200, "/home/bed_sheet.jpeg");
-        addDefault("H_Cushion",         "Soft Fur Cushion",      "Home and Living", 50, 850, "/home/cushion.jpeg");
-        addDefault("H_WallClock",       "Lunar Wall Clock",      "Home and Living", 15, 3200, "/home/wall_clock.jpeg");
-        addDefault("H_TableLamp",       "Table Lamp",            "Home and Living", 25, 1500, "/home/lamp.jpeg");
+        addDefault("H_Sofa",            "Luxury Sofa",           "Home and Living", 5, 25000, "/extra/luxurysofa.jpg");
+        addDefault("H_HomeDecor",       "Home Decor Set",        "Home and Living", 15, 4500, "/extra/decorset.jpg");
+        addDefault("H_Swing",           "Indoor Swing",          "Home and Living", 10, 8500, "/extra/indorswing.jpg");
+        addDefault("H_DiningTable",     "Dining Table",          "Home and Living", 5, 15000, "/extra/dinningtable.jpg");
+        addDefault("H_CornerTable",     "Corner Table",          "Home and Living", 20, 3500, "/extra/cornertable.jpg");
+        addDefault("H_BedSheet",        "Cotton Bed Sheet",      "Home and Living", 30, 2200, "/extra/bedsit.jpg");
+        // REMOVED "H_Cushion" (Pillow/Soft Fur Cushion) as per request
+        addDefault("H_WallClock",       "Lunar Wall Clock",      "Home and Living", 15, 3200, "/extra/wallclock.jpg");
+        addDefault("H_TableLamp",       "Table Lamp",            "Home and Living", 25, 1500, "/extra/tablelamp.jpg");
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────
@@ -95,6 +97,10 @@ public final class StockManager {
     public static synchronized void initializeStock() {
         if (initialized) return;
         loadFromFile();   // load saved data first
+        // Remove H_Cushion if present (requested removal)
+        if (stockData.containsKey("H_Cushion")) {
+            stockData.remove("H_Cushion");
+        }
         loadDefaults();   // fill in any missing products with defaults
         saveToFile();     // persist combined state
         initialized = true;

@@ -162,14 +162,68 @@ public class SalesController {
         imageView.setFitWidth(120);
         imageView.setPreserveRatio(true);
         
+        boolean imageLoaded = false;
+        
+        // 1. Try standard path
         try {
             String imagePath = product.getImagePath();
             if (imagePath != null && !imagePath.isEmpty()) {
-                Image image = new Image(getClass().getResourceAsStream(imagePath));
-                imageView.setImage(image);
+                String resourcePath = imagePath.startsWith("/") ? imagePath : "/" + imagePath;
+                java.net.URL imgUrl = getClass().getResource(resourcePath);
+                if (imgUrl != null) {
+                    imageView.setImage(new Image(imgUrl.toExternalForm()));
+                    imageLoaded = true;
+                } else {
+                     // Try loading as absolute file path if not found in resources
+                     /* 
+                     try {
+                        java.io.File file = new java.io.File(imagePath);
+                        if (file.exists()) {
+                            imageView.setImage(new Image(file.toURI().toString()));
+                            imageLoaded = true;
+                        }
+                     } catch(Exception ex) {}
+                     */
+                }
             }
         } catch (Exception e) {
-            System.err.println("Could not load image: " + product.getImagePath());
+            // System.err.println("Could not load image: " + product.getImagePath());
+        }
+
+        // 2. If not loaded, try loading from /extra/ folder using Product Name
+        if (!imageLoaded) {
+            String[] extensions = {".jpg", ".png", ".jpeg", ".gif"};
+            String safeName = product.getName();
+            
+            // Try exact name match
+            for (String ext : extensions) {
+                try {
+                    String path = "/extra/" + safeName + ext;
+                    java.net.URL imgUrl = getClass().getResource(path);
+                    if (imgUrl != null) {
+                        imageView.setImage(new Image(imgUrl.toExternalForm()));
+                        imageLoaded = true;
+                        // System.out.println("Loaded extra image: " + path);
+                        break;
+                    }
+                } catch (Exception e) {}
+            }
+            
+            // Try remove spaces
+            if (!imageLoaded) {
+                 String noSpaceName = safeName.replace(" ", "");
+                 for (String ext : extensions) {
+                    try {
+                        String path = "/extra/" + noSpaceName + ext;
+                        java.net.URL imgUrl = getClass().getResource(path);
+                        if (imgUrl != null) {
+                            imageView.setImage(new Image(imgUrl.toExternalForm()));
+                            imageLoaded = true;
+                            break;
+                        }
+                    } catch (Exception e) {}
+                }
+            }
         }
 
         // Product Name
@@ -496,6 +550,7 @@ public class SalesController {
         }
 
         public String getName() { return name; }
+
         public String getCategory() { return category; }
         public double getPrice() { return price; }
         public int getStock() { return stock; }
