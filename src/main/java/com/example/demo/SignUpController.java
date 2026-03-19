@@ -59,6 +59,9 @@ public class SignUpController {
             return;
         }
 
+        // Broadcast to other machines so they know about this new user
+        NetworkManager.getInstance().broadcastUserUpdate(username);
+
         // Auto-login and go to home directly.
         Session.login(username);
         setSuccess("Account created! Opening home...");

@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Base64;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,6 +28,9 @@ public final class UserStore {
     private static final String ENCODED_PREFIX = "v2:";
 
     private static final Map<String, User> USERS = new ConcurrentHashMap<>();
+    private static final Object IO_LOCK = new Object();
+    private static volatile long lastKnownStoreTimestamp = -1L;
+    private static volatile long lastKnownLegacyTimestamp = -1L;
 
     // Legacy location used by older builds.
     private static final Path LEGACY_STORE_PATH = Path.of(
@@ -44,7 +49,11 @@ public final class UserStore {
     private UserStore() {}
 
     public static boolean userExists(String username) {
-        return username != null && USERS.containsKey(username.toLowerCase());
+        String key = normalizeUsername(username);
+        if (isBlank(key)) return false;
+
+        refreshFromDiskIfNeeded();
+        return USERS.containsKey(key);
     }
 
     /** Backwards-compatible overload (older accounts won't have recovery data). */
@@ -55,31 +64,40 @@ public final class UserStore {
     public static boolean createUser(String username, String password, String personalData) {
         if (isBlank(username) || isBlank(password)) return false;
 
-        String key = username.toLowerCase();
-        boolean created = USERS.putIfAbsent(key, new User(password, safe(personalData))) == null;
-        if (!created) {
-            return false;
-        }
+        String key = normalizeUsername(username);
+        synchronized (IO_LOCK) {
+            refreshFromDiskIfNeededLocked();
 
-        // Make sure "account created" means it is persisted too.
-        if (!saveToDiskSafe()) {
-            USERS.remove(key);
-            return false;
+            boolean created = USERS.putIfAbsent(key, new User(password, safe(personalData))) == null;
+            if (!created) {
+                return false;
+            }
+
+            // Make sure "account created" means it is persisted too.
+            if (!saveToDiskSafeLocked()) {
+                USERS.remove(key);
+                return false;
+            }
+            return true;
         }
-        return true;
     }
 
     public static boolean validateLogin(String username, String password) {
         if (isBlank(username) || isBlank(password)) return false;
 
-        String key = username.toLowerCase();
+        String key = normalizeUsername(username);
+        refreshFromDiskIfNeeded();
         User stored = USERS.get(key);
         return stored != null && stored.password().equals(password);
     }
 
     public static boolean verifyRecoveryData(String username, String personalData) {
         if (isBlank(username) || isBlank(personalData)) return false;
-        User user = USERS.get(username.toLowerCase());
+        String key = normalizeUsername(username);
+        if (isBlank(key)) return false;
+
+        refreshFromDiskIfNeeded();
+        User user = USERS.get(key);
         if (user == null) return false;
 
         // stored personal data may be blank for legacy accounts
@@ -88,28 +106,37 @@ public final class UserStore {
 
     public static boolean resetPassword(String username, String personalData, String newPassword) {
         if (isBlank(newPassword)) return false;
-        if (!verifyRecoveryData(username, personalData)) return false;
+        String key = normalizeUsername(username);
+        if (isBlank(key)) return false;
 
-        String key = username.toLowerCase();
-        User existing = USERS.get(key);
-        if (existing == null) return false;
+        synchronized (IO_LOCK) {
+            refreshFromDiskIfNeededLocked();
+            if (!verifyRecoveryDataInternal(key, personalData)) return false;
 
-        USERS.put(key, new User(newPassword, existing.personalData()));
-        if (!saveToDiskSafe()) {
-            USERS.put(key, existing);
-            return false;
+            User existing = USERS.get(key);
+            if (existing == null) return false;
+
+            USERS.put(key, new User(newPassword, existing.personalData()));
+            if (!saveToDiskSafeLocked()) {
+                USERS.put(key, existing);
+                return false;
+            }
+            return true;
         }
-        return true;
     }
 
     /** Package-private for tests. */
     static void clearInMemoryForTestOnly() {
-        USERS.clear();
+        synchronized (IO_LOCK) {
+            USERS.clear();
+        }
     }
 
     /** Package-private for tests. */
     static void reloadFromDiskForTestOnly() {
-        loadFromDisk();
+        synchronized (IO_LOCK) {
+            loadFromDiskLocked();
+        }
     }
 
     /** Package-private for tests. */
@@ -118,40 +145,73 @@ public final class UserStore {
     }
 
     private static void loadFromDisk() {
+        synchronized (IO_LOCK) {
+            loadFromDiskLocked();
+        }
+    }
+
+    private static void loadFromDiskLocked() {
         USERS.clear();
 
-        Path sourcePath = chooseReadableStorePath();
-        if (sourcePath == null) {
+        boolean activeExists = Files.exists(STORE_PATH);
+        boolean legacyExists = !STORE_PATH.equals(LEGACY_STORE_PATH) && Files.exists(LEGACY_STORE_PATH);
+
+        if (!activeExists && !legacyExists) {
             return;
         }
 
+        // Load active store first. It has higher precedence when the same username appears in both files.
+        if (activeExists) {
+            loadUsersFromPath(STORE_PATH, false);
+        }
+
+        // Load legacy store and keep only usernames that are missing in active store.
+        boolean mergedFromLegacy = false;
+        if (legacyExists) {
+            mergedFromLegacy = loadUsersFromPath(LEGACY_STORE_PATH, true);
+        }
+
+        // Persist migration/merge results into active location.
+        if (legacyExists && (!activeExists || mergedFromLegacy)) {
+            saveToDiskSafeLocked();
+        }
+
+        updateKnownStoreTimestamps();
+    }
+
+    private static boolean loadUsersFromPath(Path sourcePath, boolean onlyIfMissing) {
         Properties props = new Properties();
         try (InputStream in = Files.newInputStream(sourcePath)) {
             props.load(in);
         } catch (IOException e) {
             System.err.println("[UserStore] Failed to load users from " + sourcePath + ": " + e.getMessage());
-            return;
+            return false;
         }
 
+        boolean mergedAny = false;
         for (String name : props.stringPropertyNames()) {
             String value = props.getProperty(name);
             if (isBlank(name) || value == null) continue;
 
             User parsed = parseStoredUser(value);
-            if (parsed != null && !isBlank(parsed.password())) {
-                USERS.put(name.toLowerCase(), parsed);
+            if (parsed == null || isBlank(parsed.password())) {
+                continue;
+            }
+
+            String key = normalizeUsername(name);
+            User previous = onlyIfMissing ? USERS.putIfAbsent(key, parsed) : USERS.put(key, parsed);
+            if (previous == null) {
+                mergedAny = true;
             }
         }
-
-        // Migrate legacy file to active location once successfully loaded.
-        if (!sourcePath.equals(STORE_PATH)) {
-            saveToDiskSafe();
-        }
+        return mergedAny;
     }
 
-    private static boolean saveToDiskSafe() {
+
+    private static boolean saveToDiskSafeLocked() {
         try {
             saveToDisk();
+            updateKnownStoreTimestamps();
             return true;
         } catch (IOException e) {
             System.err.println("[UserStore] Failed to save users to " + STORE_PATH + ": " + e.getMessage());
@@ -186,6 +246,11 @@ public final class UserStore {
             return Path.of(override).toAbsolutePath().normalize();
         }
 
+        String envOverride = System.getenv("DEMO_USER_STORE");
+        if (!isBlank(envOverride)) {
+            return Path.of(envOverride).toAbsolutePath().normalize();
+        }
+
         String os = System.getProperty("os.name", "").toLowerCase();
         String appData = System.getenv("APPDATA");
         if (os.contains("win") && !isBlank(appData)) {
@@ -195,17 +260,6 @@ public final class UserStore {
         return LEGACY_STORE_PATH;
     }
 
-    private static Path chooseReadableStorePath() {
-        if (Files.exists(STORE_PATH)) {
-            return STORE_PATH;
-        }
-
-        if (!STORE_PATH.equals(LEGACY_STORE_PATH) && Files.exists(LEGACY_STORE_PATH)) {
-            return LEGACY_STORE_PATH;
-        }
-
-        return null;
-    }
 
     private static String serializeUser(User user) {
         return ENCODED_PREFIX + encode(user.password()) + "|" + encode(safe(user.personalData()));
@@ -242,6 +296,46 @@ public final class UserStore {
         return new User(password, safe(personalData));
     }
 
+    private static boolean verifyRecoveryDataInternal(String normalizedUsername, String personalData) {
+        if (isBlank(personalData)) return false;
+        User user = USERS.get(normalizedUsername);
+        if (user == null) return false;
+        return !isBlank(user.personalData()) && user.personalData().equalsIgnoreCase(personalData.trim());
+    }
+
+    private static String normalizeUsername(String username) {
+        if (username == null) return "";
+        return username.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private static void refreshFromDiskIfNeeded() {
+        synchronized (IO_LOCK) {
+            refreshFromDiskIfNeededLocked();
+        }
+    }
+
+    private static void refreshFromDiskIfNeededLocked() {
+        long activeTimestamp = getLastModifiedMillis(STORE_PATH);
+        long legacyTimestamp = getLastModifiedMillis(LEGACY_STORE_PATH);
+
+        if (activeTimestamp > lastKnownStoreTimestamp || legacyTimestamp > lastKnownLegacyTimestamp) {
+            loadFromDiskLocked();
+        }
+    }
+
+    private static void updateKnownStoreTimestamps() {
+        lastKnownStoreTimestamp = getLastModifiedMillis(STORE_PATH);
+        lastKnownLegacyTimestamp = getLastModifiedMillis(LEGACY_STORE_PATH);
+    }
+
+    private static long getLastModifiedMillis(Path path) {
+        try {
+            return Files.exists(path) ? Files.getLastModifiedTime(path).toMillis() : -1L;
+        } catch (IOException ex) {
+            return -1L;
+        }
+    }
+
     private static String encode(String raw) {
         return Base64.getEncoder().encodeToString(raw.getBytes(StandardCharsets.UTF_8));
     }
@@ -256,5 +350,34 @@ public final class UserStore {
 
     private static boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
+    }
+
+    public static List<String> getAllSerializedUsers() {
+        refreshFromDiskIfNeeded();
+        List<String> list = new java.util.ArrayList<>();
+        for (Map.Entry<String, User> entry : USERS.entrySet()) {
+             list.add(entry.getKey() + "=" + serializeUser(entry.getValue()));
+        }
+        return list;
+    }
+
+    public static void importUserFromNetwork(String networkData) {
+        // Expected format: username=serializedValue
+        int idx = networkData.indexOf('=');
+        if (idx == -1) return;
+
+        String username = networkData.substring(0, idx);
+        String value = networkData.substring(idx + 1);
+        
+        User parsed = parseStoredUser(value);
+        if (parsed == null) return;
+        
+        String key = normalizeUsername(username);
+        
+        synchronized (IO_LOCK) {
+            refreshFromDiskIfNeededLocked();
+            USERS.put(key, parsed);
+            saveToDiskSafeLocked();
+        }
     }
 }

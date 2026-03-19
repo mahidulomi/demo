@@ -34,6 +34,7 @@ public class NetworkManager {
 
     private StockUpdateListener currentListener;
     private Runnable serverStatusCallback;
+    private Runnable userSyncCallback;
 
     // ── Public API ────────────────────────────────────────────────────────────
 
@@ -77,6 +78,10 @@ public class NetworkManager {
         this.serverStatusCallback = callback;
     }
 
+    public void setUserSyncCallback(Runnable callback) {
+        this.userSyncCallback = callback;
+    }
+
     // ── Called by controllers when THIS machine changes stock ─────────────────
 
     /**
@@ -105,6 +110,20 @@ public class NetworkManager {
             server.broadcastSaleToAllClients(sale);
         else if (mode == Mode.CLIENT && client != null)
             client.sendSaleRecord(sale);
+    }
+
+    public void broadcastUserUpdate(String username) {
+        for (String u : UserStore.getAllSerializedUsers()) {
+            if (u.startsWith(username.toLowerCase() + "=")) {
+                String safePayload = NetworkCodec.encodeText(u);
+                
+                if (mode == Mode.SERVER && server != null)
+                    server.broadcastUserToAllClients(safePayload);
+                else if (mode == Mode.CLIENT && client != null)
+                    client.sendUserUpdate(safePayload);
+                return;
+            }
+        }
     }
 
     // ── Called by StockServer / StockClient when network messages arrive ──────
@@ -151,6 +170,25 @@ public class NetworkManager {
             if (currentListener != null) {
                 currentListener.onSalesDataChanged();
             }
+        });
+    }
+
+    public void onFullUserSync(List<String> users) {
+        for (String u : users) {
+             // Each user record is Base64 encoded text
+             UserStore.importUserFromNetwork(NetworkCodec.decodeText(u));
+        }
+        System.out.println("[NetworkManager] Full user list synced.");
+        Platform.runLater(() -> {
+            if (userSyncCallback != null) userSyncCallback.run();
+        });
+    }
+
+    public void onUserUpdateFromNetwork(String data) {
+        UserStore.importUserFromNetwork(NetworkCodec.decodeText(data));
+        System.out.println("[NetworkManager] User synced from network.");
+        Platform.runLater(() -> {
+            if (userSyncCallback != null) userSyncCallback.run();
         });
     }
 
@@ -221,6 +259,15 @@ public class NetworkManager {
 
     public String getFullSalesData() {
         return SalesManager.getSerializedSalesData();
+    }
+
+    public String getFullUserData() {
+        List<String> raw = UserStore.getAllSerializedUsers();
+        List<String> encoded = new ArrayList<>();
+        for (String s : raw) {
+            encoded.add(NetworkCodec.encodeText(s));
+        }
+        return String.join("|", encoded);
     }
 
     public SaleRecord buildSaleRecord(List<CartItem> items, int totalQty, double totalAmount) {

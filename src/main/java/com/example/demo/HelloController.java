@@ -15,10 +15,72 @@ public class HelloController {
     @FXML
     private Label welcomeText;
 
+    @FXML
+    private javafx.scene.layout.AnchorPane networkPane;
+
+    @FXML
+    private TextField serverIpField;
+
+    @FXML
+    private TextField serverPortField;
+
+    @FXML
+    private Label networkStatusLabel;
+
 
     @FXML
     private void initialize() {
         setInfo("Please login. If you don't have an account, click Sign Up.");
+        
+        // Listen for user sync completion
+        NetworkManager.getInstance().setUserSyncCallback(() -> {
+            javafx.application.Platform.runLater(() -> {
+                if (networkStatusLabel != null) networkStatusLabel.setText("✅ Users Synced Successfully!");
+            });
+        });
+    }
+
+    @FXML
+    private void onToggleNetwork() {
+        if (networkPane != null) {
+            networkPane.setVisible(!networkPane.isVisible());
+        }
+    }
+
+    @FXML
+    private void onNetworkConnect() {
+        String ip = safe(serverIpField.getText());
+        String portTxt = safe(serverPortField.getText());
+
+        if (ip.isEmpty() || portTxt.isEmpty()) {
+            if (networkStatusLabel != null) networkStatusLabel.setText("IP and Port required.");
+            return;
+        }
+
+        int port;
+        try {
+            port = Integer.parseInt(portTxt);
+        } catch (NumberFormatException e) {
+            if (networkStatusLabel != null) networkStatusLabel.setText("Invalid port.");
+            return;
+        }
+
+        if (networkStatusLabel != null) networkStatusLabel.setText("Connecting...");
+
+        new Thread(() -> {
+            try {
+                NetworkManager.getInstance().shutdown();
+                NetworkManager.getInstance().connectToServer(ip, port);
+                
+                javafx.application.Platform.runLater(() -> {
+                     if (networkStatusLabel != null) networkStatusLabel.setText("Connected! Waiting for users...");
+                });
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> {
+                    if (networkStatusLabel != null) networkStatusLabel.setText("Error: " + e.getMessage());
+                });
+            }
+        }).start();
     }
 
     @FXML

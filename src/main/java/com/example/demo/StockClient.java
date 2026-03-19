@@ -86,6 +86,12 @@ public class StockClient {
         }
     }
 
+    public void sendUserUpdate(String userData) {
+        if (out != null && connected) {
+            out.println("USER_UPSERT:" + userData);
+        }
+    }
+
     private void listen() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             String line;
@@ -139,13 +145,19 @@ public class StockClient {
             }
             networkManager.onFullSalesSync(sales);
             System.out.println("[CLIENT] Full sales history synced from server (" + sales.size() + " sales)");
+        } else if (line.startsWith("USERS_ALL:")) {
+            String data = line.substring("USERS_ALL:".length());
+            List<String> users = NetworkCodec.splitRecords(data);
+            networkManager.onFullUserSync(users);
+            System.out.println("[CLIENT] Full user list synced from server.");
         } else if (line.startsWith("PRODUCT_UPSERT:")) {
             networkManager.onNewProductFromNetwork(line.substring("PRODUCT_UPSERT:".length()));
         } else if (line.startsWith("NEW_PRODUCT:")) {
             networkManager.onNewProductFromNetwork(line.substring("NEW_PRODUCT:".length()));
         } else if (line.startsWith("SALE_RECORD:")) {
             networkManager.onSaleRecordFromNetwork(line.substring("SALE_RECORD:".length()));
+        } else if (line.startsWith("USER_UPSERT:")) {
+            networkManager.onUserUpdateFromNetwork(line.substring("USER_UPSERT:".length()));
         }
     }
 }
-

@@ -3,7 +3,11 @@ package com.example.demo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Properties;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,7 +56,8 @@ class UserStoreTest {
         assertTrue(Files.exists(UserStore.storePathForTestOnly()));
 
         UserStore.clearInMemoryForTestOnly();
-        assertFalse(UserStore.validateLogin(username, password));
+        // Store auto-refresh now repopulates from disk on demand.
+        assertTrue(UserStore.validateLogin(username, password));
 
         UserStore.reloadFromDiskForTestOnly();
         assertTrue(UserStore.validateLogin(username, password));
@@ -72,5 +77,31 @@ class UserStoreTest {
 
         assertTrue(UserStore.validateLogin(username, password));
         assertTrue(UserStore.verifyRecoveryData(username, personalData));
+    }
+
+    @Test
+    void validateLogin_autoRefreshesAfterExternalStoreChange() throws Exception {
+        String teammate = "teammate_" + UUID.randomUUID().toString().replace("-", "");
+        String teammatePass = "pass123";
+        Path storePath = UserStore.storePathForTestOnly();
+
+        assertTrue(UserStore.createUser("seed_" + UUID.randomUUID().toString().replace("-", ""), "12345", "x"));
+        assertFalse(UserStore.validateLogin(teammate, teammatePass));
+
+        // Ensure filesystem timestamp advances so change detection picks up this write.
+        Thread.sleep(1100);
+
+        Properties props = new Properties();
+        if (Files.exists(storePath)) {
+            try (InputStream in = Files.newInputStream(storePath)) {
+                props.load(in);
+            }
+        }
+        props.setProperty(teammate, teammatePass + "|blue");
+        try (OutputStream out = Files.newOutputStream(storePath)) {
+            props.store(out, "external update simulation");
+        }
+
+        assertTrue(UserStore.validateLogin(teammate, teammatePass));
     }
 }

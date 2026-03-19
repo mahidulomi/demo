@@ -79,10 +79,15 @@ public final class StockManager {
         addDefault("F_Sneakers",        "Sneakers",              "Fashion", 25, 2500, "");
 
         // --- HOME & LIVING ---
-        addDefault("H_BedSheet",        "Bed Sheet",             "Home and Living", 25, 1200, "");
-        addDefault("H_PillowSet",       "Pillow Set",            "Home and Living", 25, 900, "");
-        addDefault("H_TableLamp",       "Table Lamp",            "Home and Living", 25, 1500, "");
-        addDefault("H_WallClock",       "Wall Clock",            "Home and Living", 25, 1200, "");
+        addDefault("H_Sofa",            "Luxury Sofa",           "Home and Living", 5, 25000, "/home/sofa.jpeg");
+        addDefault("H_HomeDecor",       "Home Decor Set",        "Home and Living", 15, 4500, "/home/decor.jpeg");
+        addDefault("H_Swing",           "Indoor Swing",          "Home and Living", 10, 8500, "/home/swing.jpeg");
+        addDefault("H_DiningTable",     "Dining Table",          "Home and Living", 5, 15000, "/home/dining_table.jpeg");
+        addDefault("H_CornerTable",     "Corner Table",          "Home and Living", 20, 3500, "/home/table.jpeg");
+        addDefault("H_BedSheet",        "Cotton Bed Sheet",      "Home and Living", 30, 2200, "/home/bed_sheet.jpeg");
+        addDefault("H_Cushion",         "Soft Fur Cushion",      "Home and Living", 50, 850, "/home/cushion.jpeg");
+        addDefault("H_WallClock",       "Lunar Wall Clock",      "Home and Living", 15, 3200, "/home/wall_clock.jpeg");
+        addDefault("H_TableLamp",       "Table Lamp",            "Home and Living", 25, 1500, "/home/lamp.jpeg");
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────

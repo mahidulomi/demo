@@ -84,6 +84,10 @@ public class StockServer {
         broadcastRawToAllClients("SALE_RECORD:" + NetworkCodec.encodeSaleRecord(sale));
     }
 
+    public void broadcastUserToAllClients(String userData) {
+        broadcastRawToAllClients("USER_UPSERT:" + userData);
+    }
+
     /**
      * Broadcast stock update to all clients EXCEPT the sender.
      */
@@ -140,7 +144,8 @@ public class StockServer {
                 // Send full current product and sales state to the newly connected client
                 out.println("PRODUCT_ALL:" + networkManager.getFullProductData());
                 out.println("SALES_ALL:" + networkManager.getFullSalesData());
-                System.out.println("[SERVER] Sent full catalog/sales snapshot to new client");
+                out.println("USERS_ALL:" + networkManager.getFullUserData());
+                System.out.println("[SERVER] Sent full catalog/sales/users snapshot to new client");
 
                 String line;
                 while (active && (line = in.readLine()) != null) {
@@ -175,6 +180,7 @@ public class StockServer {
             } else if (line.equals("GET_ALL")) {
                 out.println("PRODUCT_ALL:" + networkManager.getFullProductData());
                 out.println("SALES_ALL:" + networkManager.getFullSalesData());
+                out.println("USERS_ALL:" + networkManager.getFullUserData());
             } else if (line.startsWith("PRODUCT_UPSERT:")) {
                 networkManager.onNewProductFromNetwork(line.substring("PRODUCT_UPSERT:".length()));
                 broadcastRawToOthers(this, line);
@@ -184,6 +190,10 @@ public class StockServer {
             } else if (line.startsWith("SALE_RECORD:")) {
                 String saleData = line.substring("SALE_RECORD:".length());
                 networkManager.onSaleRecordFromNetwork(saleData);
+                broadcastRawToOthers(this, line);
+            } else if (line.startsWith("USER_UPSERT:")) {
+                String userData = line.substring("USER_UPSERT:".length());
+                networkManager.onUserUpdateFromNetwork(userData);
                 broadcastRawToOthers(this, line);
             }
         }

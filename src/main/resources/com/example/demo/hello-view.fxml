@@ -96,6 +96,19 @@
 
                         <!-- Status label to show errors/success -->
                         <Label fx:id="welcomeText" layoutX="120.0" layoutY="530.0" prefWidth="260.0" wrapText="true" />
+
+                        <!-- Network Connection Section -->
+                        <Hyperlink layoutX="180.0" layoutY="600.0" text="Connect to Server" onAction="#onToggleNetwork"
+                                   style="-fx-text-fill: #666666; -fx-font-size: 12px;" />
+
+                        <AnchorPane fx:id="networkPane" layoutX="100.0" layoutY="630.0" prefHeight="100.0" prefWidth="300.0" visible="false" style="-fx-background-color: #f8f9fa; -fx-background-radius: 5px; -fx-border-color: #dee2e6; -fx-border-radius: 5px;">
+                             <children>
+                                 <TextField fx:id="serverIpField" layoutX="14.0" layoutY="14.0" prefWidth="130.0" promptText="Server IP" style="-fx-font-size: 11px;" />
+                                 <TextField fx:id="serverPortField" layoutX="150.0" layoutY="14.0" prefWidth="50.0" text="12345" style="-fx-font-size: 11px;" />
+                                 <Button layoutX="210.0" layoutY="14.0" text="Connect" onAction="#onNetworkConnect" style="-fx-font-size: 11px; -fx-background-color: #4a90e2; -fx-text-fill: white;" />
+                                 <Label fx:id="networkStatusLabel" layoutX="14.0" layoutY="50.0" prefWidth="270.0" text="" style="-fx-font-size: 10px; -fx-text-fill: #666666;" />
+                             </children>
+                        </AnchorPane>
                     </children>
                 </AnchorPane>
             </children>

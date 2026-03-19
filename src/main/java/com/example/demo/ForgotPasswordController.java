@@ -66,6 +66,9 @@ public class ForgotPasswordController {
             return;
         }
 
+        // Broadcast to network so other machines get the new password
+        NetworkManager.getInstance().broadcastUserUpdate(username);
+
         Session.login(username);
         setSuccess("Password updated! Opening home...");
         Session.goToHome(statusLabel);
