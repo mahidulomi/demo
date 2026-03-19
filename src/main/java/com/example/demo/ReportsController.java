@@ -209,8 +209,8 @@ public class ReportsController implements StockUpdateListener {
         try {
             // Unregister listener when leaving
             NetworkManager.getInstance().clearCurrentListener(this);
-            Stage stage = (Stage) salesTable.getScene().getWindow();
-            stage.close();
+            // Navigate to Home instead of closing
+            Session.goToHome(salesTable);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -225,4 +225,3 @@ public class ReportsController implements StockUpdateListener {
         statusLabel.setText("✅ History cleared successfully.");
     }
 }
-

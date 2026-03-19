@@ -26,6 +26,7 @@
             <Button text="🏠 Home" prefWidth="150" onAction="#onNavHome" styleClass="sidebar-btn-active" />
             <Button fx:id="productsBtn" text="📦 Products" prefWidth="150" onAction="#onProductsClick" styleClass="sidebar-btn" />
             <Button text="💰 Sales" prefWidth="150" onAction="#onSalesClick" styleClass="sidebar-btn" />
+            <Button text="📥 Restock" prefWidth="150" onAction="#onRestockClick" styleClass="sidebar-btn" />
             <Button text="👥 Customers" prefWidth="150" onAction="#openFashion" styleClass="sidebar-btn" />
             <Button text="📊 Reports" prefWidth="150" onAction="#onReportsClick" styleClass="sidebar-btn" />
 

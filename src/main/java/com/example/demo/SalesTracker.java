@@ -138,11 +138,32 @@ public class SalesTracker {
                 
                 // Parse items from JSON if available
                 String json = bill.getItemsJson();
+                boolean parsed = false;
+
                 if (json != null && json.length() > 5) {
+                    int countBefore = SALES.size();
                     parseAndAddItems(json, bill.getTimestamp());
-                } else {
+                    if (SALES.size() > countBefore) {
+                        parsed = true;
+                    }
+                } 
+                
+                if (!parsed) {
                     // Fallback for legacy records without JSON details is not easily possible
                     // as we don't know individual item prices/categories perfectly from summary string
+                    // BUT we must add something so total revenue matches!
+                    SaleRecord summary = new SaleRecord(
+                            "Bill " + (bill.getSaleId() != null ? bill.getSaleId() : "Unknown"), 
+                            "General", 
+                            bill.getTotalAmount(), 
+                            Math.max(1, bill.getTotalQuantity())
+                    );
+                    try { 
+                        if (bill.getTimestamp() != null) {
+                            summary.saleTime = LocalDateTime.parse(bill.getTimestamp()); 
+                        }
+                    } catch(Exception ignored){}
+                    SALES.add(summary);
                 }
             }
             

@@ -19,6 +19,29 @@ public class NewArrivalsController {
     @FXML
     private void initialize() {
         statusLabel.setText("✨ 12 Latest New Arrivals - Fresh Products from All Categories!");
+        
+        // Hide prices as per request (only show in Sales)
+        hidePriceLabels();
+    }
+
+    private void hidePriceLabels() {
+        if (productGrid == null) return;
+        
+        for (javafx.scene.Node node : productGrid.getChildren()) {
+            if (node instanceof javafx.scene.layout.VBox card) {
+                 for (javafx.scene.Node n : card.getChildren()) {
+                     if (n instanceof Label) {
+                         Label lbl = (Label) n;
+                         // Check style classes used for prices
+                         if (lbl.getStyleClass().contains("product-price") || 
+                             lbl.getStyleClass().contains("product-price-discount")) {
+                             lbl.setVisible(false);
+                             lbl.setManaged(false);
+                         }
+                     }
+                 }
+            }
+        }
     }
 
     @FXML
@@ -93,4 +116,3 @@ public class NewArrivalsController {
         }).start();
     }
 }
-

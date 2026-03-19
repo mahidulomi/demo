@@ -160,8 +160,12 @@ public class HomeLivingController {
                 }
             }
             System.out.println("✓ HomeLiving: Stored " + allProductCards.size() + " products");
+
             // Wire up network UI maps (FXML-defined products)
             buildNetworkMaps();
+            
+            // HIDE PRICE
+            hidePriceLabels();
         }
 
         // Register as network listener
@@ -179,6 +183,23 @@ public class HomeLivingController {
         });
         syncCustomProductsFromStock();
         refreshAllStockFromManager();
+    }
+
+    private void hidePriceLabels() {
+        if (allProductCards == null) return;
+        for (VBox card : allProductCards) {
+             for (javafx.scene.Node n : card.getChildren()) {
+                 if (n instanceof Label) {
+                     Label lbl = (Label) n;
+                     // Check style classes used for prices
+                     if (lbl.getStyleClass().contains("product-price") || 
+                         lbl.getStyleClass().contains("product-price-discount")) {
+                         lbl.setVisible(false);
+                         lbl.setManaged(false);
+                     }
+                 }
+             }
+        }
     }
 
     private void setupArrowButtons(VBox productCard) {
@@ -670,9 +691,13 @@ public class HomeLivingController {
         priceLabel.setWrapText(true);
         priceLabel.setMaxWidth(Double.MAX_VALUE);
         priceLabel.setAlignment(Pos.CENTER_LEFT);
+        
+        // Hide price by default per request
+        priceLabel.setVisible(false);
+        priceLabel.setManaged(false);
 
-        // Stock Label
-        Label stockLabel = new Label("Stock: " + stockQuantity);
+        // Stock Status Label (will be updated by network map logic)
+        Label stockLabel = new Label("📦 Stock: " + stockQuantity);
         stockLabel.getStyleClass().add(getStockStyleClass(stockQuantity));
         card.getChildren().addAll(nameLabel, idLabel, priceLabel, stockLabel);
 

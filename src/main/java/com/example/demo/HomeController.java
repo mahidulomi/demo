@@ -172,6 +172,20 @@ public class HomeController {
     }
 
     @FXML
+    private void onRestockClick() {
+        try {
+            System.out.println("🔄 Opening Restock page...");
+            statusLabel.setText("Opening Restock page...");
+            Session.goToRestock(statusLabel);
+            statusLabel.setText("✅ Restock page opened successfully");
+        } catch (Exception e) {
+             String errorMsg = "Could not open Restock page: " + e.getMessage();
+            statusLabel.setText(errorMsg);
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void onLogout() {
         Session.logoutToLogin(userLabel);
     }
@@ -234,6 +248,8 @@ public class HomeController {
         return text == null ? "" : text.trim();
     }
 }
+
+
 
 
 

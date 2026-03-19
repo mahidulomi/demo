@@ -85,6 +85,10 @@ public final class Session {
         changeScene(anyNodeInScene, "reports-view.fxml", 1250, 750);
     }
 
+    public static void goToRestock(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "restock-view.fxml", 1250, 750);
+    }
+
     public static void goToCart(Node anyNodeInScene) {
         changeScene(anyNodeInScene, "cart-view.fxml", 1250, 750);
     }

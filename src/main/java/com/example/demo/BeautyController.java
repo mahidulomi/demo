@@ -97,6 +97,9 @@ public class BeautyController {
             }
             // Wire up network UI maps (FXML-defined products)
             buildNetworkMaps();
+            
+            // HIDE PRICES based on user request (only show in Sales)
+            hidePriceLabels();
         }
 
         // Register as network listener
@@ -194,6 +197,23 @@ public class BeautyController {
     private void refreshAllStockFromManager() {
         for (String productId : netStockLabels.keySet()) {
             applyStockToCard(productId, StockManager.getStock(productId));
+        }
+    }
+
+    private void hidePriceLabels() {
+        if (allProductCards == null) return;
+        for (VBox card : allProductCards) {
+             for (javafx.scene.Node n : card.getChildren()) {
+                 if (n instanceof Label) {
+                     Label lbl = (Label) n;
+                     // Check style classes used for prices
+                     if (lbl.getStyleClass().contains("product-price") || 
+                         lbl.getStyleClass().contains("product-price-discount")) {
+                         lbl.setVisible(false);
+                         lbl.setManaged(false);
+                     }
+                 }
+             }
         }
     }
 
@@ -441,6 +461,10 @@ public class BeautyController {
         priceLabel.setWrapText(true);
         priceLabel.setMaxWidth(Double.MAX_VALUE);
         priceLabel.setAlignment(Pos.CENTER_LEFT);
+        
+        // Hide price by default per request
+        priceLabel.setVisible(false);
+        priceLabel.setManaged(false);
 
         // Stock Label
         Label stockLabel = new Label("Stock: " + stockQuantity);
@@ -629,6 +653,8 @@ public class BeautyController {
         return s == null ? "" : s.trim();
     }
 }
+
+
 
 
 
