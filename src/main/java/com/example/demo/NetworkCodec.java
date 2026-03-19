@@ -61,7 +61,8 @@ final class NetworkCodec {
                 encodeText(sale.getSourceNode()),
                 Integer.toString(sale.getTotalQuantity()),
                 Double.toString(sale.getTotalAmount()),
-                encodeText(sale.getLineItemsSummary())
+                encodeText(sale.getLineItemsSummary()),
+                encodeText(sale.getItemsJson())
         );
     }
 
@@ -70,6 +71,8 @@ final class NetworkCodec {
         if (parts.length < 7) {
             throw new IllegalArgumentException("Invalid sale payload: " + payload);
         }
+        String itemsJson = parts.length >= 8 ? decodeText(parts[7]) : "[]";
+        
         return new SaleRecord(
                 decodeText(parts[0]),
                 decodeText(parts[1]),
@@ -77,7 +80,8 @@ final class NetworkCodec {
                 decodeText(parts[3]),
                 Integer.parseInt(parts[4]),
                 Double.parseDouble(parts[5]),
-                decodeText(parts[6])
+                decodeText(parts[6]),
+                itemsJson
         );
     }
 

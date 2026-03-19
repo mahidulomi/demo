@@ -58,6 +58,15 @@ public class ProductDetailsController {
 
     @FXML
     private void initialize() {
+        StockManager.initializeStock();
+        
+        // Listen for stock updates from other windows/instances
+        StockManager.addExternalChangeListener(() -> {
+             if (currentProduct != null) {
+                 javafx.application.Platform.runLater(() -> setProduct(currentProduct));
+             }
+        });
+
         // Initialize quantity spinner
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
         quantitySpinner.setValueFactory(valueFactory);
@@ -77,6 +86,24 @@ public class ProductDetailsController {
 
     public void setProduct(Product product) {
         this.currentProduct = product;
+        
+        // Sync with StockManager
+        String stockId = StockManager.findProductIdByName(product.getName());
+        int currentStock = 0;
+        
+        if (stockId != null) {
+            currentStock = StockManager.getStock(stockId);
+        } else {
+            // Register if missing, default to 25
+            String prefix = "E"; // Default to Electronics for this controller
+            String newId = prefix + "_" + product.getName().replaceAll("\\s+", "");
+            // Assuming price string like "BDT 1,20,000" needs parsing or just use 0 if complex
+             double price = parseUnitPrice(product.getPrice());
+            StockManager.addStock(newId, product.getName(), "Electronics", 25, price);
+            currentStock = 25;
+        }
+        
+        product.setStockQuantity(currentStock);
         updateProductDetails(product);
     }
 
@@ -462,6 +489,25 @@ public class ProductDetailsController {
         Label specsTitle = new Label("📋 Technical Specifications");
         specsTitle.getStyleClass().add("specs-title");
         specsContainer.getChildren().add(specsTitle);
+        
+        // Add Stock Information High-priority
+        HBox stockItem = new HBox(10);
+        stockItem.getStyleClass().add("spec-item");
+        Label stockLabelKey = new Label("📦 Availability:");
+        stockLabelKey.getStyleClass().add("spec-label");
+        stockLabelKey.setMinWidth(180);
+        
+        int stock = product.getStockQuantity();
+        Label stockValue = new Label(stock > 0 ? "In Stock (" + stock + " items)" : "Out of Stock");
+        stockValue.getStyleClass().add("spec-value");
+        if (stock <= 5) {
+             stockValue.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
+        } else {
+             stockValue.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
+        }
+        
+        stockItem.getChildren().addAll(stockLabelKey, stockValue);
+        specsContainer.getChildren().add(stockItem);
 
         // Add each specification
         for (Map.Entry<String, String> spec : product.getSpecifications().entrySet()) {
@@ -573,7 +619,11 @@ public class ProductDetailsController {
 
         int newStock = currentStock - quantity;
         StockManager.updateStock(productId, newStock);
-        NetworkManager.getInstance().broadcastStockUpdate(productId, newStock);
+        // NetworkManager removed as we are using file-based sync
+        
+        // Update local UI immediately
+        currentProduct.setStockQuantity(newStock);
+        updateProductDetails(currentProduct);
 
         double unitPrice = parseUnitPrice(currentProduct.getPrice());
         double totalAmount = unitPrice * quantity;
@@ -665,4 +715,3 @@ public class ProductDetailsController {
         }
     }
 }
-

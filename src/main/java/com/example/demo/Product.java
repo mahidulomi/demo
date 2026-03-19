@@ -20,6 +20,7 @@ public class Product {
     private String imagePath;
     private String description;
     private String[] colors;
+    private int stockQuantity;
 
     // Dynamic specifications - flexible for any product type
     private Map<String, String> specifications;
@@ -45,6 +46,14 @@ public class Product {
 
     public boolean hasDiscount() {
         return discountPercent > 0;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     // Add specification method

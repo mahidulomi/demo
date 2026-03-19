@@ -129,7 +129,92 @@ public class SalesTracker {
     }
 
     private static void loadFromDisk() {
-        // TODO: Implement persistence if needed
+        try {
+            // Load existing bills from SalesManager (persistent storage)
+            List<com.example.demo.SaleRecord> persistentbills = SalesManager.getAllSales();
+            
+            for (com.example.demo.SaleRecord bill : persistentbills) {
+                if (bill == null) continue;
+                
+                // Parse items from JSON if available
+                String json = bill.getItemsJson();
+                if (json != null && json.length() > 5) {
+                    parseAndAddItems(json, bill.getTimestamp());
+                } else {
+                    // Fallback for legacy records without JSON details is not easily possible
+                    // as we don't know individual item prices/categories perfectly from summary string
+                }
+            }
+            
+            System.out.println("[SalesTracker] Loaded " + SALES.size() + " line items from persistent bill history.");
+            
+        } catch (Exception e) {
+            System.err.println("[SalesTracker] Failed to load from disk: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private static void parseAndAddItems(String json, String timestampStr) {
+        // Regex to parse JSON array of items
+        // Pattern: {"name":"...","price":123.00,"quantity":1,"category":"..."}
+        String patternStr = "\\{\"name\":\"((?:[^\"\\\\]|\\\\.)*)\",\"price\":([0-9.]+),\"quantity\":([0-9]+),\"category\":\"((?:[^\"\\\\]|\\\\.)*)\"\\}";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(patternStr);
+        java.util.regex.Matcher matcher = pattern.matcher(json);
+
+        LocalDateTime saleTime = LocalDateTime.now();
+        try {
+            if (timestampStr != null) {
+                saleTime = LocalDateTime.parse(timestampStr);
+            }
+        } catch (Exception ignored) {}
+
+        while (matcher.find()) {
+            String nameRaw = matcher.group(1);
+            String name = nameRaw.replace("\\\"", "\"").replace("\\\\", "\\"); 
+            double price = Double.parseDouble(matcher.group(2));
+            int quantity = Integer.parseInt(matcher.group(3));
+            String catRaw = matcher.group(4);
+            String category = catRaw.replace("\\\"", "\"").replace("\\\\", "\\");
+
+            SaleRecord record = new SaleRecord(name, category, price, quantity);
+            record.saleTime = saleTime; // Restore original time
+            SALES.add(record);
+        }
+    }
+    
+    /**
+     * Called by NetworkManager when a new sale arrives from another machine.
+     * Updates the in-memory dashboard stats.
+     */
+    public static void addNetworkSale(com.example.demo.SaleRecord sale) {
+        if (sale == null) return;
+        
+        // Use the existing logic to parse items from JSON
+        String json = sale.getItemsJson();
+        boolean parsedItems = false;
+        
+        if (json != null && json.length() > 5) {
+            try {
+                parseAndAddItems(json, sale.getTimestamp());
+                parsedItems = true;
+            } catch (Exception e) {
+                System.err.println("[SalesTracker] Failed to parse network items: " + e.getMessage());
+            }
+        }
+        
+        // Fallback: If we couldn't parse items (or it's a legacy record), 
+        // add a summary record so the Total Revenue and Sales Count are at least correct!
+        if (!parsedItems) {
+            SaleRecord summary = new SaleRecord(
+                    "Network Sale " + sale.getSaleId(), 
+                    "Unknown", 
+                    sale.getTotalAmount(), 
+                    sale.getTotalQuantity()
+            );
+            // Parse time if possible
+            try { summary.saleTime = LocalDateTime.parse(sale.getTimestamp()); } catch(Exception ignored){}
+            SALES.add(summary);
+        }
     }
 
     private static void saveToDiskSafe() {
@@ -142,5 +227,15 @@ public class SalesTracker {
 
     private static void saveToDisk() {
         // TODO: Implement persistence if needed
+    }
+
+    /**
+     * Clears and reloads all sales data from the persistent SalesManager.
+     * Useful when the sales file is updated externally.
+     */
+    public static void reloadFromSalesManager() {
+        SALES.clear();
+        loadFromDisk();
+        System.out.println("[SalesTracker] Reloaded data from SalesManager. Total items: " + SALES.size());
     }
 }

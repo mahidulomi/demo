@@ -27,10 +27,10 @@ public class SalesController {
     private VBox cartItemsContainer;
 
     @FXML
-    private Label subtotalLabel;
+    private Label totalStockLabel;
 
     @FXML
-    private Label discountLabel;
+    private Label subtotalLabel;
 
     @FXML
     private Label totalLabel;
@@ -43,6 +43,14 @@ public class SalesController {
         try {
             System.out.println("🔄 SalesController initializing...");
             StockManager.initializeStock(); // Ensure global stock is ready
+            
+            // Listen for stock updates from other windows/instances
+            StockManager.addExternalChangeListener(() -> {
+                javafx.application.Platform.runLater(() -> {
+                    System.out.println("🔄 Stock update received! Refreshing Sales UI...");
+                    loadProducts(currentCategory);
+                });
+            });
             
             if (productsTilePane == null) {
                 System.err.println("⚠️ ERROR: productsTilePane not injected!");
@@ -117,9 +125,24 @@ public class SalesController {
                 VBox productCard = createProductCard(product);
                 productsTilePane.getChildren().add(productCard);
             }
+
+            // Update Total Stock Label whenever products are reloaded
+            updateTotalStockCount();
+            
         } catch (Exception e) {
             System.err.println("Error loading products: " + e.getMessage());
         }
+    }
+
+    private void updateTotalStockCount() {
+        if (totalStockLabel == null) return;
+        
+        // Calculate total number of UNIQUE items in stock
+        int totalProducts = StockManager.getAllStockItems().size();
+                
+        javafx.application.Platform.runLater(() -> 
+            totalStockLabel.setText("Total Products: " + totalProducts)
+        );
     }
 
     /**
@@ -162,28 +185,37 @@ public class SalesController {
 
         // Stock
         Label stockLabel = new Label("Stock: " + product.getStock());
-        stockLabel.getStyleClass().add("product-stock");
+        if (product.getStock() < 5) {
+            stockLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        } else {
+            stockLabel.getStyleClass().add("product-stock");
+        }
 
         // Add Button + Qty Controls
         HBox controlBox = new HBox();
         controlBox.setSpacing(10);
         controlBox.setAlignment(Pos.CENTER);
 
-        Spinner<Integer> qtySpinner = new Spinner<>(1, product.getStock(), 1);
-        qtySpinner.setPrefWidth(70);
-        qtySpinner.setStyle("-fx-font-size: 14px;");
+        if (product.getStock() > 0) {
+            Spinner<Integer> qtySpinner = new Spinner<>(1, product.getStock(), 1);
+            qtySpinner.setPrefWidth(70);
+            qtySpinner.setStyle("-fx-font-size: 14px;");
 
-        Button addBtn = new Button("Add");
-        addBtn.getStyleClass().add("add-button");
-        addBtn.setOnAction(e -> {
-            int qty = qtySpinner.getValue();
-            if (qty > 0) {
-                addToCart(product, qty);
-                qtySpinner.getValueFactory().setValue(1);
-            }
-        });
-
-        controlBox.getChildren().addAll(qtySpinner, addBtn);
+            Button addBtn = new Button("Add");
+            addBtn.getStyleClass().add("add-button");
+            addBtn.setOnAction(e -> {
+                int qty = qtySpinner.getValue();
+                if (qty > 0) {
+                    addToCart(product, qty);
+                    qtySpinner.getValueFactory().setValue(1);
+                }
+            });
+            controlBox.getChildren().addAll(qtySpinner, addBtn);
+        } else {
+            Label outOfStockLabel = new Label("Running Out"); // Or "Out of Stock"
+            outOfStockLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-font-size: 14px;");
+            controlBox.getChildren().add(outOfStockLabel);
+        }
 
         card.getChildren().addAll(imageView, nameLabel, priceLabel, stockLabel, controlBox);
         return card;
@@ -210,7 +242,7 @@ public class SalesController {
      * Update cart display
      */
     private void updateCartDisplay() {
-        if (cartItemsContainer == null || subtotalLabel == null || discountLabel == null || totalLabel == null) {
+        if (cartItemsContainer == null || subtotalLabel == null || totalLabel == null) {
             return;
         }
         
@@ -225,11 +257,10 @@ public class SalesController {
                 subtotal += item.getTotalPrice();
             }
 
-            double discount = subtotal * 0.05;
-            double total = subtotal - discount;
+            // Discount removed as per request
+            double total = subtotal;
 
             subtotalLabel.setText(String.format("Tk.%.2f", subtotal));
-            discountLabel.setText(String.format("Tk.%.2f", discount));
             totalLabel.setText(String.format("Tk.%.2f", total));
         } catch (Exception e) {
             System.err.println("Error updating cart: " + e.getMessage());
@@ -283,23 +314,62 @@ public class SalesController {
         }
 
         double subtotal = cartMap.values().stream().mapToDouble(CartItem::getTotalPrice).sum();
-        double discount = subtotal * 0.05;
-        double total = subtotal - discount;
+        double total = subtotal; // No discount
+        int totalQty = cartMap.values().stream().mapToInt(item -> item.quantity).sum();
 
         // Record sales with actual product categories
+        StringBuilder itemsSummary = new StringBuilder();
         for (CartItem item : cartMap.values()) {
             SalesTracker.addSale(item.productName, item.category, item.price, item.quantity);
+
+            // Build summary string for the bill
+            if (itemsSummary.length() > 0) itemsSummary.append(" | ");
+            itemsSummary.append(item.productName).append(" x").append(item.quantity)
+                    .append(" @ ").append(String.format("%.2f", item.price));
             
             // Update Stock
             String stockId = StockManager.findProductIdByName(item.productName);
             if (stockId != null) {
                 StockManager.reduceStock(stockId, item.quantity);
+                NetworkManager.getInstance().broadcastStockUpdate(stockId, StockManager.getStock(stockId));
             }
         }
 
+        // Create and save permanent Bill Record
+        String user = Session.getCurrentUser();
+        String soldBy = (user == null || user.isBlank()) ? "Guest" : user;
+
+        // Build JSON for items
+        StringBuilder jsonBuilder = new StringBuilder("[");
+        boolean first = true;
+        for (CartItem item : cartMap.values()) {
+            if (!first) jsonBuilder.append(",");
+            // Simple JSON construction
+            jsonBuilder.append(String.format("{\"name\":\"%s\",\"price\":%.2f,\"quantity\":%d,\"category\":\"%s\"}",
+                    item.productName.replace("\"", "\\\""),
+                    item.price,
+                    item.quantity,
+                    item.category));
+            first = false;
+        }
+        jsonBuilder.append("]");
+
+        SaleRecord sale = new SaleRecord(
+                SalesManager.getNextBillId(), // Sequential ID
+                java.time.LocalDateTime.now().toString(),
+                soldBy,
+                "POS",
+                totalQty,
+                total,
+                itemsSummary.toString(),
+                jsonBuilder.toString()
+        );
+        SalesManager.recordSale(sale);
+        NetworkManager.getInstance().broadcastSaleRecord(sale);
+
         showAlert("Sale Confirmed", String.format(
-            "Sale Confirmed!\n\nSubtotal: Tk.%.2f\nDiscount: Tk.%.2f\nTotal: Tk.%.2f\n\nItems: %d",
-            subtotal, discount, total, cartMap.size()
+            "Sale Confirmed!\n\nSubtotal: Tk.%.2f\nTotal: Tk.%.2f\n\nItems: %d\n\nBill ID: %s",
+            subtotal, total, totalQty, sale.getSaleId()
         ));
 
         cartMap.clear();
@@ -322,9 +392,13 @@ public class SalesController {
      */
     @FXML
     private void onBackClick() {
-        // Close the current sales window
-        Stage stage = (Stage) searchField.getScene().getWindow();
-        stage.close();
+        if (searchField != null && searchField.getScene() != null) {
+            Session.goToHome(searchField);
+        } else if (productsTilePane != null && productsTilePane.getScene() != null) {
+            Session.goToHome(productsTilePane);
+        } else {
+            System.err.println("❌ ERROR: Cannot go back, scene is missing!");
+        }
     }
 
     /**
@@ -378,69 +452,22 @@ public class SalesController {
     }
 
     /**
-     * Get all products
+     * Get all products from StockManager
      */
     private List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
-
-        // --- BEAUTY ---
-        products.add(new Product("Acid Serum", "Beauty", 1200, 20, "/beautyimages/acidserum.png"));
-        products.add(new Product("Deep Conditioner", "Beauty", 950, 15, "/beautyimages/deepconditioner.png"));
-        products.add(new Product("Eyeshadow Palette", "Beauty", 1800, 10, "/beautyimages/eyeshadow.png"));
-        products.add(new Product("Face Cream", "Beauty", 850, 30, "/beautyimages/facecream.png"));
-        products.add(new Product("Foam Cleanser", "Beauty", 600, 25, "/beautyimages/foamcleanser.png"));
-        products.add(new Product("Foundation", "Beauty", 1500, 18, "/beautyimages/foundation_cropped.png"));
-        products.add(new Product("Garnier Men Facewash", "Beauty", 250, 50, "/beautyimages/gernierman_1_cropped.png"));
-        products.add(new Product("Hair Oil", "Beauty", 350, 40, "/beautyimages/hairoil_cropped.png"));
-        products.add(new Product("Lipstick Set", "Beauty", 2200, 12, "/beautyimages/lipstickset_cropped.png"));
-        products.add(new Product("Mascara", "Beauty", 450, 25, "/beautyimages/mashkara_cropped.png"));
-        products.add(new Product("Shampoo", "Beauty", 500, 35, "/beautyimages/shampp_1_cropped.png"));
-        products.add(new Product("Sunscreen", "Beauty", 750, 45, "/beautyimages/sunscreen_1_cropped.png"));
-
-        // --- ELECTRONICS ---
-        products.add(new Product("AirPods", "Electronics", 18000, 15, "/images/airpods.png"));
-        products.add(new Product("Asus Laptop", "Electronics", 65000, 8, "/images/asus.png"));
-        products.add(new Product("iPad", "Electronics", 45000, 10, "/images/ipad.png"));
-        products.add(new Product("iPhone 15", "Electronics", 75000, 12, "/images/iphone15.png"));
-        products.add(new Product("iPhone 16", "Electronics", 85000, 10, "/images/iphone16.png"));
-        products.add(new Product("iPhone 17", "Electronics", 95000, 5, "/images/iphone17.png"));
-        products.add(new Product("Lenovo Laptop", "Electronics", 55000, 10, "/images/loglenevo.png"));
-        products.add(new Product("Wireless Mouse", "Electronics", 1200, 25, "/images/mouise.png"));
-        products.add(new Product("Power Bank", "Electronics", 2500, 30, "/images/powerbank.png"));
-        products.add(new Product("Samsung S25", "Electronics", 80000, 8, "/images/samsungs25.png"));
-        products.add(new Product("Vivo X200 Ultra", "Electronics", 60000, 10, "/images/vivox200ultra.png"));
-
-        // --- FASHION --- (Assuming some electronics images match or as placeholders)
-        products.add(new Product("Titan Watch", "Fashion", 4500, 20, "/images/titan.png"));
-        products.add(new Product("Ajaj Watch", "Fashion", 3500, 15, "/images/ajaj.png"));
-        products.add(new Product("Men's T-Shirt", "Fashion", 800, 50, null));
-        products.add(new Product("Jeans", "Fashion", 1800, 30, null));
-        products.add(new Product("Sneakers", "Fashion", 2500, 25, null));
-
-        // --- HOME & LIVING ---
-        products.add(new Product("Bed Sheet", "Home and Living", 1200, 20, null));
-        products.add(new Product("Pillow Set", "Home and Living", 900, 15, null));
-        products.add(new Product("Table Lamp", "Home and Living", 1500, 10, null));
-        products.add(new Product("Wall Clock", "Home and Living", 1200, 12, null));
         
-        // Sync with StockManager (Persistence)
-        for (Product p : products) {
-            String stockId = StockManager.findProductIdByName(p.getName());
-            if (stockId != null) {
-                // Update product stock from persistent storage
-                p.setStock(StockManager.getStock(stockId));
-            } else {
-                // Determine category-based prefix
-                String prefix = "X";
-                if (p.getCategory().contains("Beauty")) prefix = "B";
-                else if (p.getCategory().contains("Electronics")) prefix = "E";
-                else if (p.getCategory().contains("Fashion")) prefix = "F";
-                else if (p.getCategory().contains("Home")) prefix = "H";
-                
-                // Add to persistent storage if missing
-                String newId = prefix + "_" + p.getName().replaceAll("\\s+", "");
-                StockManager.addStock(newId, p.getName(), p.getCategory(), p.getStock(), p.getPrice());
-            }
+        // Fetch real-time data from StockManager
+        List<StockItem> stockItems = StockManager.getAllStockItems();
+        
+        for (StockItem item : stockItems) {
+            products.add(new Product(
+                item.getProductName(),
+                item.getCategory(), 
+                item.getPrice(),
+                item.getQuantity(),
+                item.getImagePath()
+            ));
         }
 
         return products;

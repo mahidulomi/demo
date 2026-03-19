@@ -5,7 +5,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
+  /**
  * Manages stock quantities for all products.
  *
  * Persistence: every change is written to STOCK_FILE so data survives restarts.
@@ -29,69 +29,60 @@ public final class StockManager {
 
     // ── Default product catalogue ─────────────────────────────────────────────
 
-    private static void addDefault(String id, String name, String cat, int qty, double price) {
+    private static void addDefault(String id, String name, String cat, int qty, double price, String imagePath) {
         // Only inserts if product is NOT already loaded from file
         if (!stockData.containsKey(id)) {
-            stockData.put(id, new StockItem(id, name, cat, qty, price));
+            stockData.put(id, new StockItem(id, name, cat, cat, qty, price, imagePath));
+        } else {
+            // If item exists but has no image, and we have a default image, update it
+            StockItem existing = stockData.get(id);
+            if ((existing.getImagePath() == null || existing.getImagePath().isBlank())
+                    && imagePath != null && !imagePath.isBlank()) {
+                existing.setImagePath(imagePath);
+            }
         }
     }
 
     private static void loadDefaults() {
-        // Electronics
-        addDefault("E_iPhone15",        "iPhone 15",                   "Electronics", 25, 99999);
-        addDefault("E_iPhone16",        "iPhone 16",                   "Electronics", 25, 120000);
-        addDefault("E_iPhone17",        "iPhone 17",                   "Electronics", 25, 139000);
-        addDefault("E_SamsungS25",      "Samsung Galaxy S25",          "Electronics", 25, 120000);
-        addDefault("E_VivoX200",        "Vivo X200 Ultra",             "Electronics", 25, 90000);
-        addDefault("E_LenovoIdeaPad",   "Lenovo IdeaPad i5 8GB SSD",  "Electronics", 25, 144000);
-        addDefault("E_WirelessEarbuds", "Wireless Earbuds Pro",        "Electronics", 25, 5000);
-        addDefault("E_SmartWatch",      "Smart Watch Fitness",         "Electronics", 25, 10000);
-        addDefault("E_PowerBank",       "Power Bank 20000mAh",        "Electronics", 25, 2500);
-        addDefault("E_iPad",            "iPad",                        "Electronics", 25, 30000);
-        addDefault("E_Mouse",           "Mouse",                       "Electronics", 25, 5000);
-        addDefault("E_AsusVivoBook",    "Asus VivoBook Ryzen 5 16GB", "Electronics", 25, 116000);
-        addDefault("E_AjazzK80",        "Ajazz K80 Redswitch",        "Electronics", 25, 4200);
-        // Beauty
-        addDefault("B_FaceCream",    "Vitamin C Face Cream",    "Beauty", 25, 1500);
-        addDefault("B_Serum",        "Hyaluronic Acid Serum",   "Beauty", 25, 2000);
-        addDefault("B_FoamCleanser", "Gentle Foam Cleanser",    "Beauty", 25, 800);
-        addDefault("B_LipstickSet",  "Matte Lipstick Set",      "Beauty", 25, 1000);
-        addDefault("B_Foundation",   "HD Foundation",            "Beauty", 25, 2000);
-        addDefault("B_Eyeshadow",    "Eyeshadow Palette",       "Beauty", 25, 2000);
-        addDefault("B_Shampoo",      "Keratin Repair Shampoo",  "Beauty", 25, 900);
-        addDefault("B_Conditioner",  "Deep Conditioner",         "Beauty", 25, 1000);
-        addDefault("B_HairOil",      "Argan Hair Oil",           "Beauty", 25, 1200);
-        addDefault("B_Sunscreen",    "SPF 50+ Sunscreen",        "Beauty", 25, 1300);
-        addDefault("B_Mascara",      "Volumizing Mascara",       "Beauty", 25, 800);
-        addDefault("B_GentsFaceWash","Gents Face Wash",          "Beauty", 25, 1500);
+        // --- BEAUTY ---
+        addDefault("B_AcidSerum",       "Acid Serum",             "Beauty", 25, 1200, "/beautyimages/acidserum.png");
+        addDefault("B_DeepConditioner", "Deep Conditioner",       "Beauty", 25, 950, "/beautyimages/deepconditioner.png");
+        addDefault("B_Eyeshadow",       "Eyeshadow Palette",      "Beauty", 25, 1800, "/beautyimages/eyeshadow.png");
+        addDefault("B_FaceCream",       "Face Cream",             "Beauty", 25, 850, "/beautyimages/facecream.png");
+        addDefault("B_FoamCleanser",    "Foam Cleanser",          "Beauty", 25, 600, "/beautyimages/foamcleanser.png");
+        addDefault("B_Foundation",      "Foundation",             "Beauty", 25, 1500, "/beautyimages/foundation_cropped.png");
+        addDefault("B_GarnierMen",      "Garnier Men Facewash",   "Beauty", 25, 250, "/beautyimages/gernierman_1_cropped.png");
+        addDefault("B_HairOil",         "Hair Oil",               "Beauty", 25, 350, "/beautyimages/hairoil_cropped.png");
+        addDefault("B_LipstickSet",     "Lipstick Set",           "Beauty", 25, 2200, "/beautyimages/lipstickset_cropped.png");
+        addDefault("B_Mascara",         "Mascara",                "Beauty", 25, 450, "/beautyimages/mashkara_cropped.png");
+        addDefault("B_Shampoo",         "Shampoo",                "Beauty", 25, 500, "/beautyimages/shampp_1_cropped.png");
+        addDefault("B_Sunscreen",       "Sunscreen",              "Beauty", 25, 750, "/beautyimages/sunscreen_1_cropped.png");
 
-        // Fashion - 12 Products
-        addDefault("F_BabyRomper",   "Baby Romper Set",          "Fashion", 25, 360);
-        addDefault("F_BabyDress",    "Baby Cotton Dress",        "Fashion", 25, 468);
-        addDefault("F_BabyShorts",   "Baby Summer Shorts",       "Fashion", 25, 263);
-        addDefault("F_MenShirt",     "Men's Casual Shirt",       "Fashion", 25, 900);
-        addDefault("F_MenJeans",     "Men's Denim Jeans",        "Fashion", 25, 1260);
-        addDefault("F_MenKurta",     "Men's Premium Kurta",      "Fashion", 25, 850);
-        addDefault("F_WomenKurti",   "Women's Designer Kurti",   "Fashion", 25, 760);
-        addDefault("F_WomenSaree",   "Women's Silk Saree",       "Fashion", 25, 2125);
-        addDefault("F_WomenSalwar",  "Women's Salwar Kameez",    "Fashion", 25, 1200);
-        addDefault("F_BabyJacket",   "Baby Winter Jacket",       "Fashion", 25, 840);
-        addDefault("F_MenHoodie",    "Men's Premium Hoodie",     "Fashion", 25, 1312);
-        addDefault("F_WomenLehenga", "Women's Lehenga Choli",    "Fashion", 25, 2450);
+        // --- ELECTRONICS ---
+        addDefault("E_AirPods",         "AirPods",               "Electronics", 25, 18000, "/images/airpods.png");
+        addDefault("E_AsusLaptop",      "Asus Laptop",           "Electronics", 25, 65000, "/images/asus.png");
+        addDefault("E_iPad",            "iPad",                  "Electronics", 25, 45000, "/images/ipad.png");
+        addDefault("E_iPhone15",        "iPhone 15",             "Electronics", 25, 75000, "/images/iphone15.png");
+        addDefault("E_iPhone16",        "iPhone 16",             "Electronics", 25, 85000, "/images/iphone16.png");
+        addDefault("E_iPhone17",        "iPhone 17",             "Electronics", 25, 95000, "/images/iphone17.png");
+        addDefault("E_LenovoLaptop",    "Lenovo Laptop",         "Electronics", 25, 55000, "/images/loglenevo.png");
+        addDefault("E_WirelessMouse",   "Wireless Mouse",        "Electronics", 25, 1200, "/images/mouise.png");
+        addDefault("E_PowerBank",       "Power Bank",            "Electronics", 25, 2500, "/images/powerbank.png");
+        addDefault("E_SamsungS25",      "Samsung S25",           "Electronics", 25, 80000, "/images/samsungs25.png");
+        addDefault("E_VivoX200",        "Vivo X200 Ultra",       "Electronics", 25, 60000, "/images/vivox200ultra.png");
 
-        // Home & Living - 12 Products
-        addDefault("H_SofaSet",      "3-Seater Sofa Set",        "Home & Living", 25, 32000);
-        addDefault("H_DiningTable",  "Dining Table 6-Seater",    "Home & Living", 25, 22500);
-        addDefault("H_BedFrame",     "King Size Bed Frame",      "Home & Living", 25, 24600);
-        addDefault("H_WallArt",      "Modern Wall Art Set",      "Home & Living", 25, 2800);
-        addDefault("H_TableLamp",    "Designer Table Lamp",      "Home & Living", 25, 1560);
-        addDefault("H_Curtains",     "Blackout Curtains Pair",   "Home & Living", 25, 3000);
-        addDefault("H_Cookware",     "Non-Stick Cookware Set",   "Home & Living", 25, 3600);
-        addDefault("H_Blender",      "Multi-Speed Blender",      "Home & Living", 25, 4000);
-        addDefault("H_KnifeSet",     "Professional Knife Set",   "Home & Living", 25, 2250);
-        addDefault("H_Wardrobe",     "3-Door Wardrobe",          "Home & Living", 25, 27300);
-        addDefault("H_Rug",          "Persian Style Rug 6x9",    "Home & Living", 25, 7000);
-        addDefault("H_CoffeeMaker",  "Automatic Coffee Maker",   "Home & Living", 25, 5625);
+        // --- FASHION ---
+        addDefault("F_TitanWatch",      "Titan Watch",           "Fashion", 25, 4500, "/images/titan.png");
+        addDefault("F_AjajWatch",       "Ajaj Watch",            "Fashion", 25, 3500, "/images/ajaj.png");
+        addDefault("F_MensTShirt",      "Men's T-Shirt",         "Fashion", 25, 800, "");
+        addDefault("F_Jeans",           "Jeans",                 "Fashion", 25, 1800, "");
+        addDefault("F_Sneakers",        "Sneakers",              "Fashion", 25, 2500, "");
+
+        // --- HOME & LIVING ---
+        addDefault("H_BedSheet",        "Bed Sheet",             "Home and Living", 25, 1200, "");
+        addDefault("H_PillowSet",       "Pillow Set",            "Home and Living", 25, 900, "");
+        addDefault("H_TableLamp",       "Table Lamp",            "Home and Living", 25, 1500, "");
+        addDefault("H_WallClock",       "Wall Clock",            "Home and Living", 25, 1200, "");
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────

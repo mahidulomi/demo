@@ -11,9 +11,10 @@ public class SaleRecord {
     private final int totalQuantity;
     private final double totalAmount;
     private final String lineItemsSummary;
+    private final String itemsJson;
 
     public SaleRecord(String saleId, String timestamp, String soldBy, String sourceNode,
-                      int totalQuantity, double totalAmount, String lineItemsSummary) {
+                      int totalQuantity, double totalAmount, String lineItemsSummary, String itemsJson) {
         this.saleId = saleId;
         this.timestamp = timestamp;
         this.soldBy = soldBy;
@@ -21,6 +22,13 @@ public class SaleRecord {
         this.totalQuantity = totalQuantity;
         this.totalAmount = totalAmount;
         this.lineItemsSummary = lineItemsSummary;
+        this.itemsJson = itemsJson;
+    }
+
+    // Legacy constructor
+    public SaleRecord(String saleId, String timestamp, String soldBy, String sourceNode,
+                      int totalQuantity, double totalAmount, String lineItemsSummary) {
+        this(saleId, timestamp, soldBy, sourceNode, totalQuantity, totalAmount, lineItemsSummary, "[]");
     }
 
     public String getSaleId() {
@@ -50,5 +58,8 @@ public class SaleRecord {
     public String getLineItemsSummary() {
         return lineItemsSummary;
     }
+    
+    public String getItemsJson() {
+        return itemsJson;
+    }
 }
-

@@ -40,6 +40,13 @@ public class HomeController {
         userLabel.setText("Welcome, " + (user == null ? "Admin" : user));
         statusLabel.setText("");
         updateDashboardStats();
+
+        // Listen for external sales file changes (e.g. from other instances)
+        SalesManager.addExternalChangeListener(() -> {
+            System.out.println("[HomeController] Detected external sales update. Refreshing stats...");
+            SalesTracker.reloadFromSalesManager();
+            javafx.application.Platform.runLater(this::updateDashboardStats);
+        });
     }
 
     /**
@@ -64,23 +71,31 @@ public class HomeController {
         // Update Today's Sales
         java.util.List<SalesTracker.SaleRecord> todaysSales = SalesTracker.getAllSales();
         double totalSalesAmount = todaysSales.stream().mapToDouble(s -> s.totalAmount).sum();
-        todaysSalesLabel.setText(String.format("Tk.%.2f", totalSalesAmount));
-
-        // Update Total Products (estimated from sales)
-        java.util.Set<String> uniqueProducts = new java.util.HashSet<>();
-        for (SalesTracker.SaleRecord sale : todaysSales) {
-            uniqueProducts.add(sale.productName);
+        
+        if (todaysSalesLabel != null) {
+            todaysSalesLabel.setText(String.format("Tk.%.2f", totalSalesAmount));
         }
-        int totalProducts = Math.max(uniqueProducts.size(), 0);
-        totalProductsLabel.setText(String.valueOf(totalProducts));
 
-        // Update Low Stock Alert (simplified - show 0 for now unless low stock detected)
-        int lowStockCount = 0;
-        // This can be enhanced if you have a way to check all products' stock
-        lowStockLabel.setText(lowStockCount + " Items");
+        // Update Total Product Count (Unique items/SKUs)
+        int totalProductCount = StockManager.getAllStockItems().size();
+        
+        if (totalProductsLabel != null) {
+            totalProductsLabel.setText(String.format("%d Products", totalProductCount));
+        }
 
-        // Update Total Customers (count transactions)
-        totalCustomersLabel.setText(String.valueOf(Math.max(1, todaysSales.size())));
+        // Update Low Stock Alert (Stock < 5)
+        long lowStockCount = StockManager.getAllStockItems().stream()
+                .filter(item -> item.getQuantity() < 5)
+                .count();
+        
+        if (lowStockLabel != null) {
+            lowStockLabel.setText(lowStockCount + " Items");
+        }
+
+        // Update Total Sales Transactions
+        if (totalCustomersLabel != null) {
+            totalCustomersLabel.setText(String.valueOf(todaysSales.size()));
+        }
     }
 
     /**
@@ -130,39 +145,11 @@ public class HomeController {
         try {
             System.out.println("🔄 Opening Sales page...");
             statusLabel.setText("Opening Sales page...");
-            
-            java.net.URL salesViewUrl = HelloApplication.class.getResource("sales-view.fxml");
-            if (salesViewUrl == null) {
-                salesViewUrl = getClass().getResource("/com/example/demo/sales-view.fxml");
-            }
-            
-            if (salesViewUrl == null) {
-                String error = "CRITICAL: sales-view.fxml not found in resources!";
-                statusLabel.setText(error);
-                System.err.println("❌ " + error);
-                
-                // Construct a helpful tip
-                System.err.println("  Expected path: /com/example/demo/sales-view.fxml");
-                return;
-            }
-
-            System.out.println("✓ Found sales-view.fxml");
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(salesViewUrl);
-            javafx.scene.layout.AnchorPane page = loader.load();
-            
-            System.out.println("✓ Loaded FXML successfully");
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("💰 Sales - POS");
-            stage.setScene(new javafx.scene.Scene(page, 1250, 750));
-            stage.show();
-            
+            Session.goToSales(statusLabel);
             statusLabel.setText("✅ Sales page opened successfully");
-            System.out.println("✅ Sales page opened successfully");
         } catch (Exception e) {
             String errorMsg = "Could not open Sales page: " + e.getMessage();
             statusLabel.setText(errorMsg);
-            System.err.println("❌ " + errorMsg);
-            System.err.println("Exception type: " + e.getClass().getName());
             e.printStackTrace();
         }
     }
@@ -172,111 +159,16 @@ public class HomeController {
      */
     @FXML
     private void onReportsClick() {
-        java.util.List<SalesTracker.SaleRecord> sales = SalesTracker.getAllSales();
-        
-        if (sales.isEmpty()) {
-            statusLabel.setText("📈 Reports: No sales data available yet.");
-            return;
+        try {
+            System.out.println("🔄 Opening Reports page...");
+            statusLabel.setText("Opening Reports page...");
+            Session.goToReports(statusLabel);
+            statusLabel.setText("✅ Reports page opened successfully");
+        } catch (Exception e) {
+            String errorMsg = "Could not open Reports page: " + e.getMessage();
+            statusLabel.setText(errorMsg);
+            e.printStackTrace();
         }
-        
-        StringBuilder report = new StringBuilder();
-        report.append("╔═════════════════════════════════════════════════════════════╗\n");
-        report.append("║         📊 SHOP MANAGEMENT REPORT SYSTEM                    ║\n");
-        report.append("╚═════════════════════════════════════════════════════════════╝\n\n");
-        
-        // 1. SUMMARY STATISTICS
-        report.append("┌─ 📈 SUMMARY STATISTICS ─────────────────────────────────────┐\n");
-        double totalRevenue = SalesTracker.getTotalRevenue();
-        int totalItems = sales.stream().mapToInt(s -> s.quantity).sum();
-        
-        report.append(String.format("│ Total Bills Generated:       %35d │\n", sales.size()));
-        report.append(String.format("│ Total Items Sold:            %35d │\n", totalItems));
-        report.append(String.format("│ Total Revenue:               Tk.%33.2f │\n", totalRevenue));
-        report.append("└──────────────────────────────────────────────────────────────┘\n\n");
-        
-        // 2. BILLS ORGANIZED BY DATE (MAIN REPORT)
-        report.append("┌─ 🧾 BILL REPORTS (Organized by Date) ────────────────────────┐\n\n");
-        
-        java.util.Map<String, java.util.List<SalesTracker.SaleRecord>> dateMap = new java.util.LinkedHashMap<>();
-        for (SalesTracker.SaleRecord record : sales) {
-            String dateKey = record.getFormattedDate().substring(0, 10); // YYYY-MM-DD
-            dateMap.computeIfAbsent(dateKey, k -> new java.util.ArrayList<>()).add(record);
-        }
-        
-        int billNumber = 1;
-        for (String date : dateMap.keySet()) {
-            java.util.List<SalesTracker.SaleRecord> dayRecords = dateMap.get(date);
-            double dayTotal = dayRecords.stream().mapToDouble(r -> r.totalAmount).sum();
-            int dayItems = dayRecords.stream().mapToInt(r -> r.quantity).sum();
-            
-            String billId = String.format("BILL-%05d", billNumber);
-            
-            report.append("╔════════════════════════════════════════════════════════════╗\n");
-            report.append(String.format("║ %s  │  Date: %s                       ║\n", billId, date));
-            report.append("╠════════════════════════════════════════════════════════════╣\n");
-            report.append("║ ITEMS:                                                     ║\n");
-            report.append("╠═══╦════════════════════════╦═════╦═════════╦════════════╣\n");
-            report.append("║No.║ Product Name           ║ Qty ║ Price   ║ Amount     ║\n");
-            report.append("╠═══╬════════════════════════╬═════╬═════════╬════════════╣\n");
-            
-            for (int i = 0; i < dayRecords.size(); i++) {
-                SalesTracker.SaleRecord r = dayRecords.get(i);
-                report.append(String.format("║%3d║ %-22s ║%5d║ Tk.%7.2f║ Tk.%10.2f║\n",
-                        i + 1,
-                        r.productName.substring(0, Math.min(22, r.productName.length())),
-                        r.quantity,
-                        r.price,
-                        r.totalAmount));
-            }
-            
-            report.append("╠═══╩════════════════════════╩═════╩═════════╩════════════╣\n");
-            report.append(String.format("║ Bill Details:                                             ║\n"));
-            report.append(String.format("║ • Bill ID: %s                                           ║\n", billId));
-            report.append(String.format("║ • Date: %s                                       ║\n", date));
-            report.append(String.format("║ • Total Items: %d                                        ║\n", dayItems));
-            report.append(String.format("║ • Bill Amount: Tk.%.2f                                  ║\n", dayTotal));
-            report.append(String.format("║ • Time Range: %s to %s                    ║\n",
-                    dayRecords.get(0).getFormattedDate().substring(11, 19),
-                    dayRecords.get(dayRecords.size() - 1).getFormattedDate().substring(11, 19)));
-            report.append("╚════════════════════════════════════════════════════════════╝\n\n");
-            
-            billNumber++;
-        }
-        
-        // 3. SALES BY CATEGORY
-        report.append("┌─ 📁 SALES BY CATEGORY ──────────────────────────────────────┐\n");
-        java.util.Map<String, Integer> categoryQty = new java.util.HashMap<>();
-        java.util.Map<String, Double> categoryRev = new java.util.HashMap<>();
-        for (SalesTracker.SaleRecord r : sales) {
-            categoryQty.put(r.category, categoryQty.getOrDefault(r.category, 0) + r.quantity);
-            categoryRev.put(r.category, categoryRev.getOrDefault(r.category, 0.0) + r.totalAmount);
-        }
-        for (String cat : categoryQty.keySet()) {
-            report.append(String.format("│ %-20s │ %3d units │ Tk.%14.2f     │\n", 
-                    cat, categoryQty.get(cat), categoryRev.get(cat)));
-        }
-        report.append("└──────────────────────────────────────────────────────────────┘\n\n");
-        
-        // 4. PRODUCT-WISE HISTORY
-        report.append("┌─ 📦 PRODUCT-WISE HISTORY ───────────────────────────────────┐\n");
-        java.util.Map<String, java.util.List<SalesTracker.SaleRecord>> productMap = new java.util.LinkedHashMap<>();
-        for (SalesTracker.SaleRecord record : sales) {
-            productMap.computeIfAbsent(record.productName, k -> new java.util.ArrayList<>()).add(record);
-        }
-        
-        for (String product : productMap.keySet()) {
-            java.util.List<SalesTracker.SaleRecord> records = productMap.get(product);
-            int totalQty = records.stream().mapToInt(r -> r.quantity).sum();
-            double totalRev = records.stream().mapToDouble(r -> r.totalAmount).sum();
-            
-            report.append(String.format("│ 📌 %s\n", product));
-            report.append(String.format("│    Total: %d units | Tk.%.2f | Transactions: %d\n", 
-                    totalQty, totalRev, records.size()));
-            report.append("│\n");
-        }
-        report.append("└──────────────────────────────────────────────────────────────┘\n");
-        
-        statusLabel.setText(report.toString());
     }
 
     @FXML
@@ -342,6 +234,8 @@ public class HomeController {
         return text == null ? "" : text.trim();
     }
 }
+
+
 
 
 

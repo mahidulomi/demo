@@ -77,6 +77,14 @@ public final class Session {
         changeScene(anyNodeInScene, "stock-view.fxml", 1250, 750);
     }
 
+    public static void goToSales(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "sales-view.fxml", 1250, 750);
+    }
+    
+    public static void goToReports(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "reports-view.fxml", 1250, 750);
+    }
+
     public static void goToCart(Node anyNodeInScene) {
         changeScene(anyNodeInScene, "cart-view.fxml", 1250, 750);
     }

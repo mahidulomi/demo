@@ -195,8 +195,12 @@ public class NetworkManager {
         try {
             SaleRecord sale = NetworkCodec.decodeSaleRecord(data);
             SalesManager.recordSale(sale);
+            // Sync with local dashboard Tracker
+            SalesTracker.addNetworkSale(sale);
+            
             System.out.println("[NetworkManager] Sale synced from network: " + sale.getSaleId());
             Platform.runLater(() -> {
+                HomeController.refreshDashboard(); // Ensure dashboard updates
                 if (currentListener != null) {
                     currentListener.onSalesDataChanged();
                 }
@@ -221,24 +225,43 @@ public class NetworkManager {
 
     public SaleRecord buildSaleRecord(List<CartItem> items, int totalQty, double totalAmount) {
         StringBuilder summary = new StringBuilder();
+        StringBuilder jsonBuilder = new StringBuilder("[");
+        boolean first = true;
+        
         for (CartItem item : items) {
+            // Summary
             if (summary.length() > 0) summary.append(" | ");
             summary.append(item.getProductName()).append(" x").append(item.getQuantity())
                     .append(" @ ").append(String.format("%.2f", item.getDiscountedUnitPrice()));
+            
+            // JSON
+            if (!first) jsonBuilder.append(",");
+            jsonBuilder.append(String.format("{\"name\":\"%s\",\"price\":%.2f,\"quantity\":%d,\"category\":\"%s\"}",
+                    item.getProductName().replace("\"", "\\\""),
+                    item.getDiscountedUnitPrice(),
+                    item.getQuantity(),
+                    safe(item.getCategory()).replace("\"", "\\\"")));
+            first = false;
         }
+        jsonBuilder.append("]");
+        
         String user = Session.getCurrentUser();
         String soldBy = (user == null || user.isBlank()) ? "Guest" : user;
         String sourceNode = getMachineName() + "-" + mode.name();
+        
         return new SaleRecord(
-                java.util.UUID.randomUUID().toString(),
+                SalesManager.getNextBillId(),
                 java.time.LocalDateTime.now().toString(),
                 soldBy,
                 sourceNode,
                 totalQty,
                 totalAmount,
-                summary.toString()
+                summary.toString(),
+                jsonBuilder.toString()
         );
     }
+    
+    private String safe(String s) { return s == null ? "" : s; }
 
     private String getMachineName() {
         try {

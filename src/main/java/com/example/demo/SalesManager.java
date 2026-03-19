@@ -20,7 +20,11 @@ public final class SalesManager {
             Paths.get(System.getProperty("user.home"), ".shopapp_sales.dat");
 
     private static final Map<String, SaleRecord> salesData = new LinkedHashMap<>();
+    private static final List<Runnable> externalChangeListeners = new java.util.concurrent.CopyOnWriteArrayList<>();
     private static boolean initialized = false;
+
+    private static long lastKnownFileModified = -1L;
+    private static boolean fileWatcherStarted = false;
 
     private SalesManager() {}
 
@@ -29,6 +33,11 @@ public final class SalesManager {
         loadFromFile();
         initialized = true;
         System.out.println("[SalesManager] Ready — " + salesData.size() + " sale(s) | file: " + SALES_FILE);
+        startFileWatcherIfNeeded();
+    }
+    
+    public static void addExternalChangeListener(Runnable listener) {
+        externalChangeListeners.add(listener);
     }
 
     public static synchronized void recordSale(SaleRecord sale) {
@@ -69,6 +78,8 @@ public final class SalesManager {
                 bw.write(NetworkCodec.encodeSaleRecord(sale));
                 bw.newLine();
             }
+            // Update timestamp so we don't trigger our own watcher unnecessarily
+             lastKnownFileModified = getFileModifiedMillis();
         } catch (IOException e) {
             System.err.println("[SalesManager] Save failed: " + e.getMessage());
         }
@@ -96,7 +107,90 @@ public final class SalesManager {
         } catch (IOException e) {
             System.err.println("[SalesManager] Load failed: " + e.getMessage());
         }
+        lastKnownFileModified = getFileModifiedMillis();
         System.out.println("[SalesManager] Loaded " + count + " sale(s) from " + SALES_FILE);
     }
-}
 
+    private static long getFileModifiedMillis() {
+        try {
+            if (!Files.exists(SALES_FILE)) return -1L;
+            return Files.getLastModifiedTime(SALES_FILE).toMillis();
+        } catch (IOException e) {
+            return -1L;
+        }
+    }
+
+    private static void startFileWatcherIfNeeded() {
+        if (fileWatcherStarted) return;
+        fileWatcherStarted = true;
+
+        Thread watcher = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(2000); // Check every 2 seconds
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+
+                boolean changedExternally = false;
+                synchronized (SalesManager.class) {
+                    if (!initialized) continue;
+
+                    long currentModified = getFileModifiedMillis();
+                    if (currentModified != lastKnownFileModified && currentModified != -1L) {
+                        salesData.clear();
+                        loadFromFile();
+                        changedExternally = true;
+                    }
+                }
+
+                if (changedExternally) {
+                    System.out.println("[SalesManager] Detected external file change. Reloading sales...");
+                    notifyExternalChangeListeners();
+                }
+            }
+        }, "SalesManager-FileWatcher");
+        watcher.setDaemon(true);
+        watcher.start();
+    }
+
+    private static void notifyExternalChangeListeners() {
+        for (Runnable listener : externalChangeListeners) {
+            try {
+                listener.run();
+            } catch (RuntimeException ignored) {
+            }
+        }
+    }
+
+    /**
+     * Generates the next sequential Bill ID (e.g., BILL-1001, BILL-1002).
+     */
+    public static synchronized String getNextBillId() {
+        initializeSales();
+        int maxId = 1000;
+        for (String id : salesData.keySet()) {
+            if (id != null && id.startsWith("BILL-")) {
+                try {
+                    String numPart = id.substring(5);
+                    int num = Integer.parseInt(numPart);
+                    if (num > maxId) {
+                        maxId = num;
+                    }
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+        return String.format("BILL-%05d", maxId + 1);
+    }
+
+    /**
+     * Clear all sales records (for demo or reset purposes).
+     */
+    public static synchronized void clearAllSales() {
+        initializeSales();
+        salesData.clear();
+        saveToFile();
+        System.out.println("[SalesManager] All sales records cleared.");
+    }
+}

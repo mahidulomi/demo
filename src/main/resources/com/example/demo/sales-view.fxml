@@ -18,6 +18,7 @@
         <padding><Insets bottom="15" left="20" right="20" top="15" /></padding>
         <children>
             <Label styleClass="header-label" text="💰 Sales Dashboard" />
+            <Label fx:id="totalStockLabel" text="Total Stock: 0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 5 0 0 20;" />
             <Button onAction="#onBackClick" styleClass="back-button" text="← Back" />
         </children>
     </HBox>
@@ -64,10 +65,6 @@
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Subtotal:" styleClass="summery-label" prefWidth="100" />
                     <Label fx:id="subtotalLabel" text="Tk.0.00" style="-fx-font-weight: bold;" alignment="CENTER_RIGHT" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-                </HBox>
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Discount (5%):" styleClass="summery-label" prefWidth="100" />
-                    <Label fx:id="discountLabel" text="Tk.0.00" style="-fx-text-fill: #e74c3c;" alignment="CENTER_RIGHT" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                 </HBox>
                 <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-border-color: #ddd; -fx-border-width: 1 0 0 0; -fx-padding: 10 0 0 0;">
                     <Label text="Total:" styleClass="total-label" prefWidth="100" />

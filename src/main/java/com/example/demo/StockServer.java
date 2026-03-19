@@ -159,7 +159,7 @@ public class StockServer {
             if (line.startsWith("STOCK_UPDATE:")) {
                 // Client bought something - update server stock and broadcast to others
                 String[] parts = line.split(":");
-                if (parts.length == 3) {
+                if (parts.length >= 3) { // fixed check to >= 3 just in case
                     String productId = parts[1];
                     try {
                         int qty = Integer.parseInt(parts[2]);
@@ -182,7 +182,8 @@ public class StockServer {
                 networkManager.onNewProductFromNetwork(line.substring("NEW_PRODUCT:".length()));
                 broadcastRawToOthers(this, "PRODUCT_UPSERT:" + line.substring("NEW_PRODUCT:".length()));
             } else if (line.startsWith("SALE_RECORD:")) {
-                networkManager.onSaleRecordFromNetwork(line.substring("SALE_RECORD:".length()));
+                String saleData = line.substring("SALE_RECORD:".length());
+                networkManager.onSaleRecordFromNetwork(saleData);
                 broadcastRawToOthers(this, line);
             }
         }
