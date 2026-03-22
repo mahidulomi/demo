@@ -2468,3 +2468,38 @@
     -fx-font-weight: 600;
 }
 
+
+/* Chart Styling - Blue Theme */
+.chart-series-area-line.default-color0 {
+    -fx-stroke: #3498db;
+    -fx-stroke-width: 2px;
+}
+.chart-series-area-fill.default-color0 {
+    -fx-fill: linear-gradient(to bottom, rgba(52, 152, 219, 0.25), rgba(52, 152, 219, 0.02));
+    -fx-stroke: transparent;
+}
+.chart-area-symbol.default-color0 {
+    -fx-background-color: #ffffff, #3498db;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 5px;
+    -fx-padding: 3px;
+}
+.axis {
+    -fx-tick-label-fill: #7f8c8d;
+    -fx-font-size: 11px;
+    -fx-tick-label-font-family: 'Segoe UI';
+}
+.axis:left {
+    -fx-border-color: transparent;
+}
+.axis:bottom {
+    -fx-border-color: transparent;
+}
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: #ecf0f1;
+    -fx-stroke-dash-array: 4 4;
+}
+
