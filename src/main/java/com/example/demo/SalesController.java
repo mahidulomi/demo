@@ -34,9 +34,25 @@ public class SalesController {
 
     @FXML
     private Label totalLabel;
+    
+    // Customer Fields
+    @FXML private Label selectedCustomerLabel;
+    
+    // Modal Elements
+    @FXML private javafx.scene.layout.StackPane rootStackPane;
+    @FXML private javafx.scene.layout.AnchorPane modalOverlay;
+    @FXML private Label modalTitle;
+    @FXML private TextField nameField;
+    @FXML private TextField phoneField;
+    @FXML private TextField emailField;
+    @FXML private javafx.scene.control.TextArea addressArea;
+    @FXML private javafx.scene.control.ComboBox<String> typeCombo;
+    @FXML private ToggleButton dueBalanceToggle;
+    @FXML private TextField dueBalanceAmountField;
 
     private String currentCategory = "All";
     private Map<String, CartItem> cartMap = new LinkedHashMap<>();
+    private Customer currentSelectedCustomer = null;
 
     @FXML
     private void initialize() {
@@ -68,6 +84,12 @@ public class SalesController {
                updateCartDisplay();
             }
             
+            // Initialize Type Combo
+            if (typeCombo != null) {
+                typeCombo.setItems(javafx.collections.FXCollections.observableArrayList("Retail", "Wholesale"));
+                typeCombo.getSelectionModel().selectFirst();
+            }
+
             if (searchField != null) {
                 searchField.textProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal == null || newVal.trim().isEmpty()) {
@@ -82,6 +104,16 @@ public class SalesController {
         } catch (Exception e) {
             System.err.println("❌ Error in initialize: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Navigate back to Home Dashboard
+     */
+    @FXML
+    private void onBackClick() {
+        if (rootStackPane != null) {
+            Session.goToHome(rootStackPane);
         }
     }
 
@@ -279,13 +311,21 @@ public class SalesController {
      * Add product to cart
      */
     private void addToCart(Product product, int quantity) {
-        String key = product.getName();
+        String key = product.getId();
         
         if (cartMap.containsKey(key)) {
             CartItem item = cartMap.get(key);
-            item.quantity += quantity;
+            item.setQuantity(item.getQuantity() + quantity);
         } else {
-            CartItem item = new CartItem(product.getName(), product.getPrice(), quantity, product.getCategory());
+            CartItem item = new CartItem(
+                product.getId(),
+                product.getName(), 
+                product.getCategory(), 
+                product.getPrice(), 
+                quantity, 
+                product.getImagePath(), 
+                0
+            );
             cartMap.put(key, item);
         }
         
@@ -296,29 +336,22 @@ public class SalesController {
      * Update cart display
      */
     private void updateCartDisplay() {
-        if (cartItemsContainer == null || subtotalLabel == null || totalLabel == null) {
-            return;
-        }
+        if (cartItemsContainer == null) return;
+        cartItemsContainer.getChildren().clear();
+
+        double subtotal = 0;
         
-        try {
-            cartItemsContainer.getChildren().clear();
-
-            double subtotal = 0;
-            
-            for (CartItem item : cartMap.values()) {
-                HBox itemRow = createCartItemRow(item);
-                cartItemsContainer.getChildren().add(itemRow);
-                subtotal += item.getTotalPrice();
-            }
-
-            // Discount removed as per request
-            double total = subtotal;
-
-            subtotalLabel.setText(String.format("Tk.%.2f", subtotal));
-            totalLabel.setText(String.format("Tk.%.2f", total));
-        } catch (Exception e) {
-            System.err.println("Error updating cart: " + e.getMessage());
+        for (CartItem item : cartMap.values()) {
+            HBox itemRow = createCartItemRow(item);
+            cartItemsContainer.getChildren().add(itemRow);
+            subtotal += item.getTotalPrice();
         }
+
+        // Discount removed as per request
+        double total = subtotal;
+
+        subtotalLabel.setText(String.format("Tk.%.2f", subtotal));
+        totalLabel.setText(String.format("Tk.%.2f", total));
     }
 
     /**
@@ -330,7 +363,7 @@ public class SalesController {
         // spacing handled by CSS .cart-item-row
         row.setAlignment(Pos.CENTER_LEFT);
 
-        Label nameLabel = new Label(item.productName);
+        Label nameLabel = new Label(item.getProductName());
         nameLabel.setPrefWidth(130);
         nameLabel.setStyle("-fx-font-weight: bold;");
 
@@ -338,7 +371,7 @@ public class SalesController {
         // User requested showing Tk only once (for total)
 
         // Quantity Label (Replacement for Spinner)
-        Label qtyLabel = new Label("*" + item.quantity);
+        Label qtyLabel = new Label("*" + item.getQuantity());
         qtyLabel.setPrefWidth(40);
         qtyLabel.setStyle("-fx-font-weight: bold; -fx-alignment: center; -fx-text-fill: #7f8c8d;");
 
@@ -349,7 +382,7 @@ public class SalesController {
         Button removeBtn = new Button("✕");
         removeBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 10px; -fx-min-width: 25px;");
         removeBtn.setOnAction(e -> {
-            cartMap.remove(item.productName);
+            cartMap.remove(item.getProductId());
             updateCartDisplay();
         });
 
@@ -363,106 +396,154 @@ public class SalesController {
     @FXML
     private void onConfirmSale() {
         if (cartMap.isEmpty()) {
-            showAlert("Empty Cart", "Please add products before confirming sale!");
+            showAlert("Cart Empty", "Please add products to the cart first.");
             return;
         }
 
-        double subtotal = cartMap.values().stream().mapToDouble(CartItem::getTotalPrice).sum();
-        double total = subtotal; // No discount
-        int totalQty = cartMap.values().stream().mapToInt(item -> item.quantity).sum();
+        if (currentSelectedCustomer == null) {
+            showAlert("Missing Customer", "Please add or select a customer for this sale.");
+            return;
+        }
 
-        // Record sales with actual product categories
-        StringBuilder itemsSummary = new StringBuilder();
-        for (CartItem item : cartMap.values()) {
-            SalesTracker.addSale(item.productName, item.category, item.price, item.quantity);
+        // Calculate totals
+        double totalAmount = cartMap.values().stream().mapToDouble(CartItem::getTotalPrice).sum();
+        int totalQty = cartMap.values().stream().mapToInt(CartItem::getQuantity).sum();
+        List<CartItem> purchasedItems = new ArrayList<>(cartMap.values());
 
-            // Build summary string for the bill
-            if (itemsSummary.length() > 0) itemsSummary.append(" | ");
-            itemsSummary.append(item.productName).append(" x").append(item.quantity)
-                    .append(" @ ").append(String.format("%.2f", item.price));
+        // Update Stock
+        for (CartItem item : purchasedItems) {
+            String productId = item.getProductId();
+            int currentStock = StockManager.getStock(productId);
+            int newStock = Math.max(0, currentStock - item.getQuantity());
+            StockManager.updateStock(productId, newStock);
+            NetworkManager.getInstance().broadcastStockUpdate(productId, newStock);
             
-            // Update Stock
-            String stockId = StockManager.findProductIdByName(item.productName);
-            if (stockId != null) {
-                StockManager.reduceStock(stockId, item.quantity);
-                NetworkManager.getInstance().broadcastStockUpdate(stockId, StockManager.getStock(stockId));
-            }
+            // Record individually for dashboard tracker
+            SalesTracker.addSale(item.getProductName(), item.getCategory(), item.getUnitPrice(), item.getQuantity());
         }
 
-        // Create and save permanent Bill Record
-        String user = Session.getCurrentUser();
-        String soldBy = (user == null || user.isBlank()) ? "Guest" : user;
-
-        // Build JSON for items
-        StringBuilder jsonBuilder = new StringBuilder("[");
-        boolean first = true;
-        for (CartItem item : cartMap.values()) {
-            if (!first) jsonBuilder.append(",");
-            // Simple JSON construction
-            jsonBuilder.append(String.format("{\"name\":\"%s\",\"price\":%.2f,\"quantity\":%d,\"category\":\"%s\"}",
-                    item.productName.replace("\"", "\\\""),
-                    item.price,
-                    item.quantity,
-                    item.category));
-            first = false;
-        }
-        jsonBuilder.append("]");
-
-        SaleRecord sale = new SaleRecord(
-                SalesManager.getNextBillId(), // Sequential ID
-                java.time.LocalDateTime.now().toString(),
-                soldBy,
-                "POS",
-                totalQty,
-                total,
-                itemsSummary.toString(),
-                jsonBuilder.toString()
-        );
+        // Record Sale Summary
+        SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(purchasedItems, totalQty, totalAmount);
         SalesManager.recordSale(sale);
         NetworkManager.getInstance().broadcastSaleRecord(sale);
 
-        showAlert("Sale Confirmed", String.format(
-            "Sale Confirmed!\n\nSubtotal: Tk.%.2f\nTotal: Tk.%.2f\n\nItems: %d\n\nBill ID: %s",
-            subtotal, total, totalQty, sale.getSaleId()
-        ));
-
+        // Success Feedback
+        String customerInfo = currentSelectedCustomer.getName() + " (" + currentSelectedCustomer.getPhone() + ")";
+        showAlert("Success", "Sale Completed! Amount: Tk." + String.format("%.2f", totalAmount) + "\nCustomer: " + customerInfo);
+        
+        // Clear Cart & Selection
         cartMap.clear();
         updateCartDisplay();
-        loadProducts(currentCategory); // Refresh UI to show updated stock
+        currentSelectedCustomer = null;
+        if(selectedCustomerLabel != null) selectedCustomerLabel.setText("No Customer Selected");
+        
+        // Refresh dashboard stats
         HomeController.refreshDashboard();
     }
-
-    /**
-     * Clear cart
-     */
+    
     @FXML
     private void onClearCart() {
         cartMap.clear();
         updateCartDisplay();
+        currentSelectedCustomer = null;
+        if(selectedCustomerLabel != null) selectedCustomerLabel.setText("No Customer Selected");
     }
 
-    /**
-     * Back to home
-     */
+    // Modal Actions
     @FXML
-    private void onBackClick() {
-        if (searchField != null && searchField.getScene() != null) {
-            Session.goToHome(searchField);
-        } else if (productsTilePane != null && productsTilePane.getScene() != null) {
-            Session.goToHome(productsTilePane);
+    private void onOpenCustomerModal() {
+        clearModalForm();
+        if(modalOverlay != null) modalOverlay.setVisible(true);
+    }
+
+    @FXML
+    private void onCancelModal() {
+        if(modalOverlay != null) modalOverlay.setVisible(false);
+    }
+
+    @FXML
+    private void onSaveCustomer() {
+        if (nameField.getText().isEmpty() || phoneField.getText().isEmpty()) {
+            showAlert("Required Fields", "Name and Phone Number are required.");
+            return;
+        }
+
+        String name = nameField.getText();
+        String phone = phoneField.getText();
+        String email = emailField.getText();
+        String address = addressArea.getText();
+        String type = typeCombo.getValue();
+        boolean hasDue = dueBalanceToggle.isSelected();
+        double due = 0.0;
+        
+        if (hasDue) {
+             try {
+                 due = Double.parseDouble(dueBalanceAmountField.getText());
+             } catch (NumberFormatException e) {
+                 due = 0.0;
+             }
+        }
+        
+        // Check if customer already exists
+        Customer existing = null;
+        for(Customer c : CustomerManager.getAllCustomers()) {
+            if(c.getPhone().equals(phone)) {
+                existing = c; 
+                break;
+            }
+        }
+        
+        Customer customer;
+        if (existing != null) {
+            // Update existing? Or just use it? usually ask, but for speed lets update
+            customer = existing;
+            customer.setName(name);
+            customer.setEmail(email);
+            customer.setAddress(address);
+            customer.setType(type);
+            // customer.setDueBalance(due); // Maybe don't overwrite due balance blindly
         } else {
-            System.err.println("❌ ERROR: Cannot go back, scene is missing!");
+            customer = new Customer(name, phone, email, address, type, due);
+        }
+
+        CustomerManager.saveCustomer(customer);
+        NetworkManager.getInstance().broadcastCustomer(customer);
+        
+        // Set as selected
+        currentSelectedCustomer = customer;
+        selectedCustomerLabel.setText("Selected: " + customer.getName());
+        
+        onCancelModal(); // Close modal
+    }
+    
+    @FXML
+    private void onDueToggle() {
+        if(dueBalanceAmountField != null && dueBalanceToggle != null) {
+            dueBalanceAmountField.setDisable(!dueBalanceToggle.isSelected());
+            if (!dueBalanceToggle.isSelected()) {
+                dueBalanceAmountField.setText("0.0");
+            }
         }
     }
-
-    /**
-     * Show alert dialog
-     */
-    private void showAlert(String title, String message) {
+    
+    private void clearModalForm() {
+        if(nameField != null) nameField.clear();
+        if(phoneField != null) phoneField.clear();
+        if(emailField != null) emailField.clear();
+        if(addressArea != null) addressArea.clear();
+        if(typeCombo != null) typeCombo.getSelectionModel().selectFirst();
+        if(dueBalanceToggle != null) dueBalanceToggle.setSelected(false);
+        if(dueBalanceAmountField != null) {
+            dueBalanceAmountField.setText("0.0");
+            dueBalanceAmountField.setDisable(true);
+        }
+    }
+    
+    private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
-        alert.setContentText(message);
+        alert.setContentText(content);
         alert.showAndWait();
     }
 
@@ -516,6 +597,7 @@ public class SalesController {
         
         for (StockItem item : stockItems) {
             products.add(new Product(
+                item.getProductId(),
                 item.getProductName(),
                 item.getCategory(), 
                 item.getPrice(),
@@ -531,23 +613,27 @@ public class SalesController {
      * Product class
      */
     public static class Product {
+        private String id;
         private String name;
         private String category;
         private double price;
         private int stock;
         private String imagePath;
 
-        public Product(String name, String category, double price, int stock) {
-            this(name, category, price, stock, null);
+        public Product(String id, String name, String category, double price, int stock) {
+            this(id, name, category, price, stock, null);
         }
 
-        public Product(String name, String category, double price, int stock, String imagePath) {
+        public Product(String id, String name, String category, double price, int stock, String imagePath) {
+            this.id = id;
             this.name = name;
             this.category = category;
             this.price = price;
             this.stock = stock;
             this.imagePath = imagePath;
         }
+
+        public String getId() { return id; }
 
         public String getName() { return name; }
 
@@ -556,26 +642,5 @@ public class SalesController {
         public int getStock() { return stock; }
         public void setStock(int stock) { this.stock = stock; }
         public String getImagePath() { return imagePath; }
-    }
-
-    /**
-     * Cart item class
-     */
-    public static class CartItem {
-        public String productName;
-        public double price;
-        public int quantity;
-        public String category;
-
-        public CartItem(String productName, double price, int quantity, String category) {
-            this.productName = productName;
-            this.price = price;
-            this.quantity = quantity;
-            this.category = category;
-        }
-
-        public double getTotalPrice() {
-            return price * quantity;
-        }
     }
 }

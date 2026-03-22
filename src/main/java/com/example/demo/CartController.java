@@ -31,6 +31,10 @@ public class CartController {
     @FXML private Label totalQuantityLabel;
     @FXML private Label totalPriceLabel;
 
+    // Customer Input Fields
+    @FXML private javafx.scene.control.TextField customerNameField;
+    @FXML private javafx.scene.control.TextField customerPhoneField;
+
     @FXML
     private void initialize() {
         refreshCart();
@@ -44,6 +48,12 @@ public class CartController {
                 ? "🛒 Your cart is empty. Start shopping!"
                 : "🛒 " + items.size() + " item(s) in your cart");
         updateSummary();
+        
+        // Reset customer fields if cart is cleared, but not on refresh unless empty
+        if(items.isEmpty() && customerNameField != null) {
+             customerNameField.clear();
+             customerPhoneField.clear();
+        }
     }
 
     private void updateSummary() {
@@ -145,10 +155,56 @@ public class CartController {
             statusLabel.setText("⚠️ Your cart is empty! Add some products first.");
             return;
         }
+
+        // Validate Customer Info (Required as per request)
+        String customerName = customerNameField.getText().trim();
+        String customerPhone = customerPhoneField.getText().trim();
+
+        if (customerName.isEmpty()) {
+            statusLabel.setText("⚠️ Please enter Customer Name.");
+            customerNameField.requestFocus();
+            return;
+        }
+
+        if (customerPhone.isEmpty()) {
+            statusLabel.setText("⚠️ Please enter Customer Phone Number.");
+            customerPhoneField.requestFocus();
+            return;
+        }
+        
+        if (customerPhone.length() != 11 || !customerPhone.matches("\\d+")) {
+            statusLabel.setText("⚠️ Phone number must be exactly 11 digits.");
+            customerPhoneField.requestFocus();
+            return;
+        }
+
         List<CartItem> purchasedItems = Cart.getAllItems();
         int totalQty = Cart.getTotalQuantity();
         double totalAmount = Cart.getTotalPrice();
 
+        // 1. Save or Update Customer
+        // Check if customer exists by phone
+        Customer customerToSave = null;
+        for (Customer existing : CustomerManager.getAllCustomers()) {
+            if (existing.getPhone().equals(customerPhone)) {
+                customerToSave = existing;
+                // Update name if changed? Let's just update name to current input
+                customerToSave.setName(customerName); 
+                break;
+            }
+        }
+        
+        if (customerToSave == null) {
+            // New Customer
+            customerToSave = new Customer(customerName, customerPhone, "", "", "Retail", 0.0);
+        }
+        
+        // Update Due Balance if needed (assuming fully paid here, so no due balance change unless we add credit sales)
+        // For now, simple retail sale
+        CustomerManager.saveCustomer(customerToSave);
+        NetworkManager.getInstance().broadcastCustomer(customerToSave);
+
+        // 2. Process Sale & Stock
         // NOW reduce stock for every purchased item
         for (CartItem item : purchasedItems) {
             String canonicalProductId = ensureCanonicalStockProduct(item);
@@ -158,6 +214,9 @@ public class CartController {
             NetworkManager.getInstance().broadcastStockUpdate(canonicalProductId, newStock);
             
             // Record sale in SalesTracker for dashboard
+            // linking customerName to sale is tricky without changing SaleRecord structure heavily
+            // but we can append it to category or product name in tracking if needed, 
+            // or just rely on CustomerManager having the customer.
             SalesTracker.addSale(item.getProductName(), item.getCategory(), item.getUnitPrice(), item.getQuantity());
         }
 
@@ -168,8 +227,11 @@ public class CartController {
         String total = String.format("৳ %.2f BDT", totalAmount);
         Cart.clearCart();
         refreshCart();
-        statusLabel.setText("✅ Purchase successful!  " + totalQty
-                + " item(s) bought — Total: " + total + "  Thank you! 🎉");
+        statusLabel.setText("✅ Purchase successful! Customer Add/Updated. Total: " + total);
+        
+        // Clear inputs
+        customerNameField.clear();
+        customerPhoneField.clear();
         
         // Refresh dashboard stats
         HomeController.refreshDashboard();

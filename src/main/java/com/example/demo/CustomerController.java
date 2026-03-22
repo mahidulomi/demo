@@ -142,6 +142,17 @@ public class CustomerController {
         String name = nameField.getText();
         String phone = phoneField.getText();
         String email = emailField.getText();
+
+        if (phone.length() != 11 || !phone.matches("\\d+")) {
+            showAlert("Invalid Input", "Phone number must be exactly 11 digits.");
+            return;
+        }
+
+        if (!email.isEmpty() && !email.contains("@") && !email.contains(".")) {
+             showAlert("Invalid Input", "Please enter a valid email address (e.g., user@example.com).");
+             return;
+        }
+        
         String address = addressArea.getText();
         String type = typeCombo.getValue();
         boolean hasDue = dueBalanceToggle.isSelected();
@@ -241,7 +252,6 @@ public class CustomerController {
     @FXML private void onRestockClick() { Session.goToRestock(userLabel); }
     @FXML private void onCustomersClick() { /* Already here */ }
     @FXML private void onReportsClick() { Session.goToReports(userLabel); }
-    @FXML private void onLogout() { Session.logoutToLogin(userLabel); }
     @FXML private void onProfileClick() { /* Todo */ }
     @FXML private void openFashion() { Session.goToFashion(userLabel); } // Re-use
 }

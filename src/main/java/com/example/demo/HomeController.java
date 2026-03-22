@@ -2,11 +2,20 @@ package com.example.demo;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class HomeController {
 
@@ -31,6 +40,13 @@ public class HomeController {
     @FXML
     private Label totalCustomersLabel;
 
+    @FXML
+    private AreaChart<String, Number> salesChart;
+    @FXML
+    private CategoryAxis xAxis;
+    @FXML
+    private NumberAxis yAxis;
+
     private static HomeController currentInstance;
 
     @FXML
@@ -40,6 +56,7 @@ public class HomeController {
         userLabel.setText("Welcome, " + (user == null ? "Admin" : user));
         statusLabel.setText("");
         updateDashboardStats();
+        setupSalesChart();
 
         // Listen for external sales file changes (e.g. from other instances)
         SalesManager.addExternalChangeListener(() -> {
@@ -96,6 +113,9 @@ public class HomeController {
         if (totalCustomersLabel != null) {
             totalCustomersLabel.setText(String.valueOf(todaysSales.size()));
         }
+        
+        // Refresh chart
+        setupSalesChart();
     }
 
     /**
@@ -265,14 +285,41 @@ public class HomeController {
     private static String safe(String text) {
         return text == null ? "" : text.trim();
     }
+
+    /**
+     * Setup the sales chart with data
+     */
+    private void setupSalesChart() {
+        if (salesChart == null) return;
+        
+        salesChart.getData().clear();
+        
+        // Use TreeMap to keep dates sorted chronologically
+        Map<LocalDate, Double> salesByDate = new TreeMap<>();
+        
+        // Aggregate sales by day
+        for (SalesTracker.SaleRecord record : SalesTracker.getAllSales()) {
+            if (record.saleTime != null) {
+                LocalDate date = record.saleTime.toLocalDate();
+                salesByDate.put(date, salesByDate.getOrDefault(date, 0.0) + record.totalAmount);
+            }
+        }
+        
+        // Ensure at least today is present for aesthetics if empty
+        if (salesByDate.isEmpty()) {
+            salesByDate.put(LocalDate.now(), 0.0);
+        }
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Sales Volume");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd");
+
+        for (Map.Entry<LocalDate, Double> entry : salesByDate.entrySet()) {
+            series.getData().add(new XYChart.Data<>(entry.getKey().format(formatter), entry.getValue()));
+        }
+
+        salesChart.getData().add(series);
+    }
 }
-
-
-
-
-
-
-
-
-
 

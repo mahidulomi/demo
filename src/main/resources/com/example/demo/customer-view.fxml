@@ -44,9 +44,9 @@
             <spacing>30</spacing>
             <alignment>CENTER_LEFT</alignment>
             <children>
+                <Button text="⬅ Back to Home" onAction="#onNavHome" styleClass="action-btn-blue" />
                 <Label text="Customers" styleClass="dashboard-title" HBox.hgrow="ALWAYS" />
                 <Label fx:id="userLabel" text="Welcome, Admin" styleClass="dashboard-welcome" />
-                <Button text="Logout" onAction="#onLogout" styleClass="logout-btn" />
             </children>
         </HBox>
 
@@ -58,7 +58,6 @@
              <HBox spacing="15" alignment="CENTER_LEFT">
                  <TextField fx:id="searchField" promptText="Search customers..." prefWidth="300" styleClass="search-field"/>
                  <AnchorPane HBox.hgrow="ALWAYS" />
-                 <Button text="+ Add Customer" styleClass="action-btn-blue" onAction="#onAddCustomer"/>
              </HBox>
 
              <!-- Table -->
