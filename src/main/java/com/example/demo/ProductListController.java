@@ -6,10 +6,14 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 import java.util.Comparator;
 import java.util.List;
@@ -115,45 +119,101 @@ public class ProductListController {
         row.setAlignment(Pos.CENTER_LEFT);
         row.setSpacing(15);
         row.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);");
-        row.setPrefHeight(60);
+        row.setPrefHeight(80); // Increased height for image and more details
 
-        // Product Icon/Image Placeholder
-        Label icon = new Label(getCategoryIcon(item.getCategory()));
-        icon.setStyle("-fx-font-size: 24px;");
-        icon.setMinWidth(40);
-        icon.setAlignment(Pos.CENTER);
+        // Product Image or Icon
+        StackPane imageContainer = new StackPane();
+        imageContainer.setPrefSize(60, 60);
 
-        // Name and ID
-        VBox nameBox = new VBox(2);
+        String imagePath = item.getImagePath();
+        if (imagePath != null && !imagePath.isEmpty()) {
+            try {
+                ImageView imageView = new ImageView();
+                imageView.setFitWidth(60);
+                imageView.setFitHeight(60);
+                imageView.setPreserveRatio(true);
+                
+                // Try to load image
+                String url = getClass().getResource(imagePath) != null ? 
+                             getClass().getResource(imagePath).toExternalForm() : null;
+                
+                if (url != null) {
+                    imageView.setImage(new Image(url));
+                    // Clip to rounded square
+                    Rectangle clip = new Rectangle(60, 60);
+                    clip.setArcWidth(10);
+                    clip.setArcHeight(10);
+                    imageView.setClip(clip);
+                    imageContainer.getChildren().add(imageView);
+                } else {
+                    // Fallback to icon
+                    Label icon = new Label(getCategoryIcon(item.getCategory()));
+                    icon.setStyle("-fx-font-size: 30px;");
+                    imageContainer.getChildren().add(icon);
+                }
+            } catch (Exception e) {
+                // Fallback
+                Label icon = new Label(getCategoryIcon(item.getCategory()));
+                icon.setStyle("-fx-font-size: 30px;");
+                imageContainer.getChildren().add(icon);
+            }
+        } else {
+            Label icon = new Label(getCategoryIcon(item.getCategory()));
+            icon.setStyle("-fx-font-size: 30px;");
+            imageContainer.getChildren().add(icon);
+        }
+
+        // Name, ID, Category
+        VBox nameBox = new VBox(4);
+        nameBox.setAlignment(Pos.CENTER_LEFT);
+        
         Label name = new Label(item.getProductName());
-        name.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        name.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;");
         
-        Label id = new Label("ID: " + item.getProductId());
-        id.setStyle("-fx-text-fill: #666; -fx-font-size: 11px;");
+        Label details = new Label("ID: " + item.getProductId() + "  |  " + item.getCategory() + 
+                                  (item.getSubCategory() != null ? " (" + item.getSubCategory() + ")" : ""));
+        details.setStyle("-fx-text-fill: #666; -fx-font-size: 12px;");
         
-        nameBox.getChildren().addAll(name, id);
+        nameBox.getChildren().addAll(name, details);
         
         // Spacer
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Price
+        // Price Section
+        VBox priceBox = new VBox(2);
+        priceBox.setAlignment(Pos.CENTER_RIGHT);
+        priceBox.setMinWidth(120);
+
+        Label priceLabel = new Label("Price");
+        priceLabel.setStyle("-fx-text-fill: #888; -fx-font-size: 11px;");
+        
         Label price = new Label(String.format("৳%,.2f", item.getPrice()));
-        price.setStyle("-fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-font-size: 14px;");
-        price.setMinWidth(100);
-        price.setAlignment(Pos.CENTER_RIGHT);
+        price.setStyle("-fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-font-size: 16px;");
+        
+        priceBox.getChildren().addAll(priceLabel, price);
 
-        // Stock
-        Label stock = new Label("Stock: " + item.getQuantity());
-        stock.setMinWidth(100);
-        stock.setAlignment(Pos.CENTER_RIGHT);
+        // Stock Section
+        VBox stockBox = new VBox(2);
+        stockBox.setAlignment(Pos.CENTER_RIGHT);
+        stockBox.setMinWidth(100);
+
+        Label stockLabel = new Label("Stock");
+        stockLabel.setStyle("-fx-text-fill: #888; -fx-font-size: 11px;");
+
+        Label stock = new Label(item.getQuantity() + " units");
         if (item.getQuantity() < 5) {
-            stock.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+            stock.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold; -fx-font-size: 14px;");
+            stockLabel.setText("Low Stock");
+            stockLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 11px;");
         } else {
-            stock.setStyle("-fx-text-fill: green;");
+            stock.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold; -fx-font-size: 14px;");
         }
+        
+        stockBox.getChildren().addAll(stockLabel, stock);
 
-        row.getChildren().addAll(icon, nameBox, spacer, price, stock);
+        // Add to row
+        row.getChildren().addAll(imageContainer, nameBox, spacer, priceBox, stockBox);
         return row;
     }
 
