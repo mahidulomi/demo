@@ -109,25 +109,29 @@ public class HomeController {
             MenuItem beautyItem = new MenuItem("💄 Beauty");
             beautyItem.setOnAction(e -> {
                 statusLabel.setText("Opening Beauty products...");
-                Session.goToBeauty(statusLabel);
+                ProductListController.setCategoryToShow("Beauty");
+                Session.goToProductList(statusLabel);
             });
 
             MenuItem electronicsItem = new MenuItem("📱 Electronics");
             electronicsItem.setOnAction(e -> {
                 statusLabel.setText("Opening Electronics products...");
-                Session.goToElectronics(statusLabel);
+                ProductListController.setCategoryToShow("Electronics");
+                Session.goToProductList(statusLabel);
             });
 
             MenuItem homeLivingItem = new MenuItem("🏠 Home & Living");
             homeLivingItem.setOnAction(e -> {
                 statusLabel.setText("Opening Home & Living products...");
-                Session.goToHomeLiving(statusLabel);
+                ProductListController.setCategoryToShow("Home and Living");
+                Session.goToProductList(statusLabel);
             });
 
             MenuItem fashionItem = new MenuItem("👗 Fashion");
             fashionItem.setOnAction(e -> {
                 statusLabel.setText("Opening Fashion products...");
-                Session.goToFashion(statusLabel);
+                ProductListController.setCategoryToShow("Fashion");
+                Session.goToProductList(statusLabel);
             });
 
             menu.getItems().addAll(beautyItem, electronicsItem, homeLivingItem, fashionItem);

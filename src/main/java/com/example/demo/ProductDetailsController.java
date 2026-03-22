@@ -124,7 +124,7 @@ public class ProductDetailsController {
             case "Power Bank 20000mAh" -> setupPowerBank(product);
             case "iPad" -> setupIPad(product);
             case "Mouse" -> setupMouse(product);
-            case "Ajazz K80 Redswitch" -> setupKeyboard(product);
+            case "Keyboard" -> setupKeyboard(product);
             default -> setupDefaultProduct(product);
         }
 
@@ -417,7 +417,7 @@ public class ProductDetailsController {
 
     private void setupKeyboard(Product product) {
         product.setCategory("Accessories - Gaming");
-        product.setPrice("BDT 4,200");
+        product.setPrice("BDT 4,500");
         product.setImagePath("/images/ajaj.png");
         product.setDescription("Ajazz K80 Mechanical Keyboard - Red Switches, RGB backlight, hot-swappable, perfect for gaming and typing.");
         product.setColors(new String[]{"Black", "White"});

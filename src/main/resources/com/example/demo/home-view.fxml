@@ -79,13 +79,7 @@
             </AnchorPane>
         </HBox>
 
-        <!-- Action Buttons -->
-        <HBox spacing="15" prefHeight="50.0" styleClass="dashboard-action-row">
-            <Button text="➕ Add Product" prefWidth="150" onAction="#openElectronics" styleClass="action-btn-blue" />
-            <Button text="🛒 New Sale" prefWidth="150" onAction="#openCart" styleClass="action-btn-green" />
-            <Button text="👤 Add Customer" prefWidth="150" onAction="#onCustomersClick" styleClass="action-btn-orange" />
-            <Button text="📦 Restock Items" prefWidth="150" onAction="#openStock" styleClass="action-btn-purple" />
-        </HBox>
+        <!-- Action Buttons - REMOVED -->
 
         <!-- Content Area: Sales Overview and Recent Activity -->
         <HBox spacing="20" prefHeight="350.0" VBox.vgrow="ALWAYS">

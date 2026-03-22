@@ -49,6 +49,10 @@ public final class Session {
         changeScene(anyNodeInScene, "forgot-password-view.fxml", 1250, 750);
     }
 
+    public static void goToProductList(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "product-list-view.fxml", 1250, 750);
+    }
+
     public static void goToFashion(Node anyNodeInScene) {
         changeScene(anyNodeInScene, "fashion-view.fxml", 1250, 750);
     }

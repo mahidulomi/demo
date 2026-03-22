@@ -75,10 +75,15 @@ public final class StockManager {
 
         // --- FASHION ---
         addDefault("F_TitanWatch",      "Titan Watch",           "Fashion", 25, 4500, "/images/titan.png");
-        addDefault("F_AjajWatch",       "Ajaj Watch",            "Fashion", 25, 3500, "/images/ajaj.png");
-        addDefault("F_MensTShirt",      "Men's T-Shirt",         "Fashion", 25, 800, "");
-        addDefault("F_Jeans",           "Jeans",                 "Fashion", 25, 1800, "");
-        addDefault("F_Sneakers",        "Sneakers",              "Fashion", 25, 2500, "");
+        addDefault("E_Keyboard",        "Keyboard",              "Electronics", 25, 4500, "/images/ajaj.png");
+        
+        // New Fashion Items with Images
+        addDefault("F_TShirt",          "T-shirt",               "Fashion", 25, 800, "/fashion/T-shirt.jpg");
+        addDefault("F_Pant",            "Pant",                  "Fashion", 25, 1200, "/fashion/pant.jpg");
+        addDefault("F_Sneakers",        "Sneakers",              "Fashion", 25, 2500, "/fashion/sneakers.jpg");
+        addDefault("F_Jacket",          "Jacket",                "Fashion", 25, 2500, "/fashion/jacket.jpg");
+        addDefault("F_Saree",           "Saree",                 "Fashion", 25, 3500, "/fashion/saree.jpg");
+        addDefault("F_Shirt",           "Shirt",                 "Fashion", 25, 1500, "/fashion/Shirt.jpg");
 
         // --- HOME & LIVING ---
         addDefault("H_Sofa",            "Luxury Sofa",           "Home and Living", 5, 25000, "/extra/luxurysofa.jpg");
@@ -96,11 +101,19 @@ public final class StockManager {
 
     public static synchronized void initializeStock() {
         if (initialized) return;
-        loadFromFile();   // load saved data first
-        // Remove H_Cushion if present (requested removal)
-        if (stockData.containsKey("H_Cushion")) {
-            stockData.remove("H_Cushion");
-        }
+
+        // Remove old Fashion broken items to replace with new imaged ones
+        if (stockData.containsKey("F_MensTShirt")) stockData.remove("F_MensTShirt");
+        if (stockData.containsKey("F_Jeans")) stockData.remove("F_Jeans");
+        // Remove old Ajaj Watch so it doesn't appear in Fashion
+        if (stockData.containsKey("F_AjajWatch")) stockData.remove("F_AjajWatch");
+        // Also remove any intermediate renamed versions if they exist
+        if (stockData.containsKey("E_AjajKeyboard")) stockData.remove("E_AjajKeyboard");
+        if (stockData.containsKey("E_RedSwitchKeyboard")) stockData.remove("E_RedSwitchKeyboard");
+
+        // Remove any items that have no image path (as per user request: "jei box gulay image nei ogula remove kore dao")
+        stockData.values().removeIf(item -> item.getImagePath() == null || item.getImagePath().trim().isEmpty());
+
         loadDefaults();   // fill in any missing products with defaults
         saveToFile();     // persist combined state
         initialized = true;
