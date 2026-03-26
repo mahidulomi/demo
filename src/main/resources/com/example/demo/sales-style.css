@@ -1,7 +1,7 @@
-/* Modern Sales Dashboard Styles */
+/* Modern Sales Dashboard Styles - Dark Mode */
 
 .root {
-    -fx-background-color: #f0f2f5;
+    -fx-background-color: #121212;
     -fx-font-family: 'Segoe UI', 'Helvetica New', sans-serif;
 }
 
@@ -9,8 +9,8 @@
 .header-label {
     -fx-font-size: 28px;
     -fx-font-weight: 800;
-    -fx-text-fill: #1a1a1a;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 2, 0, 0, 1);
 }
 
 .back-button {
@@ -32,74 +32,76 @@
 
 /* Category Buttons */
 .category-button {
-    -fx-background-color: linear-gradient(to bottom, #ffffff, #f1f2f6);
-    -fx-text-fill: #57606f;
-    -fx-border-color: #dcdde1;
+    -fx-background-color: linear-gradient(to bottom, #2d2d2d, #1e1e1e);
+    -fx-text-fill: #a0aec0;
+    -fx-border-color: #4a5568;
     -fx-border-radius: 30;
     -fx-background-radius: 30;
     -fx-padding: 8 20;
     -fx-cursor: hand;
     -fx-font-weight: 600;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 3, 0, 0, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
 }
 
 .category-button:hover {
-    -fx-background-color: linear-gradient(to bottom, #747d8c, #57606f);
+    -fx-background-color: linear-gradient(to bottom, #4a5568, #2d2d2d);
     -fx-text-fill: white;
-    -fx-border-color: #57606f;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 5, 0, 0, 2);
+    -fx-border-color: #718096;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 2);
 }
 
 /* Data Search Field */
 .search-field {
-    -fx-background-color: white;
+    -fx-background-color: #2d2d2d;
     -fx-background-radius: 30;
     -fx-padding: 10 20;
     -fx-border-width: 0;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2);
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #718096;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 2);
     -fx-font-size: 14px;
 }
 
 .search-field:focused {
-    -fx-effect: dropshadow(three-pass-box, rgba(52,152,219,0.4), 10, 0, 0, 2);
+    -fx-effect: dropshadow(three-pass-box, rgba(140, 160, 255, 0.4), 10, 0, 0, 2);
 }
 
 /* Product Card - THE MAIN BOXES */
 .product-card {
-    -fx-background-color: white;
+    -fx-background-color: #1e1e1e;
     -fx-background-radius: 20;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 20, 0, 0, 10);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 20, 0, 0, 10);
     -fx-padding: 15;
     -fx-spacing: 12;
-    -fx-border-color: white;
+    -fx-border-color: #2d2d2d;
     -fx-border-width: 2px;
 }
 
 .product-card:hover {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 25, 0, 0, 12);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 25, 0, 0, 12);
     -fx-translate-y: -5;
-    -fx-border-color: #3498db;
+    -fx-border-color: #8ca0ff;
     -fx-border-radius: 20;
 }
 
 .product-name {
     -fx-font-size: 15px;
     -fx-font-weight: 700;
-    -fx-text-fill: #2f3542;
+    -fx-text-fill: #ffffff;
     -fx-alignment: center;
 }
 
 .product-price {
     -fx-font-size: 18px;
     -fx-font-weight: 800;
-    -fx-text-fill: #2ed573;
+    -fx-text-fill: #4cd137;
 }
 
 .product-stock {
     -fx-font-size: 12px;
-    -fx-text-fill: #a4b0be;
+    -fx-text-fill: #a0aec0;
     -fx-font-style: italic;
-    -fx-background-color: #f1f2f6;
+    -fx-background-color: #2d2d2d;
     -fx-background-radius: 10;
     -fx-padding: 2 8;
 }
@@ -124,58 +126,64 @@
     -fx-background-color: transparent;
     -fx-background-radius: 20;
     -fx-border-radius: 20;
-    -fx-border-color: #dfe4ea;
+    -fx-border-color: #4a5568;
 }
 
 .spinner > .text-field {
-    -fx-background-color: white;
+    -fx-background-color: #2d2d2d;
+    -fx-text-fill: white;
     -fx-background-radius: 20 0 0 20;
     -fx-alignment: center;
 }
 
 .spinner > .increment-arrow-button,
 .spinner > .decrement-arrow-button {
-    -fx-background-color: #f1f2f6;
+    -fx-background-color: #4a5568;
+}
+
+.spinner .increment-arrow-button .increment-arrow,
+.spinner .decrement-arrow-button .decrement-arrow {
+    -fx-background-color: white;
 }
 
 /* Cart Section */
 .cart-panel {
-    -fx-background-color: white;
+    -fx-background-color: #1e1e1e;
     -fx-background-radius: 20;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 15, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 15, 0, 0, 0);
     -fx-padding: 20;
 }
 
 .cart-header {
     -fx-font-size: 22px;
     -fx-font-weight: 800;
-    -fx-text-fill: #2f3542;
+    -fx-text-fill: #ffffff;
     -fx-border-width: 0 0 1 0;
-    -fx-border-color: #f1f2f6;
+    -fx-border-color: #2d2d2d;
     -fx-padding: 0 0 15 0;
 }
 
 .cart-item-row {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #2d2d2d;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
-    -fx-border-color: #f1f2f6;
+    -fx-border-color: #4a5568;
     -fx-border-width: 1;
     -fx-padding: 8;
     -fx-spacing: 12;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.02), 5, 0, 0, 2);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
 .summery-label {
     -fx-font-size: 15px;
-    -fx-text-fill: #747d8c;
+    -fx-text-fill: #a0aec0;
     -fx-font-weight: 500;
 }
 
 .total-label {
     -fx-font-size: 20px;
     -fx-font-weight: 800;
-    -fx-text-fill: #2f3542;
+    -fx-text-fill: #ffffff;
 }
 
 .confirm-button {

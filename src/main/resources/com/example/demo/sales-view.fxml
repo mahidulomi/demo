@@ -18,11 +18,11 @@
     <AnchorPane prefHeight="750.0" prefWidth="1250.0" styleClass="root">
 
         <!-- Header -->
-        <HBox layoutX="0.0" layoutY="0.0" prefHeight="70.0" spacing="30" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox layoutX="0.0" layoutY="0.0" prefHeight="70.0" spacing="30" style="-fx-background-color: #1e1e1e; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 0);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <padding><Insets bottom="15" left="20" right="20" top="15" /></padding>
             <children>
                 <Label styleClass="header-label" text="💰 Sales Dashboard" />
-                <Label fx:id="totalStockLabel" text="Total Stock: 0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 5 0 0 20;" />
+                <Label fx:id="totalStockLabel" text="Total Stock: 0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #a0aec0; -fx-padding: 5 0 0 20;" />
                 <Button onAction="#onBackClick" styleClass="back-button" text="← Back" />
             </children>
         </HBox>
@@ -65,12 +65,12 @@
                 </ScrollPane>
 
                 <!-- Summary -->
-                <VBox spacing="10" style="-fx-padding: 10; -fx-background-color: #f8f9fa; -fx-background-radius: 5;">
+                <VBox spacing="10" style="-fx-padding: 10; -fx-background-color: #1e1e1e; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);">
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <Label text="Subtotal:" styleClass="summery-label" prefWidth="100" />
-                        <Label fx:id="subtotalLabel" text="Tk.0.00" style="-fx-font-weight: bold;" alignment="CENTER_RIGHT" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="subtotalLabel" text="Tk.0.00" style="-fx-font-weight: bold; -fx-text-fill: white;" alignment="CENTER_RIGHT" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
                     </HBox>
-                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-border-color: #ddd; -fx-border-width: 1 0 0 0; -fx-padding: 10 0 0 0;">
+                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-border-color: #4a5568; -fx-border-width: 1 0 0 0; -fx-padding: 10 0 0 0;">
                         <Label text="Total:" styleClass="total-label" prefWidth="100" />
                         <Label fx:id="totalLabel" text="Tk.0.00" styleClass="total-label" alignment="CENTER_RIGHT" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                     </HBox>
@@ -78,8 +78,8 @@
 
                 <!-- Customer Details (Updated) -->
                 <VBox spacing="5" style="-fx-padding: 5 0 5 0;">
-                     <Label text="Customer Details" style="-fx-font-weight: bold; -fx-font-size: 11px;" />
-                     <Label fx:id="selectedCustomerLabel" text="No Customer Selected" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-padding: 0 0 5 0;" />
+                     <Label text="Customer Details" style="-fx-font-weight: bold; -fx-font-size: 11px; -fx-text-fill: white;" />
+                     <Label fx:id="selectedCustomerLabel" text="No Customer Selected" style="-fx-text-fill: #a0aec0; -fx-font-style: italic; -fx-padding: 0 0 5 0;" />
                      <Button text="👤 Add Customer" onAction="#onOpenCustomerModal" styleClass="confirm-button" style="-fx-background-color: #3498db;" maxWidth="Infinity" />
                 </VBox>
 
@@ -96,50 +96,50 @@
     <!-- Modal Overlay -->
     <AnchorPane fx:id="modalOverlay" visible="false" style="-fx-background-color: rgba(0,0,0,0.5);">
              <children>
-                 <VBox layoutX="0" layoutY="0" maxWidth="500" maxHeight="650" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);"
+                 <VBox layoutX="0" layoutY="0" maxWidth="500" maxHeight="650" style="-fx-background-color: #1e1e1e; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 0); -fx-border-color: #334155; -fx-border-radius: 8;"
                        AnchorPane.leftAnchor="375.0" AnchorPane.topAnchor="50.0"> <!-- Centered roughly -->
 
                  <!-- Modal Header -->
-                 <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 15; -fx-border-color: #eee; -fx-border-width: 0 0 1 0;">
-                     <Label fx:id="modalTitle" text="Add Customer" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #333;" HBox.hgrow="ALWAYS" />
+                 <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 15; -fx-border-color: #334155; -fx-border-width: 0 0 1 0;">
+                     <Label fx:id="modalTitle" text="Add Customer" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;" HBox.hgrow="ALWAYS" />
                      <AnchorPane HBox.hgrow="ALWAYS" />
-                     <Button text="✕" onAction="#onCancelModal" style="-fx-background-color: transparent; -fx-text-fill: #999; -fx-font-size: 14; -fx-cursor: hand;" />
+                     <Button text="✕" onAction="#onCancelModal" style="-fx-background-color: transparent; -fx-text-fill: #a0aec0; -fx-font-size: 14; -fx-cursor: hand;" />
                  </HBox>
 
                  <!-- Modal Body -->
                  <VBox spacing="15" style="-fx-padding: 20;">
                      <VBox spacing="5">
-                         <Label text="Customer Name *" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
-                         <TextField fx:id="nameField" promptText="Enter customer name" style="-fx-pref-height: 35;"/>
+                         <Label text="Customer Name *" style="-fx-font-weight: bold; -fx-text-fill: #e2e8f0;"/>
+                         <TextField fx:id="nameField" promptText="Enter customer name" style="-fx-pref-height: 35; -fx-background-color: #2d2d2d; -fx-text-fill: white; -fx-border-color: #4a5568; -fx-border-radius: 5;"/>
                      </VBox>
 
                      <VBox spacing="5">
-                         <Label text="Phone Number *" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                         <Label text="Phone Number *" style="-fx-font-weight: bold; -fx-text-fill: #e2e8f0;"/>
                          <HBox spacing="10">
-                             <TextField text="+880" editable="false" prefWidth="60" style="-fx-pref-height: 35; -fx-background-color: #f0f0f0;"/>
-                             <TextField fx:id="phoneField" promptText="Enter phone number" HBox.hgrow="ALWAYS" style="-fx-pref-height: 35;"/>
+                             <TextField text="+880" editable="false" prefWidth="60" style="-fx-pref-height: 35; -fx-background-color: #334155; -fx-text-fill: white; -fx-border-color: #4a5568; -fx-border-radius: 5;"/>
+                             <TextField fx:id="phoneField" promptText="Enter phone number" HBox.hgrow="ALWAYS" style="-fx-pref-height: 35; -fx-background-color: #2d2d2d; -fx-text-fill: white; -fx-border-color: #4a5568; -fx-border-radius: 5;"/>
                          </HBox>
                      </VBox>
 
                      <VBox spacing="5">
-                         <Label text="Email Address" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
-                         <TextField fx:id="emailField" promptText="Enter email address" style="-fx-pref-height: 35;"/>
+                         <Label text="Email Address" style="-fx-font-weight: bold; -fx-text-fill: #e2e8f0;"/>
+                         <TextField fx:id="emailField" promptText="Enter email address" style="-fx-pref-height: 35; -fx-background-color: #2d2d2d; -fx-text-fill: white; -fx-border-color: #4a5568; -fx-border-radius: 5;"/>
                      </VBox>
 
                      <VBox spacing="5">
-                         <Label text="Address" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
-                         <javafx.scene.control.TextArea fx:id="addressArea" promptText="Enter address" prefRowCount="3" wrapText="true" style="-fx-pref-height: 80;"/>
+                         <Label text="Address" style="-fx-font-weight: bold; -fx-text-fill: #e2e8f0;"/>
+                         <javafx.scene.control.TextArea fx:id="addressArea" promptText="Enter address" prefRowCount="3" wrapText="true" style="-fx-pref-height: 80; -fx-control-inner-background: #2d2d2d; -fx-text-fill: white; -fx-border-color: #4a5568; -fx-border-radius: 5;"/>
                      </VBox>
 
                      <VBox spacing="5">
-                         <Label text="Customer Type" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
-                         <javafx.scene.control.ComboBox fx:id="typeCombo" promptText="Select type" maxWidth="Infinity" style="-fx-pref-height: 35;"/>
+                         <Label text="Customer Type" style="-fx-font-weight: bold; -fx-text-fill: #e2e8f0;"/>
+                         <javafx.scene.control.ComboBox fx:id="typeCombo" promptText="Select type" maxWidth="Infinity" style="-fx-pref-height: 35; -fx-background-color: #2d2d2d; -fx-border-color: #4a5568;"/>
                      </VBox>
 
                      <HBox spacing="10" alignment="CENTER_LEFT">
-                         <Label text="Due Balance" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                         <Label text="Due Balance" style="-fx-font-weight: bold; -fx-text-fill: #e2e8f0;"/>
                          <javafx.scene.control.ToggleButton fx:id="dueBalanceToggle" text="Enable Due" onAction="#onDueToggle" />
-                         <TextField fx:id="dueBalanceAmountField" promptText="0.00" prefWidth="100" disable="true"/>
+                         <TextField fx:id="dueBalanceAmountField" promptText="0.00" prefWidth="100" disable="true" style="-fx-background-color: #2d2d2d; -fx-text-fill: white;"/>
                      </HBox>
                  </VBox>
 

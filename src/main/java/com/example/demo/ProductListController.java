@@ -55,7 +55,7 @@ public class ProductListController {
 
         if (items.isEmpty()) {
              Label placeholder = new Label("No products found in " + category + ".");
-             placeholder.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
+             placeholder.setStyle("-fx-font-size: 16px; -fx-text-fill: #a0aec0;");
              productsListContainer.getChildren().add(placeholder);
         } else {
              for (StockItem item : items) {
@@ -90,7 +90,7 @@ public class ProductListController {
 
         if (allItems.isEmpty()) {
             Label placeholder = new Label("No products found in inventory.");
-            placeholder.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
+            placeholder.setStyle("-fx-font-size: 16px; -fx-text-fill: #a0aec0;");
             productsListContainer.getChildren().add(placeholder);
         }
     }
@@ -98,7 +98,7 @@ public class ProductListController {
     private void addCategorySection(String categoryName, List<StockItem> items) {
         // Section Header
         Label header = new Label(categoryName);
-        header.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 10 0 5 0;");
+        header.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #ffffff; -fx-padding: 10 0 5 0;");
         productsListContainer.getChildren().add(header);
 
         // Sort items by name
@@ -118,7 +118,7 @@ public class ProductListController {
         HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
         row.setSpacing(15);
-        row.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);");
+        row.setStyle("-fx-background-color: #1e1e1e; -fx-padding: 10; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 2);");
         row.setPrefHeight(80); // Increased height for image and more details
 
         // Product Image or Icon
@@ -148,18 +148,18 @@ public class ProductListController {
                 } else {
                     // Fallback to icon
                     Label icon = new Label(getCategoryIcon(item.getCategory()));
-                    icon.setStyle("-fx-font-size: 30px;");
+                    icon.setStyle("-fx-font-size: 30px; -fx-text-fill: #ffffff;");
                     imageContainer.getChildren().add(icon);
                 }
             } catch (Exception e) {
                 // Fallback
                 Label icon = new Label(getCategoryIcon(item.getCategory()));
-                icon.setStyle("-fx-font-size: 30px;");
+                icon.setStyle("-fx-font-size: 30px; -fx-text-fill: #ffffff;");
                 imageContainer.getChildren().add(icon);
             }
         } else {
             Label icon = new Label(getCategoryIcon(item.getCategory()));
-            icon.setStyle("-fx-font-size: 30px;");
+            icon.setStyle("-fx-font-size: 30px; -fx-text-fill: #ffffff;");
             imageContainer.getChildren().add(icon);
         }
 
@@ -168,11 +168,11 @@ public class ProductListController {
         nameBox.setAlignment(Pos.CENTER_LEFT);
         
         Label name = new Label(item.getProductName());
-        name.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;");
+        name.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #ffffff;");
         
         Label details = new Label("ID: " + item.getProductId() + "  |  " + item.getCategory() + 
                                   (item.getSubCategory() != null ? " (" + item.getSubCategory() + ")" : ""));
-        details.setStyle("-fx-text-fill: #666; -fx-font-size: 12px;");
+        details.setStyle("-fx-text-fill: #a0aec0; -fx-font-size: 12px;");
         
         nameBox.getChildren().addAll(name, details);
         
@@ -186,10 +186,10 @@ public class ProductListController {
         priceBox.setMinWidth(120);
 
         Label priceLabel = new Label("Price");
-        priceLabel.setStyle("-fx-text-fill: #888; -fx-font-size: 11px;");
+        priceLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px;");
         
         Label price = new Label(String.format("৳%,.2f", item.getPrice()));
-        price.setStyle("-fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-font-size: 16px;");
+        price.setStyle("-fx-font-weight: bold; -fx-text-fill: #ffffff; -fx-font-size: 16px;");
         
         priceBox.getChildren().addAll(priceLabel, price);
 
@@ -199,7 +199,7 @@ public class ProductListController {
         stockBox.setMinWidth(100);
 
         Label stockLabel = new Label("Stock");
-        stockLabel.setStyle("-fx-text-fill: #888; -fx-font-size: 11px;");
+        stockLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px;");
 
         Label stock = new Label(item.getQuantity() + " units");
         if (item.getQuantity() < 5) {

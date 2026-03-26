@@ -365,7 +365,7 @@ public class SalesController {
 
         Label nameLabel = new Label(item.getProductName());
         nameLabel.setPrefWidth(130);
-        nameLabel.setStyle("-fx-font-weight: bold;");
+        nameLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: white;");
 
         // Unit Price removed to save space and avoid duplicate "Tk." display
         // User requested showing Tk only once (for total)
@@ -373,11 +373,11 @@ public class SalesController {
         // Quantity Label (Replacement for Spinner)
         Label qtyLabel = new Label("*" + item.getQuantity());
         qtyLabel.setPrefWidth(40);
-        qtyLabel.setStyle("-fx-font-weight: bold; -fx-alignment: center; -fx-text-fill: #7f8c8d;");
+        qtyLabel.setStyle("-fx-font-weight: bold; -fx-alignment: center; -fx-text-fill: #a0aec0;");
 
         Label totalAmountLabel = new Label("Tk." + String.format("%.2f", item.getTotalPrice()));
         totalAmountLabel.setPrefWidth(90);
-        totalAmountLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #27ae60;");
+        totalAmountLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #2ecc71;");
 
         Button removeBtn = new Button("✕");
         removeBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 10px; -fx-min-width: 25px;");
