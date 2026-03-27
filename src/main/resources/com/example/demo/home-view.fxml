@@ -75,68 +75,26 @@
                 <Label fx:id="lowStockLabel" layoutX="20" layoutY="50" text="0 Items" styleClass="stat-value" />
             </AnchorPane>
 
-            <!-- Total Customers -->
+            <!-- Total Sales -->
             <AnchorPane HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="120.0" styleClass="stat-card-orange">
-                <Label layoutX="20" layoutY="15" text="Total Customers" styleClass="stat-label" />
-                <Label fx:id="totalCustomersLabel" layoutX="20" layoutY="50" text="0" styleClass="stat-value" />
+                <Label layoutX="20" layoutY="15" text="Total Sales" styleClass="stat-label" />
+                <Label fx:id="totalSalesLabel" layoutX="20" layoutY="50" text="₹0.00" styleClass="stat-value" />
             </AnchorPane>
         </HBox>
 
-        <!-- Action Buttons - REMOVED -->
+        <!-- Content Area: Full Width Sales Overview -->
+        <AnchorPane prefHeight="350.0" VBox.vgrow="ALWAYS" styleClass="content-card">
+            <Label layoutX="20" layoutY="15" text="Sales Overview" styleClass="section-title" />
+            <AreaChart fx:id="salesChart" layoutX="10.0" layoutY="45.0" prefHeight="280.0" prefWidth="660.0" legendVisible="false" verticalGridLinesVisible="false" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="45.0">
+                <xAxis>
+                    <CategoryAxis fx:id="xAxis" side="BOTTOM" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="yAxis" side="LEFT" />
+                </yAxis>
+            </AreaChart>
+        </AnchorPane>
 
-        <!-- Content Area: Sales Overview and Recent Activity -->
-        <HBox spacing="20" prefHeight="350.0" VBox.vgrow="ALWAYS">
-            <!-- Sales Overview (Left) -->
-            <AnchorPane HBox.hgrow="ALWAYS" styleClass="content-card">
-                <Label layoutX="20" layoutY="15" text="Sales Overview" styleClass="section-title" />
-                <AreaChart fx:id="salesChart" layoutX="10.0" layoutY="45.0" prefHeight="280.0" prefWidth="660.0" legendVisible="false" verticalGridLinesVisible="false" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="45.0">
-                    <xAxis>
-                        <CategoryAxis fx:id="xAxis" side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis fx:id="yAxis" side="LEFT" />
-                    </yAxis>
-                </AreaChart>
-            </AnchorPane>
-
-            <!-- Recent Activity (Right) -->
-            <VBox spacing="20" prefWidth="370.0" styleClass="dashboard-side-column">
-                <!-- Latest Sales -->
-                <AnchorPane prefHeight="170.0" styleClass="content-card">
-                    <Label layoutX="15" layoutY="12" text="Latest Sales" styleClass="section-title" />
-                    <VBox layoutX="15" layoutY="45" spacing="12" prefWidth="340.0">
-                        <Label text="🔵 Sale #1021" styleClass="activity-item" />
-                        <Label text="₹ 3,200" styleClass="activity-amount" />
-                        <Separator />
-                        <Label text="🔵 Sale #1020" styleClass="activity-item" />
-                        <Label text="₹ 5,500" styleClass="activity-amount" />
-                        <Separator />
-                        <Label text="🔵 Sale #1019" styleClass="activity-item" />
-                        <Label text="₹ 1,800" styleClass="activity-amount" />
-                    </VBox>
-                </AnchorPane>
-
-                <!-- Recent Products -->
-                <AnchorPane prefHeight="140.0" styleClass="content-card">
-                    <Label layoutX="15" layoutY="12" text="Recent Products" styleClass="section-title" />
-                    <VBox layoutX="15" layoutY="45" spacing="10" prefWidth="340.0">
-                        <Label text="🟢 Wireless Mouse" styleClass="activity-item" />
-                        <Label text="🟢 Apple Juice" styleClass="activity-item" />
-                        <Label text="🟢 LED TV" styleClass="activity-item" />
-                    </VBox>
-                </AnchorPane>
-
-                <!-- New Customers -->
-                <AnchorPane prefHeight="140.0" styleClass="content-card">
-                    <Label layoutX="15" layoutY="12" text="New Customers" styleClass="section-title" />
-                    <VBox layoutX="15" layoutY="45" spacing="10" prefWidth="340.0">
-                        <Label text="👤 Rahim Khan" styleClass="activity-item" />
-                        <Label text="👤 Mina Akter" styleClass="activity-item" />
-                        <Label text="👤 S. Alam" styleClass="activity-item" />
-                    </VBox>
-                </AnchorPane>
-            </VBox>
-        </HBox>
 
         <Label fx:id="statusLabel" text="" styleClass="home-status" />
     </VBox>

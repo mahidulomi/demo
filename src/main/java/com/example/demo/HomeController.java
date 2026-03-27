@@ -38,7 +38,7 @@ public class HomeController {
     private Label lowStockLabel;
 
     @FXML
-    private Label totalCustomersLabel;
+    private Label totalSalesLabel;
 
     @FXML
     private AreaChart<String, Number> salesChart;
@@ -85,12 +85,18 @@ public class HomeController {
      * Update all dashboard stat cards with real data
      */
     private void updateDashboardStats() {
-        // Update Today's Sales
-        java.util.List<SalesTracker.SaleRecord> todaysSales = SalesTracker.getAllSales();
-        double totalSalesAmount = todaysSales.stream().mapToDouble(s -> s.totalAmount).sum();
+        // Fetch all sales records
+        java.util.List<SalesTracker.SaleRecord> allSales = SalesTracker.getAllSales();
+        
+        // Calculate Today's Sales
+        LocalDate today = LocalDate.now();
+        double todaysAmount = allSales.stream()
+                .filter(s -> s.saleTime != null && s.saleTime.toLocalDate().isEqual(today))
+                .mapToDouble(s -> s.totalAmount)
+                .sum();
         
         if (todaysSalesLabel != null) {
-            todaysSalesLabel.setText(String.format("Tk.%.2f", totalSalesAmount));
+            todaysSalesLabel.setText(String.format("Tk.%.2f", todaysAmount));
         }
 
         // Update Total Product Count (Unique items/SKUs)
@@ -109,9 +115,11 @@ public class HomeController {
             lowStockLabel.setText(lowStockCount + " Items");
         }
 
-        // Update Total Sales Transactions
-        if (totalCustomersLabel != null) {
-            totalCustomersLabel.setText(String.valueOf(todaysSales.size()));
+        // Update Total Sales (Revenue)
+        double totalSalesAmount = allSales.stream().mapToDouble(s -> s.totalAmount).sum();
+
+        if (totalSalesLabel != null) {
+            totalSalesLabel.setText(String.format("Tk.%.2f", totalSalesAmount));
         }
         
         // Refresh chart
@@ -322,4 +330,3 @@ public class HomeController {
         salesChart.getData().add(series);
     }
 }
-

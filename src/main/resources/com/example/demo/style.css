@@ -2468,3 +2468,148 @@
     -fx-font-weight: 600;
 }
 
+/* ===== Global forced dark theme + bold text ===== */
+.root,
+.home-page-bg,
+.anchor-pane,
+.vbox,
+.hbox,
+.stack-pane,
+.border-pane,
+.grid-pane,
+.tile-pane,
+.flow-pane,
+.scroll-pane,
+.scroll-pane > .viewport,
+.table-view,
+.list-view,
+.tree-view,
+.tab-pane .tab-content-area {
+    -fx-background-color: #000000;
+    -fx-background-image: none;
+}
+
+.label,
+.text,
+.button,
+.toggle-button,
+.check-box,
+.radio-button,
+.menu-button,
+.hyperlink,
+.tab .tab-label,
+.table-view .column-header .label,
+.table-cell,
+.list-cell,
+.tree-cell,
+.combo-box,
+.combo-box-base,
+.choice-box,
+.text-field,
+.password-field,
+.text-area,
+.spinner .text-field,
+.date-picker,
+.date-picker .text-field {
+    -fx-text-fill: #f5f5f5;
+    -fx-font-weight: 700;
+}
+
+.text-field,
+.password-field,
+.text-area,
+.combo-box-base,
+.choice-box,
+.date-picker,
+.spinner .text-field {
+    -fx-background-color: #111111;
+    -fx-border-color: #333333;
+}
+
+.chart,
+.chart-plot-background,
+.chart-content,
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-background-color: #000000;
+}
+
+.axis,
+.axis-label,
+.axis-tick-mark,
+.axis-minor-tick-mark,
+.chart-legend-item,
+.chart-legend-item-symbol,
+.chart-title {
+    -fx-text-fill: #f5f5f5;
+    -fx-font-weight: 700;
+}
+
+/* Explicit dark overrides for login/dashboard classes that were light */
+.home-page-bg,
+.left-panel,
+.right-panel,
+.dashboard-header,
+.dashboard-main,
+.content-card,
+.dashboard-side-column .content-card,
+.home-card,
+.home-status,
+.modern-table,
+.table-view,
+.table-view .column-header-background,
+.table-row-cell,
+.table-row-cell:odd,
+.table-row-cell:even,
+.list-cell,
+.list-view,
+.combo-box-popup .list-view,
+.menu-item,
+.context-menu {
+    -fx-background-color: #000000;
+    -fx-background-image: none;
+    -fx-border-color: #222222;
+}
+
+.subtitle,
+.field-label,
+.login-title,
+.signup-text,
+.forgot-link,
+.signup-link,
+.link-button,
+.dashboard-title,
+.dashboard-welcome,
+.section-title,
+.chart-placeholder,
+.activity-item,
+.cart-status-label,
+.product-id-label {
+    -fx-text-fill: #f5f5f5;
+    -fx-font-weight: 700;
+}
+
+.text-field,
+.password-field,
+.text-area,
+.table-view,
+.list-view,
+.combo-box,
+.combo-box-base,
+.date-picker,
+.date-picker .text-field,
+.spinner .text-field,
+.choice-box {
+    -fx-control-inner-background: #111111;
+    -fx-background-color: #111111;
+    -fx-text-fill: #f5f5f5;
+    -fx-prompt-text-fill: #9ca3af;
+    -fx-border-color: #333333;
+}
+
+.table-view .column-header,
+.table-view .filler,
+.table-view .corner {
+    -fx-background-color: #111111;
+}
+
