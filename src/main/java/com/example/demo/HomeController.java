@@ -6,16 +6,27 @@ import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HomeController {
 
@@ -47,6 +58,32 @@ public class HomeController {
     @FXML
     private NumberAxis yAxis;
 
+    @FXML
+    private AnchorPane addProductOverlay;
+
+    @FXML
+    private TextField productIdField;
+
+    @FXML
+    private TextField productNameField;
+
+    @FXML
+    private ComboBox<String> productCategoryCombo;
+
+    @FXML
+    private TextField productStockField;
+
+    @FXML
+    private TextField productPriceField;
+
+    @FXML
+    private ImageView productPreviewImage;
+
+    @FXML
+    private Label selectedImageLabel;
+
+    private String selectedImagePath = "";
+
     private static HomeController currentInstance;
 
     @FXML
@@ -57,6 +94,12 @@ public class HomeController {
         statusLabel.setText("");
         updateDashboardStats();
         setupSalesChart();
+
+        if (productCategoryCombo != null) {
+            productCategoryCombo.getItems().setAll("Beauty", "Electronics", "Fashion", "Home and Living");
+            productCategoryCombo.getSelectionModel().selectFirst();
+        }
+        clearProductForm();
 
         // Listen for external sales file changes (e.g. from other instances)
         SalesManager.addExternalChangeListener(() -> {
@@ -292,6 +335,189 @@ public class HomeController {
 
     private static String safe(String text) {
         return text == null ? "" : text.trim();
+    }
+
+    @FXML
+    private void onOpenAddProductModal() {
+        clearProductForm();
+        if (productIdField != null) {
+            productIdField.setText(generateNextProductId());
+        }
+        if (addProductOverlay != null) {
+            addProductOverlay.toFront();
+            addProductOverlay.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void onCloseAddProductModal() {
+        if (addProductOverlay != null) {
+            addProductOverlay.setVisible(false);
+        }
+    }
+
+    @FXML
+    private void onProductOverlayBackgroundClick() {
+        onCloseAddProductModal();
+    }
+
+    @FXML
+    private void onProductPanelClick(MouseEvent event) {
+        if (event != null) event.consume();
+    }
+
+    @FXML
+    private void onImportProductImage() {
+        if (productPreviewImage == null) return;
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Select Product Image");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp")
+        );
+
+        Stage stage = productPreviewImage.getScene() == null ? null : (Stage) productPreviewImage.getScene().getWindow();
+        File file = chooser.showOpenDialog(stage);
+        if (file == null) return;
+
+        selectedImagePath = file.toURI().toString();
+        productPreviewImage.setImage(new Image(selectedImagePath, true));
+        if (selectedImageLabel != null) {
+            selectedImageLabel.setText(file.getName());
+        }
+    }
+
+    @FXML
+    private void onAddProduct() {
+        if (saveProduct(false)) {
+            onCloseAddProductModal();
+            clearProductForm();
+            statusLabel.setText("Product added");
+        }
+    }
+
+    @FXML
+    private void onUpdateProduct() {
+        if (saveProduct(true)) {
+            statusLabel.setText("Product updated");
+        }
+    }
+
+    @FXML
+    private void onDeleteProduct() {
+        String productId = safe(productIdField == null ? null : productIdField.getText());
+        if (productId.isEmpty()) {
+            showInfo("Missing Product ID", "Please enter Product ID to delete.");
+            return;
+        }
+
+        boolean deleted = StockManager.removeStockItem(productId);
+        if (!deleted) {
+            showInfo("Not Found", "No product found for ID: " + productId);
+            return;
+        }
+
+        updateDashboardStats();
+        statusLabel.setText("Product deleted: " + productId);
+        clearProductForm();
+    }
+
+    @FXML
+    private void onClearProductForm() {
+        clearProductForm();
+    }
+
+    private boolean saveProduct(boolean updateMode) {
+        String productId = safe(productIdField == null ? null : productIdField.getText());
+        if (productId.isEmpty()) {
+            productId = generateNextProductId();
+        }
+
+        String productName = safe(productNameField == null ? null : productNameField.getText());
+        String category = normalizeCategory(productCategoryCombo == null ? null : productCategoryCombo.getValue());
+
+        if (productName.isEmpty()) {
+            showInfo("Missing Product Name", "Please enter product name.");
+            return false;
+        }
+
+        if (category.isEmpty()) {
+            showInfo("Missing Category", "Please select a category.");
+            return false;
+        }
+
+        int stock;
+        double price;
+        try {
+            stock = Integer.parseInt(safe(productStockField == null ? null : productStockField.getText()));
+            price = Double.parseDouble(safe(productPriceField == null ? null : productPriceField.getText()));
+        } catch (NumberFormatException ex) {
+            showInfo("Invalid Number", "Stock must be integer and price must be numeric.");
+            return false;
+        }
+
+        if (stock < 0 || price < 0) {
+            showInfo("Invalid Value", "Stock/Price cannot be negative.");
+            return false;
+        }
+
+        StockItem existing = StockManager.getStockItem(productId);
+        if (!updateMode && existing != null) {
+            showInfo("Duplicate Product ID", "This Product ID already exists. Use Update or change ID.");
+            return false;
+        }
+
+        String imagePath = selectedImagePath;
+        if (imagePath.isEmpty() && existing != null) {
+            imagePath = existing.getImagePath();
+        }
+
+        StockManager.upsertStockItem(new StockItem(productId, productName, category, category, stock, price, imagePath));
+        updateDashboardStats();
+
+        if (productIdField != null) {
+            productIdField.setText(productId);
+        }
+        return true;
+    }
+
+    private String normalizeCategory(String category) {
+        String c = safe(category);
+        if (c.equalsIgnoreCase("Home & Living")) return "Home and Living";
+        return c;
+    }
+
+    private String generateNextProductId() {
+        Pattern pattern = Pattern.compile("PROD_(\\d+)");
+        int max = 0;
+        for (StockItem item : StockManager.getAllStockItems()) {
+            Matcher matcher = pattern.matcher(safe(item.getProductId()));
+            if (matcher.matches()) {
+                int n = Integer.parseInt(matcher.group(1));
+                if (n > max) max = n;
+            }
+        }
+        return String.format("PROD_%03d", max + 1);
+    }
+
+    private void clearProductForm() {
+        selectedImagePath = "";
+        if (productNameField != null) productNameField.clear();
+        if (productStockField != null) productStockField.clear();
+        if (productPriceField != null) productPriceField.clear();
+        if (productPreviewImage != null) productPreviewImage.setImage(null);
+        if (selectedImageLabel != null) selectedImageLabel.setText("No image selected");
+        if (productCategoryCombo != null && productCategoryCombo.getItems().size() > 0) {
+            productCategoryCombo.getSelectionModel().selectFirst();
+        }
+    }
+
+    private void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     /**

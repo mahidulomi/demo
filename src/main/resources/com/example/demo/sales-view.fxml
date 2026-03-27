@@ -85,8 +85,8 @@
 
                 <!-- Buttons -->
                 <HBox spacing="10" prefHeight="50.0">
-                    <Button text="✓ Confirm Sale" onAction="#onConfirmSale" prefWidth="220.0" styleClass="confirm-button" HBox.hgrow="ALWAYS" />
-                    <Button text="✕ Clear Cart" onAction="#onClearCart" prefWidth="220.0" styleClass="clear-button" HBox.hgrow="ALWAYS" />
+                    <Button text="✓ Confirm Sale" onAction="#onConfirmSale" maxWidth="Infinity" styleClass="confirm-button" HBox.hgrow="ALWAYS" />
+                    <Button text="✕ Clear Cart" onAction="#onClearCart" maxWidth="Infinity" styleClass="clear-button" HBox.hgrow="ALWAYS" />
                 </HBox>
             </VBox>
         </HBox>

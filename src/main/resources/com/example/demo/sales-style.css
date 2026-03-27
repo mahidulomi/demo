@@ -309,3 +309,38 @@
     -fx-prompt-text-fill: #9ca3af;
 }
 
+.text-input:focused,
+.text-input:hover,
+.text-field:focused,
+.text-field:hover,
+.password-field:focused,
+.password-field:hover,
+.text-area:focused,
+.text-area:hover,
+.combo-box-base:focused,
+.combo-box-base:hover,
+.date-picker:focused,
+.date-picker:hover,
+.spinner .text-field:focused,
+.spinner .text-field:hover {
+    -fx-control-inner-background: #111111;
+    -fx-background-color: #111111;
+    -fx-text-fill: #f5f5f5;
+    -fx-border-color: #4b5563;
+}
+
+.text-area .content {
+    -fx-background-color: #111111;
+}
+
+.button,
+.confirm-button,
+.clear-button,
+.back-button,
+.category-button,
+.add-button {
+    -fx-font-size: 14px;
+    -fx-padding: 8 14;
+    -fx-alignment: center;
+}
+

@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
@@ -15,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +79,7 @@ public class ProductListController {
 
         // Display each category
         // Categories order preference: Electronics, Fashion, Beauty, Home & Living
-        String[] preferredOrder = {"Electronics", "Fashion", "Beauty", "Home & Living"};
+        String[] preferredOrder = {"Electronics", "Fashion", "Beauty", "Home and Living", "Home & Living"};
 
         for (String cat : preferredOrder) {
             if (byCategory.containsKey(cat)) {
@@ -134,8 +137,17 @@ public class ProductListController {
                 imageView.setPreserveRatio(true);
                 
                 // Try to load image
-                String url = getClass().getResource(imagePath) != null ? 
-                             getClass().getResource(imagePath).toExternalForm() : null;
+                String url = null;
+                if (imagePath.startsWith("file:")) {
+                    url = imagePath;
+                } else if (getClass().getResource(imagePath) != null) {
+                    url = getClass().getResource(imagePath).toExternalForm();
+                } else {
+                    File file = new File(imagePath);
+                    if (file.exists()) {
+                        url = file.toURI().toString();
+                    }
+                }
                 
                 if (url != null) {
                     imageView.setImage(new Image(url));
@@ -212,9 +224,43 @@ public class ProductListController {
         
         stockBox.getChildren().addAll(stockLabel, stock);
 
+        // Click row to reveal delete option for this product.
+        Button deleteBtn = new Button("Delete");
+        deleteBtn.setVisible(false);
+        deleteBtn.setManaged(false);
+        deleteBtn.setStyle("-fx-background-color: #b91c1c; -fx-text-fill: #ffffff; -fx-font-weight: 800; -fx-min-width: 84; -fx-min-height: 32; -fx-max-height: 32; -fx-background-radius: 6; -fx-cursor: hand;");
+        deleteBtn.setOnAction(e -> {
+            e.consume();
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Delete Product");
+            confirm.setHeaderText(null);
+            confirm.setContentText("Are you sure you want to delete this?");
+            confirm.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+            confirm.showAndWait().ifPresent(result -> {
+                if (result == ButtonType.YES) {
+                    StockManager.removeStockItem(item.getProductId());
+                    refreshCurrentView();
+                    HomeController.refreshDashboard();
+                }
+            });
+        });
+
+        row.setOnMouseClicked(e -> {
+            deleteBtn.setVisible(!deleteBtn.isVisible());
+            deleteBtn.setManaged(deleteBtn.isVisible());
+        });
+
         // Add to row
-        row.getChildren().addAll(imageContainer, nameBox, spacer, priceBox, stockBox);
+        row.getChildren().addAll(imageContainer, nameBox, spacer, priceBox, stockBox, deleteBtn);
         return row;
+    }
+
+    private void refreshCurrentView() {
+        if (currentCategory == null || currentCategory.equals("All")) {
+            loadAllProducts();
+        } else {
+            loadProductsByCategory(currentCategory);
+        }
     }
 
     private String getCategoryIcon(String category) {
@@ -222,6 +268,7 @@ public class ProductListController {
             case "Electronics" -> "📱";
             case "Fashion" -> "👗";
             case "Beauty" -> "💄";
+            case "Home and Living" -> "🏠";
             case "Home & Living" -> "🏠";
             default -> "📦";
         };

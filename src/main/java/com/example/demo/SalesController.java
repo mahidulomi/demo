@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -206,16 +207,19 @@ public class SalesController {
                     imageView.setImage(new Image(imgUrl.toExternalForm()));
                     imageLoaded = true;
                 } else {
-                     // Try loading as absolute file path if not found in resources
-                     /* 
-                     try {
-                        java.io.File file = new java.io.File(imagePath);
-                        if (file.exists()) {
-                            imageView.setImage(new Image(file.toURI().toString()));
+                    // Try loading user-imported image path/URI
+                    try {
+                        if (imagePath.startsWith("file:")) {
+                            imageView.setImage(new Image(imagePath));
                             imageLoaded = true;
+                        } else {
+                            File file = new File(imagePath);
+                            if (file.exists()) {
+                                imageView.setImage(new Image(file.toURI().toString()));
+                                imageLoaded = true;
+                            }
                         }
-                     } catch(Exception ex) {}
-                     */
+                    } catch (Exception ignored) {}
                 }
             }
         } catch (Exception e) {

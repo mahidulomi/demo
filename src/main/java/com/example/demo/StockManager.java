@@ -47,60 +47,66 @@ public final class StockManager {
 
     private static void loadDefaults() {
         // --- BEAUTY ---
-        addDefault("B_AcidSerum",       "Acid Serum",             "Beauty", 25, 1200, "/beautyimages/acidserum.png");
-        addDefault("B_DeepConditioner", "Deep Conditioner",       "Beauty", 25, 950, "/beautyimages/deepconditioner.png");
-        addDefault("B_Eyeshadow",       "Eyeshadow Palette",      "Beauty", 25, 1800, "/beautyimages/eyeshadow.png");
-        addDefault("B_FaceCream",       "Face Cream",             "Beauty", 25, 850, "/beautyimages/facecream.png");
-        addDefault("B_FoamCleanser",    "Foam Cleanser",          "Beauty", 25, 600, "/beautyimages/foamcleanser.png");
-        addDefault("B_Foundation",      "Foundation",             "Beauty", 25, 1500, "/beautyimages/foundation_cropped.png");
-        addDefault("B_GarnierMen",      "Garnier Men Facewash",   "Beauty", 25, 250, "/beautyimages/gernierman_1_cropped.png");
-        addDefault("B_HairOil",         "Hair Oil",               "Beauty", 25, 350, "/beautyimages/hairoil_cropped.png");
-        addDefault("B_LipstickSet",     "Lipstick Set",           "Beauty", 25, 2200, "/beautyimages/lipstickset_cropped.png");
-        addDefault("B_Mascara",         "Mascara",                "Beauty", 25, 450, "/beautyimages/mashkara_cropped.png");
-        addDefault("B_Shampoo",         "Shampoo",                "Beauty", 25, 500, "/beautyimages/shampp_1_cropped.png");
-        addDefault("B_Sunscreen",       "Sunscreen",              "Beauty", 25, 750, "/beautyimages/sunscreen_1_cropped.png");
+        addDefault("PROD_001",          "Acid Serum",             "Beauty", 25, 1200, "/beautyimages/acidserum.png");
+        addDefault("PROD_002",          "Deep Conditioner",       "Beauty", 25, 950, "/beautyimages/deepconditioner.png");
+        addDefault("PROD_003",          "Eyeshadow Palette",      "Beauty", 25, 1800, "/beautyimages/eyeshadow.png");
+        addDefault("PROD_004",          "Face Cream",             "Beauty", 25, 850, "/beautyimages/facecream.png");
+        addDefault("PROD_005",          "Foam Cleanser",          "Beauty", 25, 600, "/beautyimages/foamcleanser.png");
+        addDefault("PROD_006",          "Foundation",             "Beauty", 25, 1500, "/beautyimages/foundation_cropped.png");
+        addDefault("PROD_007",          "Garnier Men Facewash",   "Beauty", 25, 250, "/beautyimages/gernierman_1_cropped.png");
+        addDefault("PROD_008",          "Hair Oil",               "Beauty", 25, 350, "/beautyimages/hairoil_cropped.png");
+        addDefault("PROD_009",          "Lipstick Set",           "Beauty", 25, 2200, "/beautyimages/lipstickset_cropped.png");
+        addDefault("PROD_010",          "Mascara",                "Beauty", 25, 450, "/beautyimages/mashkara_cropped.png");
+        addDefault("PROD_011",          "Shampoo",                "Beauty", 25, 500, "/beautyimages/shampp_1_cropped.png");
+        addDefault("PROD_012",          "Sunscreen",              "Beauty", 25, 750, "/beautyimages/sunscreen_1_cropped.png");
 
         // --- ELECTRONICS ---
-        addDefault("E_AirPods",         "AirPods",               "Electronics", 25, 18000, "/images/airpods.png");
-        addDefault("E_AsusLaptop",      "Asus Laptop",           "Electronics", 25, 65000, "/images/asus.png");
-        addDefault("E_iPad",            "iPad",                  "Electronics", 25, 45000, "/images/ipad.png");
-        addDefault("E_iPhone15",        "iPhone 15",             "Electronics", 25, 75000, "/images/iphone15.png");
-        addDefault("E_iPhone16",        "iPhone 16",             "Electronics", 25, 85000, "/images/iphone16.png");
-        addDefault("E_iPhone17",        "iPhone 17",             "Electronics", 25, 95000, "/images/iphone17.png");
-        addDefault("E_LenovoLaptop",    "Lenovo Laptop",         "Electronics", 25, 55000, "/images/loglenevo.png");
-        addDefault("E_WirelessMouse",   "Wireless Mouse",        "Electronics", 25, 1200, "/images/mouise.png");
-        addDefault("E_PowerBank",       "Power Bank",            "Electronics", 25, 2500, "/images/powerbank.png");
-        addDefault("E_SamsungS25",      "Samsung S25",           "Electronics", 25, 80000, "/images/samsungs25.png");
-        addDefault("E_VivoX200",        "Vivo X200 Ultra",       "Electronics", 25, 60000, "/images/vivox200ultra.png");
+        addDefault("PROD_013",          "AirPods",               "Electronics", 25, 18000, "/images/airpods.png");
+        addDefault("PROD_014",          "Asus Laptop",           "Electronics", 25, 65000, "/images/asus.png");
+        addDefault("PROD_015",          "iPad",                  "Electronics", 25, 45000, "/images/ipad.png");
+        addDefault("PROD_016",          "iPhone 15",             "Electronics", 25, 75000, "/images/iphone15.png");
+        addDefault("PROD_017",          "iPhone 16",             "Electronics", 25, 85000, "/images/iphone16.png");
+        addDefault("PROD_018",          "iPhone 17",             "Electronics", 25, 95000, "/images/iphone17.png");
+        addDefault("PROD_019",          "Lenovo Laptop",         "Electronics", 25, 55000, "/images/loglenevo.png");
+        addDefault("PROD_020",          "Wireless Mouse",        "Electronics", 25, 1200, "/images/mouise.png");
+        addDefault("PROD_021",          "Power Bank",            "Electronics", 25, 2500, "/images/powerbank.png");
+        addDefault("PROD_022",          "Samsung S25",           "Electronics", 25, 80000, "/images/samsungs25.png");
+        addDefault("PROD_023",          "Vivo X200 Ultra",       "Electronics", 25, 60000, "/images/vivox200ultra.png");
 
         // --- FASHION ---
-        addDefault("F_TitanWatch",      "Titan Watch",           "Fashion", 25, 4500, "/images/titan.png");
-        addDefault("E_Keyboard",        "Keyboard",              "Electronics", 25, 4500, "/images/ajaj.png");
+        addDefault("PROD_024",          "Titan Watch",           "Fashion", 25, 4500, "/images/titan.png");
+        addDefault("PROD_025",          "Keyboard",              "Electronics", 25, 4500, "/images/ajaj.png");
         
         // New Fashion Items with Images
-        addDefault("F_TShirt",          "T-shirt",               "Fashion", 25, 800, "/fashion/T-shirt.jpg");
-        addDefault("F_Pant",            "Pant",                  "Fashion", 25, 1200, "/fashion/pant.jpg");
-        addDefault("F_Sneakers",        "Sneakers",              "Fashion", 25, 2500, "/fashion/sneakers.jpg");
-        addDefault("F_Jacket",          "Jacket",                "Fashion", 25, 2500, "/fashion/jacket.jpg");
-        addDefault("F_Saree",           "Saree",                 "Fashion", 25, 3500, "/fashion/saree.jpg");
-        addDefault("F_Shirt",           "Shirt",                 "Fashion", 25, 1500, "/fashion/Shirt.jpg");
+        addDefault("PROD_026",          "T-shirt",               "Fashion", 25, 800, "/fashion/T-shirt.jpg");
+        addDefault("PROD_027",          "Pant",                  "Fashion", 25, 1200, "/fashion/pant.jpg");
+        addDefault("PROD_028",          "Sneakers",              "Fashion", 25, 2500, "/fashion/sneakers.jpg");
+        addDefault("PROD_029",          "Jacket",                "Fashion", 25, 2500, "/fashion/jacket.jpg");
+        addDefault("PROD_030",          "Saree",                 "Fashion", 25, 3500, "/fashion/saree.jpg");
+        addDefault("PROD_031",          "Shirt",                 "Fashion", 25, 1500, "/fashion/Shirt.jpg");
 
         // --- HOME & LIVING ---
-        addDefault("H_Sofa",            "Luxury Sofa",           "Home and Living", 5, 25000, "/extra/luxurysofa.jpg");
-        addDefault("H_HomeDecor",       "Home Decor Set",        "Home and Living", 15, 4500, "/extra/decorset.jpg");
-        addDefault("H_Swing",           "Indoor Swing",          "Home and Living", 10, 8500, "/extra/indorswing.jpg");
-        addDefault("H_DiningTable",     "Dining Table",          "Home and Living", 5, 15000, "/extra/dinningtable.jpg");
-        addDefault("H_CornerTable",     "Corner Table",          "Home and Living", 20, 3500, "/extra/cornertable.jpg");
-        addDefault("H_BedSheet",        "Cotton Bed Sheet",      "Home and Living", 30, 2200, "/extra/bedsit.jpg");
+        addDefault("PROD_032",          "Luxury Sofa",           "Home and Living", 5, 25000, "/extra/luxurysofa.jpg");
+        addDefault("PROD_033",          "Home Decor Set",        "Home and Living", 15, 4500, "/extra/decorset.jpg");
+        addDefault("PROD_034",          "Indoor Swing",          "Home and Living", 10, 8500, "/extra/indorswing.jpg");
+        addDefault("PROD_035",          "Dining Table",          "Home and Living", 5, 15000, "/extra/dinningtable.jpg");
+        addDefault("PROD_036",          "Corner Table",          "Home and Living", 20, 3500, "/extra/cornertable.jpg");
+        addDefault("PROD_037",          "Cotton Bed Sheet",      "Home and Living", 30, 2200, "/extra/bedsit.jpg");
         // REMOVED "H_Cushion" (Pillow/Soft Fur Cushion) as per request
-        addDefault("H_WallClock",       "Lunar Wall Clock",      "Home and Living", 15, 3200, "/extra/wallclock.jpg");
-        addDefault("H_TableLamp",       "Table Lamp",            "Home and Living", 25, 1500, "/extra/tablelamp.jpg");
+        addDefault("PROD_038",          "Lunar Wall Clock",      "Home and Living", 15, 3200, "/extra/wallclock.jpg");
+        addDefault("PROD_039",          "Table Lamp",            "Home and Living", 25, 1500, "/extra/tablelamp.jpg");
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────
 
     public static synchronized void initializeStock() {
         if (initialized) return;
+
+        boolean hasSavedFile = Files.exists(STOCK_FILE);
+        if (hasSavedFile) {
+            stockData.clear();
+            loadFromFile();
+        }
 
         // Remove old Fashion broken items to replace with new imaged ones
         if (stockData.containsKey("F_MensTShirt")) stockData.remove("F_MensTShirt");
@@ -114,7 +120,12 @@ public final class StockManager {
         // Remove any items that have no image path (as per user request: "jei box gulay image nei ogula remove kore dao")
         stockData.values().removeIf(item -> item.getImagePath() == null || item.getImagePath().trim().isEmpty());
 
-        loadDefaults();   // fill in any missing products with defaults
+        // Only seed defaults on first run (no saved file).
+        // If a saved file exists, keep it as source of truth so deleted products stay deleted.
+        if (!hasSavedFile) {
+            loadDefaults();
+        }
+
         saveToFile();     // persist combined state
         initialized = true;
         startFileWatcherIfNeeded();
@@ -154,6 +165,17 @@ public final class StockManager {
         if (item == null || item.getProductId() == null || item.getProductId().isBlank()) return;
         stockData.put(item.getProductId(), item);
         saveToFile();
+    }
+
+    public static synchronized boolean removeStockItem(String productId) {
+        initializeStock();
+        if (productId == null || productId.isBlank()) return false;
+        StockItem removed = stockData.remove(productId);
+        if (removed != null) {
+            saveToFile();
+            return true;
+        }
+        return false;
     }
 
     public static synchronized void updateStock(String productId, int newQuantity) {
@@ -365,7 +387,6 @@ public final class StockManager {
                     if (currentModified != lastKnownFileModified) {
                         stockData.clear();
                         loadFromFile();
-                        loadDefaults();
                         changedExternally = true;
                     }
                 }
