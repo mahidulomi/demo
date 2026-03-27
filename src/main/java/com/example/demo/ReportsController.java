@@ -32,6 +32,10 @@ public class ReportsController implements StockUpdateListener {
     @FXML private Label detailBillId;
     @FXML private Label detailDate;
     @FXML private Label detailSoldBy;
+    @FXML private Label detailCustomerName;
+    @FXML private Label detailCustomerPhone;
+    @FXML private Label detailCustomerEmail;
+    @FXML private Label detailCustomerAddress;
     @FXML private javafx.scene.layout.VBox detailItemsContainer;
     @FXML private Label detailTotalAmount;
 
@@ -95,10 +99,31 @@ public class ReportsController implements StockUpdateListener {
         detailBillId.setText(record.getSaleId());
         detailDate.setText(record.getTimestamp().replace("T", " "));
         detailSoldBy.setText("Sold By: " + record.getSoldBy());
+        
+        // Display customer details
+        if (detailCustomerName != null) {
+            detailCustomerName.setText("Name: " + record.getCustomerName());
+        }
+        if (detailCustomerPhone != null) {
+            detailCustomerPhone.setText("Phone: " + record.getCustomerPhone());
+        }
+        if (detailCustomerEmail != null) {
+            String email = record.getCustomerEmail() != null && !record.getCustomerEmail().isEmpty()
+                ? record.getCustomerEmail()
+                : "N/A";
+            detailCustomerEmail.setText("Email: " + email);
+        }
+        if (detailCustomerAddress != null) {
+            String address = record.getCustomerAddress() != null && !record.getCustomerAddress().isEmpty() 
+                ? record.getCustomerAddress() 
+                : "N/A";
+            detailCustomerAddress.setText("Address: " + address);
+        }
+        
         detailTotalAmount.setText(String.format("Tk.%.2f", record.getTotalAmount()));
         
         parseAndDisplayItems(record.getItemsJson());
-        
+
         billDetailsPanel.setVisible(true);
         // Ensure starting position is off-screen (bottom)
         billDetailsPanel.setTranslateY(400); 
@@ -157,23 +182,23 @@ public class ReportsController implements StockUpdateListener {
 
     private void addItemRow(String name, int qty, double price) {
         javafx.scene.layout.HBox row = new javafx.scene.layout.HBox(10);
-        row.setStyle("-fx-border-color: #eee; -fx-border-width: 0 0 1 0; -fx-padding: 8 0 8 0;");
+        row.setStyle("-fx-border-color: #334155; -fx-border-width: 0 0 1 0; -fx-padding: 10 0 10 0; -fx-background-color: #000000;");
         row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         
         Label nameLabel = new Label(name);
-        nameLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #333;");
+        nameLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 16px;");
         javafx.scene.layout.HBox.setHgrow(nameLabel, javafx.scene.layout.Priority.ALWAYS);
         nameLabel.setMaxWidth(Double.MAX_VALUE);
         
         Label qtyLabel = new Label("x" + qty);
-        qtyLabel.setMinWidth(40);
+        qtyLabel.setMinWidth(45);
         qtyLabel.setAlignment(javafx.geometry.Pos.CENTER);
-        qtyLabel.setStyle("-fx-background-color: #eee; -fx-background-radius: 3; -fx-padding: 2 5;");
+        qtyLabel.setStyle("-fx-background-color: #334155; -fx-background-radius: 4; -fx-padding: 4 8; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;");
         
         Label priceLabel = new Label(String.format("Tk.%.2f", price * qty));
-        priceLabel.setMinWidth(90);
+        priceLabel.setMinWidth(100);
         priceLabel.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
-        priceLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #555;");
+        priceLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #2ecc71; -fx-font-size: 16px;");
 
         row.getChildren().addAll(nameLabel, qtyLabel, priceLabel);
         detailItemsContainer.getChildren().add(row);

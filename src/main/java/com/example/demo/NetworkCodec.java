@@ -62,7 +62,11 @@ final class NetworkCodec {
                 Integer.toString(sale.getTotalQuantity()),
                 Double.toString(sale.getTotalAmount()),
                 encodeText(sale.getLineItemsSummary()),
-                encodeText(sale.getItemsJson())
+                encodeText(sale.getItemsJson()),
+                encodeText(sale.getCustomerName()),
+                encodeText(sale.getCustomerPhone()),
+                encodeText(sale.getCustomerEmail()),
+                encodeText(sale.getCustomerAddress())
         );
     }
 
@@ -72,6 +76,10 @@ final class NetworkCodec {
             throw new IllegalArgumentException("Invalid sale payload: " + payload);
         }
         String itemsJson = parts.length >= 8 ? decodeText(parts[7]) : "[]";
+        String customerName = parts.length >= 9 ? decodeText(parts[8]) : "Walk-in Customer";
+        String customerPhone = parts.length >= 10 ? decodeText(parts[9]) : "N/A";
+        String customerEmail = parts.length >= 11 ? decodeText(parts[10]) : "";
+        String customerAddress = parts.length >= 12 ? decodeText(parts[11]) : "";
         
         return new SaleRecord(
                 decodeText(parts[0]),
@@ -81,7 +89,11 @@ final class NetworkCodec {
                 Integer.parseInt(parts[4]),
                 Double.parseDouble(parts[5]),
                 decodeText(parts[6]),
-                itemsJson
+                itemsJson,
+                customerName,
+                customerPhone,
+                customerEmail,
+                customerAddress
         );
     }
 
@@ -131,4 +143,3 @@ final class NetworkCodec {
         return records;
     }
 }
-

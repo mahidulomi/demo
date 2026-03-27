@@ -54,34 +54,44 @@
     </VBox>
 
     <!-- Slide-up Bill Details Panel -->
-    <VBox fx:id="billDetailsPanel" visible="false" style="-fx-background-color: #1e1e1e; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, -5); -fx-border-color: #334155; -fx-border-width: 1 0 0 0;"
-          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" prefHeight="400">
-        <padding><Insets top="10" right="20" bottom="20" left="20" /></padding>
+    <VBox fx:id="billDetailsPanel" visible="false" style="-fx-background-color: #000000; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 15, 0, 0, -5); -fx-border-color: #2ecc71; -fx-border-width: 2 0 0 0;"
+          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" prefHeight="450">
+        <padding><Insets top="15" right="30" bottom="25" left="30" /></padding>
 
         <HBox alignment="CENTER_RIGHT">
-            <Button text="✕ Close" onAction="#closeDetailsPanel" style="-fx-background-color: transparent; -fx-text-fill: #a0aec0; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+            <Button text="✕ Close" onAction="#closeDetailsPanel" style="-fx-background-color: transparent; -fx-text-fill: #a0aec0; -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 16px;"/>
         </HBox>
 
-        <VBox spacing="5" style="-fx-padding: 0 0 10 0; -fx-border-width: 0 0 1 0; -fx-border-color: #334155;">
-            <HBox spacing="15" alignment="CENTER_LEFT">
-                <Label fx:id="detailBillId" text="BILL-XXXX" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" />
-                <Label fx:id="detailDate" text="YYYY-MM-DD HH:mm" style="-fx-text-fill: #a0aec0; -fx-font-size: 14px;" />
+        <!-- Bill Header -->
+        <VBox spacing="10" style="-fx-padding: 10 0 15 0; -fx-border-width: 0 0 1 0; -fx-border-color: #2ecc71;">
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Label fx:id="detailBillId" text="BILL-XXXX" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2ecc71;" />
+                <Label fx:id="detailDate" text="YYYY-MM-DD HH:mm" style="-fx-text-fill: #a0aec0; -fx-font-size: 15px; -fx-font-weight: bold;" />
             </HBox>
-            <Label fx:id="detailSoldBy" text="Sold By: User" style="-fx-text-fill: #a0aec0; -fx-font-style: italic;" />
+            <Label fx:id="detailSoldBy" text="Sold By: User" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15px;" />
         </VBox>
 
-        <Label text="Purchased Items" style="-fx-font-weight: bold; -fx-padding: 10 0 5 0; -fx-text-fill: white;" />
+        <!-- Customer Details Section -->
+        <VBox spacing="8" style="-fx-padding: 15 0 15 0; -fx-background-color: #000000;">
+            <Label text="CUSTOMER DETAILS" style="-fx-font-weight: bold; -fx-text-fill: #2ecc71; -fx-font-size: 15px;" />
+            <Label fx:id="detailCustomerName" text="Name: Walk-in Customer" style="-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;" />
+            <Label fx:id="detailCustomerPhone" text="Phone: N/A" style="-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;" />
+            <Label fx:id="detailCustomerEmail" text="Email: N/A" style="-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;" />
+            <Label fx:id="detailCustomerAddress" text="Address: " style="-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-wrap-text: true;" />
+        </VBox>
+
+        <Label text="PURCHASED ITEMS" style="-fx-font-weight: bold; -fx-padding: 15 0 5 0; -fx-text-fill: #2ecc71; -fx-font-size: 15px;" />
 
         <!-- Detailed Items List -->
-        <javafx.scene.control.ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #1e1e1e;" VBox.vgrow="ALWAYS">
-            <VBox fx:id="detailItemsContainer" spacing="5" style="-fx-background-color: #1e1e1e;">
+        <javafx.scene.control.ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #000000;" VBox.vgrow="ALWAYS">
+            <VBox fx:id="detailItemsContainer" spacing="8" style="-fx-background-color: #000000;">
                 <!-- Items will be added here dynamically -->
             </VBox>
         </javafx.scene.control.ScrollPane>
 
-        <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10 0 0 0; -fx-border-color: #334155; -fx-border-width: 1 0 0 0;">
-            <Label text="Total Bill Amount:" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: white;" />
-            <Label fx:id="detailTotalAmount" text="Tk.0.00" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #27ae60;" />
+        <HBox alignment="CENTER_RIGHT" spacing="15" style="-fx-padding: 20 0 10 0; -fx-border-color: #2ecc71; -fx-border-width: 1 0 0 0;">
+            <Label text="TOTAL BILL AMOUNT:" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: white;" />
+            <Label fx:id="detailTotalAmount" text="Tk.0.00" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2ecc71;" />
         </HBox>
     </VBox>
 

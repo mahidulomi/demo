@@ -92,7 +92,21 @@ public class ProductDetailsController {
         int currentStock = 0;
         
         if (stockId != null) {
-            currentStock = StockManager.getStock(stockId);
+            StockItem sItem = StockManager.getStockItem(stockId);
+            currentStock = sItem.getQuantity();
+            
+            // Override price and category from StockManager to guarantee consistency
+            double actualPrice = sItem.getPrice();
+            if (actualPrice > 0) {
+                product.setPrice(String.format("BDT %,.0f", actualPrice));
+            }
+            product.setCategory(sItem.getCategory());
+            
+            // If the item has an image in StockManager, override it too
+            String actualImage = sItem.getImagePath();
+            if (actualImage != null && !actualImage.isBlank()) {
+                product.setImagePath(actualImage);
+            }
         } else {
             // Register if missing, default to 25
             String prefix = "E"; // Default to Electronics for this controller
@@ -115,15 +129,15 @@ public class ProductDetailsController {
             case "iPhone 15" -> setupIPhone15(product);
             case "iPhone 16" -> setupIPhone16(product);
             case "iPhone 17" -> setupIPhone17(product);
-            case "Samsung Galaxy S25" -> setupSamsungS25(product);
+            case "Samsung S25" -> setupSamsungS25(product);
             case "Vivo X200 Ultra" -> setupVivoX200(product);
-            case "Lenovo IdeaPad i5 8GB SSD" -> setupLenovoLaptop(product);
-            case "Asus VivoBook Ryzen 5 16GB" -> setupAsusLaptop(product);
-            case "Wireless Earbuds Pro" -> setupWirelessEarbuds(product);
-            case "Smart Watch Fitness" -> setupSmartWatch(product);
-            case "Power Bank 20000mAh" -> setupPowerBank(product);
+            case "Lenovo Laptop" -> setupLenovoLaptop(product);
+            case "Asus Laptop" -> setupAsusLaptop(product);
+            case "AirPods" -> setupAirPods(product);
+            case "Titan Watch" -> setupSmartWatch(product);
+            case "Power Bank" -> setupPowerBank(product);
             case "iPad" -> setupIPad(product);
-            case "Mouse" -> setupMouse(product);
+            case "Wireless Mouse" -> setupMouse(product);
             case "Keyboard" -> setupKeyboard(product);
             default -> setupDefaultProduct(product);
         }
@@ -133,7 +147,7 @@ public class ProductDetailsController {
 
     private void setupIPhone15(Product product) {
         product.setCategory("Mobile Phone");
-        product.setPrice("BDT 99,999");
+        product.setPrice("BDT 75,000");
         product.setImagePath("/images/iphone15.png");
         product.setDescription("iPhone 15 brings you Dynamic Island, a powerful camera system, and all-day battery life in a stunning design.");
         product.setColors(new String[]{"Black", "Blue", "Pink", "Yellow", "Green"});
@@ -154,9 +168,7 @@ public class ProductDetailsController {
 
     private void setupIPhone16(Product product) {
         product.setCategory("Mobile Phone");
-        product.setPrice("BDT 96,000");
-        product.setOriginalPrice("BDT 1,20,000");
-        product.setDiscount("20% OFF");
+        product.setPrice("BDT 85,000");
         product.setImagePath("/images/iphone16.png");
         product.setDescription("iPhone 16 features the powerful A17 Pro chip, advanced camera system with 5x optical zoom, and titanium design.");
         product.setColors(new String[]{"Titanium Black", "Titanium White", "Titanium Blue", "Natural Titanium"});
@@ -176,7 +188,7 @@ public class ProductDetailsController {
 
     private void setupIPhone17(Product product) {
         product.setCategory("Mobile Phone");
-        product.setPrice("BDT 1,39,000");
+        product.setPrice("BDT 95,000");
         product.setImagePath("/images/iphone17.png");
         product.setDescription("iPhone 17 Pro Max - The ultimate iPhone with revolutionary camera system, longest battery life, and aerospace-grade titanium design.");
         product.setColors(new String[]{"Titanium Black", "Titanium White", "Titanium Blue", "Natural Titanium"});
@@ -196,7 +208,7 @@ public class ProductDetailsController {
 
     private void setupSamsungS25(Product product) {
         product.setCategory("Mobile Phone");
-        product.setPrice("BDT 1,20,000");
+        product.setPrice("BDT 80,000");
         product.setImagePath("/images/samsungs25.png");
         product.setDescription("Samsung Galaxy S25 Ultra - Premium flagship with S Pen, revolutionary 200MP camera, and AI-powered features.");
         product.setColors(new String[]{"Phantom Black", "Phantom Silver", "Green", "Violet"});
@@ -217,9 +229,7 @@ public class ProductDetailsController {
 
     private void setupVivoX200(Product product) {
         product.setCategory("Mobile Phone");
-        product.setPrice("BDT 73,800");
-        product.setOriginalPrice("BDT 90,000");
-        product.setDiscount("18% OFF");
+        product.setPrice("BDT 60,000");
         product.setImagePath("/images/vivox200ultra.png");
         product.setDescription("Vivo X200 Ultra - Photography flagship with ZEISS optics, massive battery, and ultra-fast charging.");
         product.setColors(new String[]{"Titanium Gray", "Cosmic Blue", "Sunset Orange"});
@@ -240,9 +250,7 @@ public class ProductDetailsController {
 
     private void setupLenovoLaptop(Product product) {
         product.setCategory("Laptop");
-        product.setPrice("BDT 1,19,000");
-        product.setOriginalPrice("BDT 1,44,000");
-        product.setDiscount("15% OFF");
+        product.setPrice("BDT 55,000");
         product.setImagePath("/images/loglenevo.png");
         product.setDescription("Lenovo IdeaPad - Perfect for students and professionals. Lightweight design with powerful performance for everyday tasks.");
         product.setColors(new String[]{"Arctic Grey", "Abyss Blue"});
@@ -267,7 +275,7 @@ public class ProductDetailsController {
 
     private void setupAsusLaptop(Product product) {
         product.setCategory("Laptop");
-        product.setPrice("BDT 1,16,000");
+        product.setPrice("BDT 65,000");
         product.setImagePath("/images/asus.png");
         product.setDescription("Asus VivoBook - Premium laptop with Ryzen power, fast display, and premium build quality for creators and gamers.");
         product.setColors(new String[]{"Indie Black", "Cool Silver"});
@@ -290,9 +298,9 @@ public class ProductDetailsController {
         product.addSpecification("✅ Warranty", "2 Years Official Asus Warranty");
     }
 
-    private void setupWirelessEarbuds(Product product) {
+    private void setupAirPods(Product product) {
         product.setCategory("Accessories - Audio");
-        product.setPrice("BDT 5,000");
+        product.setPrice("BDT 18,000");
         product.setImagePath("/images/airpods.png");
         product.setDescription("Wireless Earbuds Pro - Premium sound quality with active noise cancellation, transparency mode, and all-day battery.");
         product.setColors(new String[]{"White", "Black"});
@@ -316,7 +324,7 @@ public class ProductDetailsController {
 
     private void setupSmartWatch(Product product) {
         product.setCategory("Accessories - Wearable");
-        product.setPrice("BDT 10,000");
+        product.setPrice("BDT 4,500");
         product.setImagePath("/images/titan.png");
         product.setDescription("Smart Watch Fitness - Track your health with heart rate monitor, SpO2, sleep tracking, 100+ sports modes, and water resistance.");
         product.setColors(new String[]{"Black", "Silver", "Rose Gold"});
@@ -365,9 +373,7 @@ public class ProductDetailsController {
 
     private void setupIPad(Product product) {
         product.setCategory("Tablet");
-        product.setPrice("BDT 23,400");
-        product.setOriginalPrice("BDT 30,000");
-        product.setDiscount("22% OFF");
+        product.setPrice("BDT 45,000");
         product.setImagePath("/images/ipad.png");
         product.setDescription("iPad - Powerful, versatile, and perfect for creativity, learning, and entertainment.");
         product.setColors(new String[]{"Space Gray", "Silver", "Blue", "Pink"});
@@ -390,9 +396,7 @@ public class ProductDetailsController {
 
     private void setupMouse(Product product) {
         product.setCategory("Accessories - Gaming");
-        product.setPrice("BDT 3,600");
-        product.setOriginalPrice("BDT 5,000");
-        product.setDiscount("28% OFF");
+        product.setPrice("BDT 1,200");
         product.setImagePath("/images/mouise.png");
         product.setDescription("Wireless Gaming Mouse - Precision sensor, programmable buttons, RGB lighting, and ergonomic design for comfort.");
         product.setColors(new String[]{"Black", "White", "RGB Edition"});
@@ -629,7 +633,8 @@ public class ProductDetailsController {
         double totalAmount = unitPrice * quantity;
         CartItem purchasedItem = new CartItem(productId, currentProduct.getName(), "Electronics", unitPrice, quantity,
                 currentProduct.getImagePath() == null ? "" : currentProduct.getImagePath(), 0);
-        SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(java.util.List.of(purchasedItem), quantity, totalAmount);
+        SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(java.util.List.of(purchasedItem), quantity, totalAmount, 
+                                                                       null, null, null);
         SalesManager.recordSale(sale);
         NetworkManager.getInstance().broadcastSaleRecord(sale);
         

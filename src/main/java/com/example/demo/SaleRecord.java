@@ -12,9 +12,14 @@ public class SaleRecord {
     private final double totalAmount;
     private final String lineItemsSummary;
     private final String itemsJson;
+    private final String customerName;
+    private final String customerPhone;
+    private final String customerEmail;
+    private final String customerAddress;
 
     public SaleRecord(String saleId, String timestamp, String soldBy, String sourceNode,
-                      int totalQuantity, double totalAmount, String lineItemsSummary, String itemsJson) {
+                      int totalQuantity, double totalAmount, String lineItemsSummary, String itemsJson,
+                      String customerName, String customerPhone, String customerEmail, String customerAddress) {
         this.saleId = saleId;
         this.timestamp = timestamp;
         this.soldBy = soldBy;
@@ -23,12 +28,25 @@ public class SaleRecord {
         this.totalAmount = totalAmount;
         this.lineItemsSummary = lineItemsSummary;
         this.itemsJson = itemsJson;
+        this.customerName = customerName == null ? "Walk-in Customer" : customerName;
+        this.customerPhone = customerPhone == null ? "N/A" : customerPhone;
+        this.customerEmail = customerEmail == null ? "" : customerEmail;
+        this.customerAddress = customerAddress == null ? "" : customerAddress;
     }
 
-    // Legacy constructor
+    // Backward compatibility constructor without email
     public SaleRecord(String saleId, String timestamp, String soldBy, String sourceNode,
-                      int totalQuantity, double totalAmount, String lineItemsSummary) {
-        this(saleId, timestamp, soldBy, sourceNode, totalQuantity, totalAmount, lineItemsSummary, "[]");
+                      int totalQuantity, double totalAmount, String lineItemsSummary, String itemsJson,
+                      String customerName, String customerPhone, String customerAddress) {
+        this(saleId, timestamp, soldBy, sourceNode, totalQuantity, totalAmount, lineItemsSummary, itemsJson,
+             customerName, customerPhone, "", customerAddress);
+    }
+
+    // Legacy constructor without customer details
+    public SaleRecord(String saleId, String timestamp, String soldBy, String sourceNode,
+                      int totalQuantity, double totalAmount, String lineItemsSummary, String itemsJson) {
+        this(saleId, timestamp, soldBy, sourceNode, totalQuantity, totalAmount, lineItemsSummary, itemsJson, 
+             "Walk-in Customer", "N/A", "", "");
     }
 
     public String getSaleId() {
@@ -61,5 +79,21 @@ public class SaleRecord {
     
     public String getItemsJson() {
         return itemsJson;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public String getCustomerAddress() {
+        return customerAddress;
     }
 }

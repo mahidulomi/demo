@@ -302,6 +302,16 @@ public class NetworkManager {
     }
 
     public SaleRecord buildSaleRecord(List<CartItem> items, int totalQty, double totalAmount) {
+        return buildSaleRecord(items, totalQty, totalAmount, null, null, null, null);
+    }
+
+    public SaleRecord buildSaleRecord(List<CartItem> items, int totalQty, double totalAmount, 
+                                     String customerName, String customerPhone, String customerAddress) {
+        return buildSaleRecord(items, totalQty, totalAmount, customerName, customerPhone, null, customerAddress);
+    }
+
+    public SaleRecord buildSaleRecord(List<CartItem> items, int totalQty, double totalAmount, 
+                                     String customerName, String customerPhone, String customerEmail, String customerAddress) {
         StringBuilder summary = new StringBuilder();
         StringBuilder jsonBuilder = new StringBuilder("[");
         boolean first = true;
@@ -328,14 +338,18 @@ public class NetworkManager {
         String sourceNode = getMachineName() + "-" + mode.name();
         
         return new SaleRecord(
-                SalesManager.getNextBillId(),
+                "BILL-" + System.currentTimeMillis() % 1000000,
                 java.time.LocalDateTime.now().toString(),
                 soldBy,
                 sourceNode,
                 totalQty,
                 totalAmount,
                 summary.toString(),
-                jsonBuilder.toString()
+                jsonBuilder.toString(),
+                customerName,
+                customerPhone,
+                customerEmail,
+                customerAddress
         );
     }
     

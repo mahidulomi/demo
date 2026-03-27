@@ -7,6 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
@@ -38,6 +39,7 @@ public class SalesController {
     
     // Customer Fields
     @FXML private Label selectedCustomerLabel;
+    @FXML private Button addCustomerButton;
     
     // Modal Elements
     @FXML private javafx.scene.layout.StackPane rootStackPane;
@@ -100,6 +102,8 @@ public class SalesController {
                     }
                 });
             }
+
+            updateAddCustomerButtonState();
             
             System.out.println("✅ SalesController initialized successfully!");
         } catch (Exception e) {
@@ -368,23 +372,30 @@ public class SalesController {
         row.setAlignment(Pos.CENTER_LEFT);
 
         Label nameLabel = new Label(item.getProductName());
-        nameLabel.setPrefWidth(130);
+        nameLabel.setMinWidth(60);
+        nameLabel.setMaxWidth(130);
+        HBox.setHgrow(nameLabel, Priority.ALWAYS);
         nameLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: white;");
 
         // Unit Price removed to save space and avoid duplicate "Tk." display
         // User requested showing Tk only once (for total)
 
         // Quantity Label (Replacement for Spinner)
-        Label qtyLabel = new Label("*" + item.getQuantity());
-        qtyLabel.setPrefWidth(40);
+        Label qtyLabel = new Label("x " + item.getQuantity());
+        qtyLabel.setMinWidth(30);
+        qtyLabel.setPrefWidth(30);
+        qtyLabel.setAlignment(Pos.CENTER);
         qtyLabel.setStyle("-fx-font-weight: bold; -fx-alignment: center; -fx-text-fill: #a0aec0;");
 
         Label totalAmountLabel = new Label("Tk." + String.format("%.2f", item.getTotalPrice()));
-        totalAmountLabel.setPrefWidth(90);
+        totalAmountLabel.setMinWidth(75);
+        totalAmountLabel.setPrefWidth(75);
+        totalAmountLabel.setAlignment(Pos.CENTER_RIGHT);
         totalAmountLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #2ecc71;");
 
-        Button removeBtn = new Button("✕");
-        removeBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 10px; -fx-min-width: 25px;");
+        Button removeBtn = new Button("❌");
+        removeBtn.getStyleClass().add("cart-item-remove-btn");
+        removeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-size: 14px; -fx-padding: 0; -fx-cursor: hand;");
         removeBtn.setOnAction(e -> {
             cartMap.remove(item.getProductId());
             updateCartDisplay();
@@ -426,8 +437,14 @@ public class SalesController {
             SalesTracker.addSale(item.getProductName(), item.getCategory(), item.getUnitPrice(), item.getQuantity());
         }
 
-        // Record Sale Summary
-        SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(purchasedItems, totalQty, totalAmount);
+        // Record Sale Summary with customer details
+        String customerName = currentSelectedCustomer != null ? currentSelectedCustomer.getName() : null;
+        String customerPhone = currentSelectedCustomer != null ? currentSelectedCustomer.getPhone() : null;
+        String customerEmail = currentSelectedCustomer != null ? currentSelectedCustomer.getEmail() : null;
+        String customerAddress = currentSelectedCustomer != null ? currentSelectedCustomer.getAddress() : null;
+        
+        SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(purchasedItems, totalQty, totalAmount, 
+                                                                       customerName, customerPhone, customerEmail, customerAddress);
         SalesManager.recordSale(sale);
         NetworkManager.getInstance().broadcastSaleRecord(sale);
 
@@ -438,8 +455,7 @@ public class SalesController {
         // Clear Cart & Selection
         cartMap.clear();
         updateCartDisplay();
-        currentSelectedCustomer = null;
-        if(selectedCustomerLabel != null) selectedCustomerLabel.setText("No Customer Selected");
+        resetSelectedCustomer();
         
         // Refresh dashboard stats
         HomeController.refreshDashboard();
@@ -449,8 +465,7 @@ public class SalesController {
     private void onClearCart() {
         cartMap.clear();
         updateCartDisplay();
-        currentSelectedCustomer = null;
-        if(selectedCustomerLabel != null) selectedCustomerLabel.setText("No Customer Selected");
+        resetSelectedCustomer();
     }
 
     // Modal Actions
@@ -516,6 +531,7 @@ public class SalesController {
         // Set as selected
         currentSelectedCustomer = customer;
         selectedCustomerLabel.setText("Selected: " + customer.getName());
+        updateAddCustomerButtonState();
         
         onCancelModal(); // Close modal
     }
@@ -541,6 +557,23 @@ public class SalesController {
             dueBalanceAmountField.setText("0.0");
             dueBalanceAmountField.setDisable(true);
         }
+    }
+
+    private void resetSelectedCustomer() {
+        currentSelectedCustomer = null;
+        if (selectedCustomerLabel != null) {
+            selectedCustomerLabel.setText("No Customer Selected");
+        }
+        updateAddCustomerButtonState();
+    }
+
+    private void updateAddCustomerButtonState() {
+        if (addCustomerButton == null) {
+            return;
+        }
+        boolean showAddCustomer = currentSelectedCustomer == null;
+        addCustomerButton.setVisible(showAddCustomer);
+        addCustomerButton.setManaged(showAddCustomer);
     }
     
     private void showAlert(String title, String content) {

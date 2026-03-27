@@ -80,7 +80,7 @@
                 <VBox spacing="5" style="-fx-padding: 5 0 5 0;">
                      <Label text="Customer Details" style="-fx-font-weight: bold; -fx-font-size: 11px; -fx-text-fill: white;" />
                      <Label fx:id="selectedCustomerLabel" text="No Customer Selected" style="-fx-text-fill: #a0aec0; -fx-font-style: italic; -fx-padding: 0 0 5 0;" />
-                     <Button text="👤 Add Customer" onAction="#onOpenCustomerModal" styleClass="confirm-button" style="-fx-background-color: #3498db;" maxWidth="Infinity" />
+                     <Button fx:id="addCustomerButton" text="👤 Add Customer" onAction="#onOpenCustomerModal" styleClass="confirm-button" style="-fx-background-color: #3498db;" maxWidth="Infinity" />
                 </VBox>
 
                 <!-- Buttons -->
@@ -138,7 +138,7 @@
 
                      <HBox spacing="10" alignment="CENTER_LEFT">
                          <Label text="Due Balance" style="-fx-font-weight: bold; -fx-text-fill: #e2e8f0;"/>
-                         <javafx.scene.control.ToggleButton fx:id="dueBalanceToggle" text="Enable Due" onAction="#onDueToggle" />
+                         <javafx.scene.control.ToggleButton fx:id="dueBalanceToggle" text="Enable Due" onAction="#onDueToggle" styleClass="due-toggle-black" />
                          <TextField fx:id="dueBalanceAmountField" promptText="0.00" prefWidth="100" disable="true" style="-fx-background-color: #2d2d2d; -fx-text-fill: white;"/>
                      </HBox>
                  </VBox>

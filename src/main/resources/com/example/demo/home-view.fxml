@@ -35,6 +35,7 @@
             <Button text="📥 Restock" prefWidth="150" onAction="#onRestockClick" styleClass="sidebar-btn" />
             <Button text="👥 Customers" prefWidth="150" onAction="#onCustomersClick" styleClass="sidebar-btn" />
             <Button text="📊 Reports" prefWidth="150" onAction="#onReportsClick" styleClass="sidebar-btn" />
+            <Button text="➕ Add Product" prefWidth="150" onAction="#onOpenAddProductModal" styleClass="sidebar-btn" />
 
             <Separator />
 
@@ -50,7 +51,6 @@
         <children>
             <Label text="Dashboard" styleClass="dashboard-title" HBox.hgrow="ALWAYS" />
             <Label fx:id="userLabel" text="Welcome, Admin" styleClass="dashboard-welcome" />
-            <Button text="+ Add Product" onAction="#onOpenAddProductModal" styleClass="action-btn-green" />
             <Button text="Logout" onAction="#onLogout" styleClass="logout-btn" />
         </children>
     </HBox>
@@ -115,29 +115,29 @@
             <HBox spacing="60" AnchorPane.topAnchor="44.0" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="24.0">
                 <VBox spacing="14" HBox.hgrow="ALWAYS">
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="Product ID:" styleClass="product-form-label" prefWidth="95.0" />
-                        <TextField fx:id="productIdField" promptText="PROD_040" styleClass="product-form-field" prefWidth="220.0" />
+                        <Label text="Product ID:" styleClass="product-form-label" prefWidth="105.0" />
+                        <TextField fx:id="productIdField" promptText="PROD_040" styleClass="product-form-field" prefWidth="180.0" />
                     </HBox>
 
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="Product Name:" styleClass="product-form-label" prefWidth="95.0" />
-                        <TextField fx:id="productNameField" promptText="Enter product name" styleClass="product-form-field" prefWidth="220.0" />
+                        <Label text="Product Name:" styleClass="product-form-label" prefWidth="105.0" />
+                        <TextField fx:id="productNameField" promptText="Enter product name" styleClass="product-form-field" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
                     </HBox>
 
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="Type:" styleClass="product-form-label" prefWidth="95.0" />
-                        <ComboBox fx:id="productCategoryCombo" promptText="Choose type" styleClass="product-form-field" prefWidth="220.0" />
+                        <Label text="Type:" styleClass="product-form-label" prefWidth="105.0" />
+                        <ComboBox fx:id="productCategoryCombo" promptText="Choose type" styleClass="product-form-field" prefWidth="180.0" />
                     </HBox>
                 </VBox>
 
                 <VBox spacing="14" HBox.hgrow="ALWAYS">
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="Stock:" styleClass="product-form-label" prefWidth="80.0" />
+                        <Label text="Stock:" styleClass="product-form-label" prefWidth="90.0" />
                         <TextField fx:id="productStockField" promptText="0" styleClass="product-form-field" prefWidth="220.0" />
                     </HBox>
 
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="Price (Tk):" styleClass="product-form-label" prefWidth="80.0" />
+                        <Label text="Price (Tk):" styleClass="product-form-label" prefWidth="90.0" />
                         <TextField fx:id="productPriceField" promptText="0.00" styleClass="product-form-field" prefWidth="220.0" />
                     </HBox>
                 </VBox>

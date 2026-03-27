@@ -5,10 +5,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.util.Callback;
 
 import java.util.Optional;
 
@@ -22,6 +25,7 @@ public class CustomerController {
     @FXML private TableColumn<Customer, String> emailColumn;
     @FXML private TableColumn<Customer, String> typeColumn;
     @FXML private TableColumn<Customer, Double> dueColumn;
+    @FXML private TableColumn<Customer, Void> actionColumn;
 
     // Modal elements
     @FXML private StackPane rootStackPane;
@@ -94,6 +98,38 @@ public class CustomerController {
                 }
             }
         });
+        
+        // Action column with Edit and Delete buttons
+        actionColumn.setCellFactory(new Callback<TableColumn<Customer, Void>, TableCell<Customer, Void>>() {
+            @Override
+            public TableCell<Customer, Void> call(TableColumn<Customer, Void> param) {
+                return new TableCell<Customer, Void>() {
+                    private final Button editBtn = new Button("Edit");
+                    private final Button deleteBtn = new Button("Delete");
+                    private final HBox hbox = new HBox(5);
+                    
+                    {
+                        editBtn.setStyle("-fx-padding: 5; -fx-font-size: 11;");
+                        deleteBtn.setStyle("-fx-padding: 5; -fx-font-size: 11; -fx-text-fill: white; -fx-background-color: #dc2626;");
+                        hbox.setAlignment(Pos.CENTER);
+                        hbox.getChildren().addAll(editBtn, deleteBtn);
+                    }
+                    
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            Customer customer = getTableView().getItems().get(getIndex());
+                            editBtn.setOnAction(e -> onEdit(customer));
+                            deleteBtn.setOnAction(e -> onDelete(customer));
+                            setGraphic(hbox);
+                        }
+                    }
+                };
+            }
+        });
     }
 
     private void loadCustomers() {
@@ -143,8 +179,24 @@ public class CustomerController {
         String phone = phoneField.getText();
         String email = emailField.getText();
 
-        if (phone.length() != 11 || !phone.matches("\\d+")) {
-            showAlert("Invalid Input", "Phone number must be exactly 11 digits.");
+        // Validate phone number
+        if (phone.isEmpty()) {
+            showAlert("Required Fields", "Phone number is required.");
+            return;
+        }
+        
+        if (!phone.matches("\\d+")) {
+            showAlert("Invalid Input", "Phone number must contain only digits.");
+            return;
+        }
+        
+        if (phone.length() < 11) {
+            showAlert("Invalid Input", "Phone number must be at least 11 digits long.");
+            return;
+        }
+        
+        if (!phone.startsWith("0")) {
+            showAlert("Invalid Input", "Phone number must start with 0.");
             return;
         }
 

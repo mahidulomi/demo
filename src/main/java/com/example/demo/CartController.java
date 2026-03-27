@@ -34,6 +34,7 @@ public class CartController {
     // Customer Input Fields
     @FXML private javafx.scene.control.TextField customerNameField;
     @FXML private javafx.scene.control.TextField customerPhoneField;
+    @FXML private javafx.scene.control.TextField customerEmailField;
 
     @FXML
     private void initialize() {
@@ -220,7 +221,14 @@ public class CartController {
             SalesTracker.addSale(item.getProductName(), item.getCategory(), item.getUnitPrice(), item.getQuantity());
         }
 
-        SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(purchasedItems, totalQty, totalAmount);
+        String custName = customerNameField.getText().trim();
+        String custPhone = customerPhoneField.getText().trim();
+        String custEmail = customerEmailField.getText().trim();
+        
+        SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(purchasedItems, totalQty, totalAmount,
+                                                                       custName.isEmpty() ? null : custName,
+                                                                       custPhone.isEmpty() ? null : custPhone,
+                                                                       custEmail.isEmpty() ? null : custEmail);
         SalesManager.recordSale(sale);
         NetworkManager.getInstance().broadcastSaleRecord(sale);
 

@@ -2744,3 +2744,22 @@
     -fx-alignment: center;
 }
 
+.due-toggle-black {
+    -fx-background-color: #000000;
+    -fx-text-fill: #f5f5f5;
+    -fx-border-color: #3f3f46;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 6 12;
+}
+
+.due-toggle-black:hover {
+    -fx-background-color: #111111;
+    -fx-border-color: #52525b;
+}
+
+.due-toggle-black:selected {
+    -fx-background-color: #18181b;
+    -fx-border-color: #71717a;
+}
+
