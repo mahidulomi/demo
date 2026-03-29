@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
 
 public class HelloController {
     @FXML
@@ -30,7 +31,9 @@ public class HelloController {
 
     @FXML
     private void initialize() {
-        setInfo("Please login. If you don't have an account, click Sign Up.");
+        // Only use setInfo implicitly without setting any text to avoid initial label display
+        welcomeText.setText("");
+        welcomeText.getStyleClass().removeAll("error-label", "success-label");
         
         // Listen for user sync completion
         NetworkManager.getInstance().setUserSyncCallback(() -> {
@@ -89,24 +92,44 @@ public class HelloController {
         String password = safe(passwordField.getText());
 
         if (username.isEmpty() || password.isEmpty()) {
-            setError("Gmail & password required.");
+            setError("Username & password required.");
+            return;
+        }
+
+        // Validate username format (only letters, numbers, and underscore)
+        if (!username.matches("^[a-zA-Z0-9_]+$")) {
+            setError("Username can only contain letters, numbers, and underscores.");
             return;
         }
 
         // If no users exist or this user doesn't exist yet, block login.
         if (!UserStore.userExists(username)) {
-            setError("No account found. Check your Gmail or Sign Up.");
+            setError("No account found. Check your username or Sign Up.");
             return;
         }
 
         if (!UserStore.validateLogin(username, password)) {
-            setError("Wrong Gmail or password.");
+            setError("Wrong username or password.");
             return;
         }
 
         Session.login(username);
         setSuccess("Login success! Opening home...");
-        Session.goToHome(welcomeText);
+        
+        String role = UserStore.getRole(username);
+        try {
+            if ("Customer".equalsIgnoreCase(role)) {
+                Session.goToCustomerHome(welcomeText);
+            } else {
+                Session.goToHome(welcomeText);
+            }
+        } catch (Exception e) {
+            String errorMsg = "Error loading page: " + e.getMessage();
+            setError(errorMsg);
+            System.err.println("[HelloController] Error navigating to home: " + e);
+            e.printStackTrace();
+            showErrorDialog("Navigation Error", errorMsg, e);
+        }
     }
 
     @FXML
@@ -142,5 +165,14 @@ public class HelloController {
 
     private static String safe(String s) {
         return s == null ? "" : s.trim();
+    }
+
+    private void showErrorDialog(String title, String message, Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        String fullMessage = message + "\n\nRoot cause: " + e.getClass().getName() + ": " + e.getMessage();
+        alert.setContentText(fullMessage);
+        alert.showAndWait();
     }
 }

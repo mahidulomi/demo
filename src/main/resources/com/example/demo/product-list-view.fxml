@@ -9,26 +9,25 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="750.0" prefWidth="1400.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.ProductListController">
+<AnchorPane prefHeight="750.0" prefWidth="1400.0" style="-fx-background-color: #000000;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.ProductListController">
 
     <!-- Header -->
-    <VBox layoutX="0.0" layoutY="0.0" prefHeight="80.0" styleClass="dashboard-header" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+    <VBox layoutX="0.0" layoutY="0.0" prefHeight="80.0" styleClass="dashboard-header" style="-fx-background-color: #1e1e1e;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <padding><Insets left="30" right="30" top="15" bottom="15" /></padding>
         <spacing>10</spacing>
         <children>
             <HBox spacing="30" alignment="CENTER_LEFT">
-                <Label fx:id="categoryLabel" text="Beauty Products" styleClass="dashboard-title" HBox.hgrow="ALWAYS" />
-                <Button text="← Back" onAction="#onBackClick" styleClass="logout-btn" />
+                <Label fx:id="categoryLabel" text="Beauty Products" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 24px;" HBox.hgrow="ALWAYS" />
+                <Button text="← Back" onAction="#onBackClick" style="-fx-background-color: #333333; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
             </HBox>
         </children>
     </VBox>
 
     <!-- Products List -->
-    <ScrollPane layoutX="0.0" layoutY="80.0" prefHeight="670.0" fitToWidth="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="80.0">
-        <VBox fx:id="productsListContainer" spacing="10" styleClass="products-container">
+    <ScrollPane layoutX="0.0" layoutY="80.0" prefHeight="670.0" fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #000000;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="80.0">
+        <VBox fx:id="productsListContainer" spacing="10" style="-fx-background-color: #000000;">
             <padding><Insets left="20" right="20" top="20" bottom="20" /></padding>
         </VBox>
     </ScrollPane>
 
 </AnchorPane>
-

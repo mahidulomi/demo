@@ -24,7 +24,8 @@ public class ForgotPasswordController {
 
     @FXML
     private void initialize() {
-        statusLabel.setText("Enter Gmail + Phone Number, then set a new password.");
+        statusLabel.setText("");
+        statusLabel.getStyleClass().removeAll("error-label", "success-label");
     }
 
     @FXML
@@ -39,20 +40,14 @@ public class ForgotPasswordController {
             return;
         }
 
-        // Validate Gmail format
-        if (!username.toLowerCase().endsWith("@gmail.com")) {
-            setError("Please enter a valid Gmail address.");
-            return;
-        }
-
-        // Validate Phone Number format
-        if (!personalData.matches("\\d{11}")) {
-            setError("Phone number must be exactly 11 digits.");
+        // Validate username format (only letters, numbers, and underscore)
+        if (!username.matches("^[a-zA-Z0-9_]+$")) {
+            setError("Username can only contain letters, numbers, and underscores.");
             return;
         }
 
         if (!UserStore.userExists(username)) {
-            setError("No account found for this Gmail.");
+            setError("No account found for this username.");
             return;
         }
 
@@ -65,25 +60,21 @@ public class ForgotPasswordController {
         }
 
         if (!newPassword.equals(confirm)) {
-            setError("New password and confirmation must match.");
+            setError("Passwords do not match.");
             confirmPasswordField.clear();
             return;
         }
 
-        boolean ok = UserStore.resetPassword(username, personalData, newPassword);
-        if (!ok) {
-            setError("Recovery data didn't match. Try again.");
+        boolean success = UserStore.resetPassword(username, personalData, newPassword);
+        if (success) {
+            setSuccess("Password reset successfully! Please log in.");
+            // auto navigate to login on success
+            Session.goToLogin(statusLabel);
+        } else {
+            setError("Failed to reset password. Please try again.");
             newPasswordField.clear();
             confirmPasswordField.clear();
-            return;
         }
-
-        // Broadcast to network so other machines get the new password
-        NetworkManager.getInstance().broadcastUserUpdate(username);
-
-        Session.login(username);
-        setSuccess("Password updated! Opening home...");
-        Session.goToHome(statusLabel);
     }
 
     @FXML

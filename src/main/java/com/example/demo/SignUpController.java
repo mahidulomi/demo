@@ -4,6 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Alert;
+import javafx.collections.FXCollections;
 
 public class SignUpController {
 
@@ -20,11 +23,19 @@ public class SignUpController {
     private TextField personalDataField;
 
     @FXML
+    private ComboBox<String> roleComboBox;
+
+    @FXML
     private Label statusLabel;
 
     @FXML
     private void initialize() {
-        statusLabel.setText("Fill all fields to create your account.");
+        statusLabel.setText("");
+        statusLabel.getStyleClass().removeAll("error-label", "success-label");
+        if (roleComboBox != null) {
+            roleComboBox.setItems(FXCollections.observableArrayList("Admin", "Customer"));
+            roleComboBox.getSelectionModel().selectFirst();
+        }
     }
 
     @FXML
@@ -33,21 +44,16 @@ public class SignUpController {
         String password = safe(passwordField.getText());
         String confirm = safe(confirmPasswordField.getText());
         String personalData = safe(personalDataField.getText());
+        String role = roleComboBox != null && roleComboBox.getValue() != null ? roleComboBox.getValue() : "Admin";
 
         if (username.isEmpty() || password.isEmpty() || confirm.isEmpty() || personalData.isEmpty()) {
             setError("All fields are required.");
             return;
         }
 
-        // Validate Gmail
-        if (!username.toLowerCase().endsWith("@gmail.com")) {
-            setError("Please enter a valid Gmail address.");
-            return;
-        }
-
-        // Validate Phone Number (11 digits)
-        if (!personalData.matches("\\d{11}")) {
-            setError("Phone number must be exactly 11 digits.");
+        // Validate username format (only letters, numbers, and underscore)
+        if (!username.matches("^[a-zA-Z0-9_]+$")) {
+            setError("Username can only contain letters, numbers, and underscores.");
             return;
         }
 
@@ -65,19 +71,33 @@ public class SignUpController {
             return;
         }
 
-        boolean created = UserStore.createUser(username, password, personalData);
-        if (!created) {
-            setError("Account create failed: username exists or local save failed.");
+        if (UserStore.userExists(username)) {
+            setError("Username already taken!");
             return;
         }
 
-        // Broadcast to other machines so they know about this new user
-        NetworkManager.getInstance().broadcastUserUpdate(username);
-
-        // Auto-login and go to home directly.
-        Session.login(username);
-        setSuccess("Account created! Opening home...");
-        Session.goToHome(statusLabel);
+        boolean success = UserStore.createUser(username, password, personalData, role);
+        if (success) {
+            setSuccess("Account created successfully!");
+            // Auto login after sign up
+            Session.login(username);
+            
+            try {
+                if ("Customer".equals(role)) {
+                    Session.goToCustomerHome(statusLabel);
+                } else {
+                    Session.goToHome(statusLabel);
+                }
+            } catch (Exception e) {
+                String errorMsg = "Error loading page: " + e.getMessage();
+                setError(errorMsg);
+                System.err.println("[SignUpController] Error navigating to home: " + e);
+                e.printStackTrace();
+                showErrorDialog("Navigation Error", errorMsg, e);
+            }
+        } else {
+            setError("Account creation failed. Please try again.");
+        }
     }
 
     @FXML
@@ -103,5 +123,14 @@ public class SignUpController {
 
     private static String safe(String s) {
         return s == null ? "" : s.trim();
+    }
+
+    private void showErrorDialog(String title, String message, Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        String fullMessage = message + "\n\nRoot cause: " + e.getClass().getName() + ": " + e.getMessage();
+        alert.setContentText(fullMessage);
+        alert.showAndWait();
     }
 }

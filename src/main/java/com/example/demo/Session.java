@@ -32,6 +32,10 @@ public final class Session {
         changeScene(anyNodeInScene, "home-view.fxml", 1250, 750);
     }
 
+    public static void goToCustomerHome(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "customer-home-view.fxml", 1250, 750);
+    }
+
     public static void goToSignUp(Node anyNodeInScene) {
         changeScene(anyNodeInScene, "signup-view.fxml", 1250, 750);
     }
@@ -120,15 +124,40 @@ public final class Session {
 
     private static void changeScene(Node anyNodeInScene, String fxml, double w, double h) {
         try {
-            Stage stage = (Stage) anyNodeInScene.getScene().getWindow();
+            System.out.println("[Session] Loading FXML: " + fxml);
+            
+            // Get stage from node
+            Scene currentScene = anyNodeInScene.getScene();
+            if (currentScene == null) {
+                System.err.println("[Session] Node scene is null - trying to find stage from parent");
+                throw new RuntimeException("Node's scene is null. Cannot get window.");
+            }
+            
+            Stage stage = (Stage) currentScene.getWindow();
+            if (stage == null) {
+                System.err.println("[Session] Could not get Stage from scene");
+                throw new RuntimeException("Could not get Stage from scene");
+            }
+            
             FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource(fxml));
+            if (loader.getLocation() == null) {
+                System.err.println("[Session] FXML resource not found: " + fxml);
+                throw new RuntimeException("FXML resource not found: " + fxml);
+            }
+            
             Parent root = loader.load();
             Scene scene = new Scene(root, w, h);
             stage.setScene(scene);
             stage.centerOnScreen();
+            System.out.println("[Session] Successfully loaded: " + fxml);
         } catch (IOException e) {
+            System.err.println("[Session] Failed to load " + fxml + ": " + e.getMessage());
             e.printStackTrace(); // Print full stack trace
             throw new RuntimeException("Failed to load " + fxml, e);
+        } catch (Exception e) {
+            System.err.println("[Session] Unexpected error loading " + fxml + ": " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Unexpected error loading " + fxml + ": " + e.getMessage(), e);
         }
     }
 }

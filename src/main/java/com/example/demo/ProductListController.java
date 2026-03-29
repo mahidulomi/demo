@@ -93,7 +93,7 @@ public class ProductListController {
 
         if (allItems.isEmpty()) {
             Label placeholder = new Label("No products found in inventory.");
-            placeholder.setStyle("-fx-font-size: 16px; -fx-text-fill: #a0aec0;");
+            placeholder.setStyle("-fx-font-size: 16px; -fx-text-fill: #ffffff; -fx-font-weight: bold;");
             productsListContainer.getChildren().add(placeholder);
         }
     }
@@ -184,7 +184,7 @@ public class ProductListController {
         
         Label details = new Label("ID: " + item.getProductId() + "  |  " + item.getCategory() + 
                                   (item.getSubCategory() != null ? " (" + item.getSubCategory() + ")" : ""));
-        details.setStyle("-fx-text-fill: #a0aec0; -fx-font-size: 12px;");
+        details.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 12px; -fx-font-weight: bold;");
         
         nameBox.getChildren().addAll(name, details);
         
@@ -198,7 +198,7 @@ public class ProductListController {
         priceBox.setMinWidth(120);
 
         Label priceLabel = new Label("Price");
-        priceLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px;");
+        priceLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 11px; -fx-font-weight: bold;");
         
         Label price = new Label(String.format("৳%,.2f", item.getPrice()));
         price.setStyle("-fx-font-weight: bold; -fx-text-fill: #ffffff; -fx-font-size: 16px;");
@@ -211,15 +211,15 @@ public class ProductListController {
         stockBox.setMinWidth(100);
 
         Label stockLabel = new Label("Stock");
-        stockLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px;");
+        stockLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 11px; -fx-font-weight: bold;");
 
         Label stock = new Label(item.getQuantity() + " units");
         if (item.getQuantity() < 5) {
-            stock.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold; -fx-font-size: 14px;");
+            stock.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 14px;");
             stockLabel.setText("Low Stock");
-            stockLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 11px;");
+            stockLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 11px; -fx-font-weight: bold;");
         } else {
-            stock.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold; -fx-font-size: 14px;");
+            stock.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 14px;");
         }
         
         stockBox.getChildren().addAll(stockLabel, stock);

@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class UserStore {
 
-    private record User(String password, String personalData) {}
+    private record User(String password, String personalData, String role) {}
 
     // Version marker for encoded on-disk format.
     private static final String ENCODED_PREFIX = "v2:";
@@ -62,13 +62,17 @@ public final class UserStore {
     }
 
     public static boolean createUser(String username, String password, String personalData) {
+        return createUser(username, password, personalData, "Admin");
+    }
+
+    public static boolean createUser(String username, String password, String personalData, String role) {
         if (isBlank(username) || isBlank(password)) return false;
 
         String key = normalizeUsername(username);
         synchronized (IO_LOCK) {
             refreshFromDiskIfNeededLocked();
 
-            boolean created = USERS.putIfAbsent(key, new User(password, safe(personalData))) == null;
+            boolean created = USERS.putIfAbsent(key, new User(password, safe(personalData), safe(role))) == null;
             if (!created) {
                 return false;
             }
@@ -116,13 +120,24 @@ public final class UserStore {
             User existing = USERS.get(key);
             if (existing == null) return false;
 
-            USERS.put(key, new User(newPassword, existing.personalData()));
+            USERS.put(key, new User(newPassword, existing.personalData(), existing.role()));
             if (!saveToDiskSafeLocked()) {
                 USERS.put(key, existing);
                 return false;
             }
             return true;
         }
+    }
+
+    public static String getRole(String username) {
+        String key = normalizeUsername(username);
+        if (isBlank(key)) return "Admin"; // default
+        refreshFromDiskIfNeeded();
+        User user = USERS.get(key);
+        if (user != null && !isBlank(user.role())) {
+            return user.role();
+        }
+        return "Admin";
     }
 
     /** Package-private for tests. */
@@ -262,13 +277,13 @@ public final class UserStore {
 
 
     private static String serializeUser(User user) {
-        return ENCODED_PREFIX + encode(user.password()) + "|" + encode(safe(user.personalData()));
+        return ENCODED_PREFIX + encode(user.password()) + "|" + encode(safe(user.personalData())) + "|" + encode(safe(user.role()));
     }
 
     private static User parseStoredUser(String value) {
         if (value.startsWith(ENCODED_PREFIX)) {
             String encoded = value.substring(ENCODED_PREFIX.length());
-            String[] parts = encoded.split("\\|", 2);
+            String[] parts = encoded.split("\\|", 3);
 
             if (parts.length == 0 || isBlank(parts[0])) {
                 return null;
@@ -283,17 +298,22 @@ public final class UserStore {
             if (personalData == null) {
                 personalData = "";
             }
-            return new User(password, safe(personalData));
+            String role = parts.length > 2 ? decode(parts[2]) : "Admin";
+            if (role == null) {
+                role = "Admin";
+            }
+            return new User(password, safe(personalData), role);
         }
 
         // Legacy format: plain text "password|personalData".
-        String[] parts = value.split("\\|", 2);
+        String[] parts = value.split("\\|", 3);
         String password = parts.length > 0 ? parts[0] : "";
         String personalData = parts.length > 1 ? parts[1] : "";
+        String role = parts.length > 2 ? parts[2] : "Admin";
         if (isBlank(password)) {
             return null;
         }
-        return new User(password, safe(personalData));
+        return new User(password, safe(personalData), role);
     }
 
     private static boolean verifyRecoveryDataInternal(String normalizedUsername, String personalData) {
@@ -381,3 +401,4 @@ public final class UserStore {
         }
     }
 }
+
