@@ -133,7 +133,9 @@ public class CustomerController {
     }
 
     private void loadCustomers() {
-        customerList.setAll(CustomerManager.getAllCustomers());
+        java.util.List<Customer> allCustomers = new java.util.ArrayList<>(CustomerManager.getAllCustomers());
+        java.util.Collections.reverse(allCustomers);  // Newest customers first
+        customerList.setAll(allCustomers);
     }
 
     @FXML

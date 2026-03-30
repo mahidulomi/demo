@@ -87,8 +87,8 @@
 
                     <!-- Action Buttons -->
                     <VBox spacing="15">
-                        <Button fx:id="addToCartBtn" onAction="#onAddToCart" prefHeight="50" prefWidth="480" styleClass="detail-add-cart-btn" text="🛒 Add to Cart" />
-                        <Button onAction="#onBuyNow" prefHeight="45" prefWidth="480" styleClass="detail-buy-now-btn" text="⚡ Buy Now" />
+                        <Button fx:id="addToCartBtn" onAction="#onAddToCart" prefHeight="50" prefWidth="480" styleClass="detail-add-cart-btn" text="🛒 Add to Cart" style="-fx-font-size:12; -fx-letter-spacing:0.5;"/>
+                        <Button onAction="#onBuyNow" prefHeight="45" prefWidth="480" styleClass="detail-buy-now-btn" text="⚡ Buy Now" style="-fx-font-size:12; -fx-letter-spacing:0.5;"/>
                     </VBox>
 
                     <!-- Status Message -->

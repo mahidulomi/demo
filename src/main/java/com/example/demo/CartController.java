@@ -2,12 +2,17 @@ package com.example.demo;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -24,20 +29,27 @@ public class CartController {
     private static final int DEFAULT_NEW_PRODUCT_STOCK = 25;
 
     @FXML private Label statusLabel;
-    @FXML private VBox  billItemsContainer;
-    @FXML private Label billDateLabel;
-    @FXML private Label subtotalLabel;
-    @FXML private Label totalItemsLabel;
-    @FXML private Label totalQuantityLabel;
+    @FXML private VBox cartItemsContainer;
+    @FXML private VBox billItemsContainer;
     @FXML private Label totalPriceLabel;
 
     // Customer Input Fields
     @FXML private javafx.scene.control.TextField customerNameField;
     @FXML private javafx.scene.control.TextField customerPhoneField;
     @FXML private javafx.scene.control.TextField customerEmailField;
+    @FXML private javafx.scene.control.TextField customerAddressField;
 
     @FXML
     private void initialize() {
+        // Auto-fill username
+        String currentUser = Session.getCurrentUser();
+        if (currentUser != null && !currentUser.isEmpty()) {
+            customerNameField.setText(currentUser);
+        } else {
+            customerNameField.setText("Customer");
+        }
+        customerNameField.setEditable(false);
+        
         refreshCart();
     }
 
@@ -49,26 +61,10 @@ public class CartController {
                 ? "🛒 Your cart is empty. Start shopping!"
                 : "🛒 " + items.size() + " item(s) in your cart");
         updateSummary();
-        
-        // Reset customer fields if cart is cleared, but not on refresh unless empty
-        if(items.isEmpty() && customerNameField != null) {
-             customerNameField.clear();
-             customerPhoneField.clear();
-        }
     }
 
     private void updateSummary() {
-        totalItemsLabel.setText(String.valueOf(Cart.getItemCount()));
-        totalQuantityLabel.setText(String.valueOf(Cart.getTotalQuantity()));
         totalPriceLabel.setText(Cart.getFormattedTotal());
-
-        if (billDateLabel != null) {
-            billDateLabel.setText("Date: " + LocalDateTime.now()
-                    .format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a")));
-        }
-        if (subtotalLabel != null) {
-            subtotalLabel.setText(String.format("৳ %.2f", Cart.getTotalPrice()));
-        }
 
         if (billItemsContainer != null) {
             billItemsContainer.getChildren().clear();
@@ -83,6 +79,133 @@ public class CartController {
                 }
             }
         }
+
+        // Populate cartItemsContainer
+        if (cartItemsContainer != null) {
+            cartItemsContainer.getChildren().clear();
+            List<CartItem> items = Cart.getAllItems();
+            if (items.isEmpty()) {
+                Label empty = new Label("(No items added yet)");
+                empty.setStyle("-fx-font-size:12px; -fx-text-fill:#999; -fx-font-style:italic;");
+                cartItemsContainer.getChildren().add(empty);
+            } else {
+                for (CartItem item : items) {
+                    cartItemsContainer.getChildren().add(createCartItemRow(item));
+                }
+            }
+        }
+    }
+
+    // ── Cart Item Row (with image and quantity control) ──────────────────────
+
+    private VBox createCartItemRow(CartItem item) {
+        VBox itemBox = new VBox(10);
+        itemBox.setStyle("-fx-border-color: #333; -fx-border-radius: 8; -fx-background-color: #1a1a1a; -fx-padding: 15;");
+        itemBox.setPrefWidth(Double.MAX_VALUE);
+
+        // Header: Image + Info
+        HBox headerBox = new HBox(15);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+
+        // Product Image - Larger
+        ImageView imageView = new ImageView();
+        imageView.setFitHeight(100);
+        imageView.setFitWidth(100);
+        imageView.setPreserveRatio(true);
+        imageView.setStyle("-fx-border-color: #444; -fx-border-radius: 8; -fx-background-color: #0d0d0d;");
+
+        String imagePath = item.getImagePath();
+        if (imagePath != null && !imagePath.isEmpty()) {
+            try {
+                if (!imagePath.startsWith("/")) {
+                    imagePath = "/" + imagePath;
+                }
+                InputStream is = getClass().getResourceAsStream(imagePath);
+                if (is != null) {
+                    imageView.setImage(new Image(is));
+                } else {
+                    String altPath = imagePath.substring(1);
+                    is = getClass().getResourceAsStream(altPath);
+                    if (is != null) {
+                        imageView.setImage(new Image(is));
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("[DEBUG] Could not load image: " + e.getMessage());
+            }
+        }
+
+        // Product Info - Better layout
+        VBox infoBox = new VBox(6);
+
+        Label nameLabel = new Label(item.getProductName());
+        nameLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15px;");
+        nameLabel.setWrapText(true);
+        nameLabel.setMaxWidth(250);
+
+        Label categoryLabel = new Label("📦 " + item.getCategory());
+        categoryLabel.setStyle("-fx-text-fill: #aaa; -fx-font-size: 12px;");
+
+        Label priceLabel = new Label("৳ " + String.format("%.2f", item.getUnitPrice()) + " per unit");
+        priceLabel.setStyle("-fx-text-fill: #11998e; -fx-font-weight: bold; -fx-font-size: 13px;");
+
+        Label totalLabel = new Label("Total: ৳ " + String.format("%.2f", item.getTotalPrice()));
+        totalLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold; -fx-font-size: 13px;");
+
+        infoBox.getChildren().addAll(nameLabel, categoryLabel, priceLabel, totalLabel);
+        HBox.setHgrow(infoBox, Priority.ALWAYS);
+
+        headerBox.getChildren().addAll(imageView, infoBox);
+
+        // Quantity Control Row - Improved
+        HBox qtyControlBox = new HBox(12);
+        qtyControlBox.setAlignment(Pos.CENTER);
+        qtyControlBox.setStyle("-fx-padding: 12; -fx-background-color: #0d0d0d; -fx-border-radius: 6; -fx-border-color: #333;");
+
+        Label qtyTitleLabel = new Label("Quantity:");
+        qtyTitleLabel.setStyle("-fx-text-fill: #ccc; -fx-font-size: 13px; -fx-font-weight: bold;");
+
+        Spinner<Integer> qtySpinner = new Spinner<>(1, 100, item.getQuantity());
+        qtySpinner.setPrefWidth(90);
+        qtySpinner.setStyle("-fx-font-size: 13px; -fx-padding: 8;");
+
+        Button decrementBtn = new Button("▼");
+        decrementBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 14; -fx-font-size: 14px; -fx-background-radius: 5;");
+        decrementBtn.setOnAction(e -> {
+            int current = qtySpinner.getValue();
+            if (current > 1) {
+                qtySpinner.decrement();
+            }
+        });
+
+        Button incrementBtn = new Button("▲");
+        incrementBtn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 14; -fx-font-size: 14px; -fx-background-radius: 5;");
+        incrementBtn.setOnAction(e -> {
+            int current = qtySpinner.getValue();
+            if (current < 100) {
+                qtySpinner.increment();
+            }
+        });
+
+        Button removeBtn = new Button("🗑️ Remove");
+        removeBtn.setStyle("-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 15; -fx-font-size: 12px; -fx-background-radius: 5;");
+        removeBtn.setOnAction(e -> removeItemFromCart(item));
+
+        HBox.setHgrow(removeBtn, Priority.ALWAYS);
+
+        qtyControlBox.getChildren().addAll(qtyTitleLabel, decrementBtn, qtySpinner, incrementBtn, removeBtn);
+
+        // Update quantity and total when spinner changes
+        qtySpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal > 0) {
+                Cart.updateQuantity(item.getProductId(), newVal);
+                totalLabel.setText("Total: ৳ " + String.format("%.2f", item.getTotalPrice()));
+                updateSummary();
+            }
+        });
+
+        itemBox.getChildren().addAll(headerBox, qtyControlBox);
+        return itemBox;
     }
 
     // ── Bill row ──────────────────────────────────────────────────────────────
@@ -157,23 +280,26 @@ public class CartController {
             return;
         }
 
-        // Validate Customer Info (Required as per request)
-        String customerName = customerNameField.getText().trim();
-        String customerPhone = customerPhoneField.getText().trim();
+        // Extract customer info at the beginning
+        String custName = customerNameField.getText().trim();
+        String custPhone = customerPhoneField.getText().trim();
+        String custEmail = customerEmailField.getText().trim();
+        String custAddress = customerAddressField.getText().trim();
 
-        if (customerName.isEmpty()) {
+        // Validate required fields
+        if (custName.isEmpty()) {
             statusLabel.setText("⚠️ Please enter Customer Name.");
             customerNameField.requestFocus();
             return;
         }
 
-        if (customerPhone.isEmpty()) {
+        if (custPhone.isEmpty()) {
             statusLabel.setText("⚠️ Please enter Customer Phone Number.");
             customerPhoneField.requestFocus();
             return;
         }
         
-        if (customerPhone.length() != 11 || !customerPhone.matches("\\d+")) {
+        if (custPhone.length() != 11 || !custPhone.matches("\\d+")) {
             statusLabel.setText("⚠️ Phone number must be exactly 11 digits.");
             customerPhoneField.requestFocus();
             return;
@@ -183,65 +309,73 @@ public class CartController {
         int totalQty = Cart.getTotalQuantity();
         double totalAmount = Cart.getTotalPrice();
 
-        // 1. Save or Update Customer
-        // Check if customer exists by phone
+        // 1. Save or Update Customer (with ALL info: name, phone, email, address)
         Customer customerToSave = null;
         for (Customer existing : CustomerManager.getAllCustomers()) {
-            if (existing.getPhone().equals(customerPhone)) {
+            if (existing.getPhone().equals(custPhone)) {
                 customerToSave = existing;
-                // Update name if changed? Let's just update name to current input
-                customerToSave.setName(customerName); 
                 break;
             }
         }
         
         if (customerToSave == null) {
-            // New Customer
-            customerToSave = new Customer(customerName, customerPhone, "", "", "Retail", 0.0);
+            // Create new customer
+            customerToSave = new Customer(custName, custPhone, custEmail, custAddress, "Retail", 0.0);
+            System.out.println("✓ New Customer Created: " + custName + " | " + custPhone);
+        } else {
+            // Update existing customer
+            customerToSave.setName(custName);
+            customerToSave.setPhone(custPhone);
+            customerToSave.setEmail(custEmail);
+            customerToSave.setAddress(custAddress);
+            System.out.println("✓ Existing Customer Updated: " + custName + " | " + custPhone);
         }
         
-        // Update Due Balance if needed (assuming fully paid here, so no due balance change unless we add credit sales)
-        // For now, simple retail sale
         CustomerManager.saveCustomer(customerToSave);
         NetworkManager.getInstance().broadcastCustomer(customerToSave);
+        System.out.println("  Email: " + custEmail + " | Address: " + custAddress);
 
         // 2. Process Sale & Stock
-        // NOW reduce stock for every purchased item
         for (CartItem item : purchasedItems) {
             String canonicalProductId = ensureCanonicalStockProduct(item);
             int currentStock = StockManager.getStock(canonicalProductId);
             int newStock = Math.max(0, currentStock - item.getQuantity());
             StockManager.updateStock(canonicalProductId, newStock);
             NetworkManager.getInstance().broadcastStockUpdate(canonicalProductId, newStock);
-            
-            // Record sale in SalesTracker for dashboard
-            // linking customerName to sale is tricky without changing SaleRecord structure heavily
-            // but we can append it to category or product name in tracking if needed, 
-            // or just rely on CustomerManager having the customer.
             SalesTracker.addSale(item.getProductName(), item.getCategory(), item.getUnitPrice(), item.getQuantity());
         }
 
-        String custName = customerNameField.getText().trim();
-        String custPhone = customerPhoneField.getText().trim();
-        String custEmail = customerEmailField.getText().trim();
-        
         SaleRecord sale = NetworkManager.getInstance().buildSaleRecord(purchasedItems, totalQty, totalAmount,
                                                                        custName.isEmpty() ? null : custName,
                                                                        custPhone.isEmpty() ? null : custPhone,
-                                                                       custEmail.isEmpty() ? null : custEmail);
+                                                                       custEmail.isEmpty() ? null : custEmail,
+                                                                       custAddress.isEmpty() ? null : custAddress);
         SalesManager.recordSale(sale);
         NetworkManager.getInstance().broadcastSaleRecord(sale);
 
-        String total = String.format("৳ %.2f BDT", totalAmount);
+        // Show alert with all customer details
+        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+        successAlert.setTitle("✅ Order Confirmed");
+        successAlert.setHeaderText("Purchase Successful!");
+        successAlert.setContentText("Order Details:\n" +
+                "Customer: " + custName + "\n" +
+                "Phone: " + custPhone + "\n" +
+                "Email: " + (custEmail.isEmpty() ? "N/A" : custEmail) + "\n" +
+                "Address: " + (custAddress.isEmpty() ? "N/A" : custAddress) + "\n" +
+                "Total Amount: ৳ " + String.format("%.2f", totalAmount) + "\n" +
+                "Total Items: " + totalQty + "\n\n" +
+                "Payment Method: Cash on Delivery\n" +
+                "Status: Confirmed\n\n" +
+                "Thank you for shopping with us!");
+        successAlert.showAndWait();
+
         Cart.clearCart();
         refreshCart();
-        statusLabel.setText("✅ Purchase successful! Customer Add/Updated. Total: " + total);
-        
-        // Clear inputs
         customerNameField.clear();
         customerPhoneField.clear();
+        customerEmailField.clear();
+        customerAddressField.clear();
         
-        // Refresh dashboard stats
         HomeController.refreshDashboard();
     }
 

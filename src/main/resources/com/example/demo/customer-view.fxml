@@ -27,14 +27,14 @@
             <spacing>15</spacing>
             <children>
                 <Circle radius="20" fill="#ffffff" styleClass="sidebar-logo" />
-                <Button text="🏠 Home" prefWidth="150" onAction="#onNavHome" styleClass="sidebar-btn" />
-                <Button text="📦 Products" prefWidth="150" onAction="#onProductsClick" styleClass="sidebar-btn" />
-                <Button text="💰 Sales" prefWidth="150" onAction="#onSalesClick" styleClass="sidebar-btn" />
-                <Button text="📥 Restock" prefWidth="150" onAction="#onRestockClick" styleClass="sidebar-btn" />
-                <Button text="👥 Customers" prefWidth="150" onAction="#onCustomersClick" styleClass="sidebar-btn-active" />
-                <Button text="📊 Reports" prefWidth="150" onAction="#onReportsClick" styleClass="sidebar-btn" />
+                <Button text="🏠 Home" prefWidth="150" onAction="#onNavHome" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+                <Button text="📦 Products" prefWidth="150" onAction="#onProductsClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+                <Button text="💰 Sales" prefWidth="150" onAction="#onSalesClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+                <Button text="📥 Restock" prefWidth="150" onAction="#onRestockClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+                <Button text="👥 Customers" prefWidth="150" onAction="#onCustomersClick" styleClass="sidebar-btn-active" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+                <Button text="📊 Reports" prefWidth="150" onAction="#onReportsClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
                 <Separator />
-                <Button text="⚙️ Settings" prefWidth="150" onAction="#onProfileClick" styleClass="sidebar-btn" />
+                <Button text="⚙️ Settings" prefWidth="150" onAction="#onProfileClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
             </children>
         </VBox>
 
@@ -45,7 +45,9 @@
             <alignment>CENTER_LEFT</alignment>
             <children>
                 <Button text="⬅ Back to Home" onAction="#onNavHome" styleClass="action-btn-blue" />
-                <Label text="Customers" styleClass="dashboard-title" HBox.hgrow="ALWAYS" />
+                <Label text="Customers" styleClass="dashboard-title" HBox.hgrow="ALWAYS">
+                    <font><Font name="System Bold" size="18"/></font>
+                </Label>
                 <Label fx:id="userLabel" text="Welcome, Admin" styleClass="dashboard-welcome" />
             </children>
         </HBox>
@@ -85,7 +87,9 @@
 
                  <!-- Modal Header -->
                  <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 15; -fx-border-color: #333333; -fx-border-width: 0 0 1 0;">
-                     <Label fx:id="modalTitle" text="Add Customer" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #f5f5f5;" HBox.hgrow="ALWAYS" />
+                     <Label fx:id="modalTitle" text="Add Customer" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #f5f5f5;" HBox.hgrow="ALWAYS">
+                         <font><Font name="System Bold" size="18"/></font>
+                     </Label>
                      <AnchorPane HBox.hgrow="ALWAYS" />
                      <Button text="✕" onAction="#onCancelModal" style="-fx-background-color: transparent; -fx-text-fill: #f5f5f5; -fx-font-size: 14; -fx-font-weight: bold; -fx-cursor: hand;" />
                  </HBox>
@@ -93,12 +97,16 @@
                  <!-- Modal Body -->
                  <VBox spacing="15" style="-fx-padding: 20;">
                      <VBox spacing="5">
-                         <Label text="Customer Name *" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;"/>
+                         <Label text="Customer Name *" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;">
+                             <font><Font name="System Bold" size="12"/></font>
+                         </Label>
                          <TextField fx:id="nameField" promptText="Enter customer name" style="-fx-pref-height: 35;"/>
                      </VBox>
 
                      <VBox spacing="5">
-                         <Label text="Phone Number *" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;"/>
+                         <Label text="Phone Number *" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;">
+                             <font><Font name="System Bold" size="12"/></font>
+                         </Label>
                          <HBox spacing="10">
                              <TextField text="+880" editable="false" prefWidth="60" style="-fx-pref-height: 35; -fx-background-color: #111111; -fx-text-fill: #f5f5f5; -fx-font-weight: bold;"/>
                              <TextField fx:id="phoneField" promptText="Enter phone number" HBox.hgrow="ALWAYS" style="-fx-pref-height: 35;"/>
@@ -106,22 +114,30 @@
                      </VBox>
 
                      <VBox spacing="5">
-                         <Label text="Email Address" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;"/>
+                         <Label text="Email Address" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;">
+                             <font><Font name="System Bold" size="12"/></font>
+                         </Label>
                          <TextField fx:id="emailField" promptText="Enter email address" style="-fx-pref-height: 35;"/>
                      </VBox>
 
                      <VBox spacing="5">
-                         <Label text="Address" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;"/>
+                         <Label text="Address" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;">
+                             <font><Font name="System Bold" size="12"/></font>
+                         </Label>
                          <TextArea fx:id="addressArea" promptText="Enter address" prefRowCount="3" wrapText="true" style="-fx-pref-height: 80;"/>
                      </VBox>
 
                      <VBox spacing="5">
-                         <Label text="Customer Type" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;"/>
+                         <Label text="Customer Type" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;">
+                             <font><Font name="System Bold" size="12"/></font>
+                         </Label>
                          <ComboBox fx:id="typeCombo" promptText="Select type" maxWidth="Infinity" style="-fx-pref-height: 35;"/>
                      </VBox>
 
                      <HBox spacing="10" alignment="CENTER_LEFT">
-                         <Label text="Due Balance" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;"/>
+                         <Label text="Due Balance" style="-fx-font-weight: bold; -fx-text-fill: #f5f5f5;">
+                             <font><Font name="System Bold" size="12"/></font>
+                         </Label>
                          <ToggleButton fx:id="dueBalanceToggle" text="Enable Due" onAction="#onDueToggle" styleClass="due-toggle-black" />
                          <TextField fx:id="dueBalanceAmountField" promptText="0.00" prefWidth="100" disable="true"/>
                      </HBox>

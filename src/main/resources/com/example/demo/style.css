@@ -805,19 +805,6 @@
     -fx-effect: dropshadow(gaussian, rgba(255, 71, 87, 0.8), 20, 0, 0, 8);
 }
 
-.product-add-btn {
-    -fx-background-color: #667eea;
-    -fx-text-fill: white;
-    -fx-font-size: 13px;
-    -fx-font-weight: 700;
-    -fx-background-radius: 10px;
-    -fx-padding: 8px 14px;
-}
-
-.product-add-btn:hover {
-    -fx-background-color: #5568d3;
-}
-
 /* ScrollPane styling for fashion page */
 .fashion-scroll {
     -fx-background-color: transparent;
@@ -2772,21 +2759,6 @@ spinner .text-field,
     -fx-background-color: #0f8b68;
 }
 
-/* Keep all typed input fields dark even on focus/hover */
-.text-input,
-.text-field,
-.password-field,
-.text-area,
-.combo-box-base,
-.date-picker,
-spinner .text-field,
-.choice-box {
-    -fx-control-inner-background: #111111;
-    -fx-background-color: #111111;
-    -fx-text-fill: #f5f5f5;
-    -fx-prompt-text-fill: #9ca3af;
-    -fx-border-color: #333333;
-}
 
 .text-input:focused,
 .text-input:hover,
@@ -2852,3 +2824,55 @@ spinner .text-field:hover {
 .menu-item:hover {
     -fx-background-color: #333333;
 }
+
+/* Global Button Styling for Symbols/Emojis */
+.button {
+    -fx-font-family: "Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Lucida Grande", system-ui;
+    -fx-font-size: 11px;
+    -fx-text-alignment: center;
+    -fx-label-padding: 8px 12px 8px 12px;
+}
+
+/* Sidebar buttons with symbols */
+.sidebar-btn, .sidebar-btn-active {
+    -fx-font-family: "Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Lucida Grande", system-ui;
+    -fx-font-size: 12px;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 10px;
+}
+
+/* Category buttons with symbols */
+.category-button {
+    -fx-font-family: "Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Lucida Grande", system-ui;
+    -fx-font-size: 11px;
+    -fx-letter-spacing: 0.5px;
+}
+
+/* Stock filter buttons with symbols */
+.stock-filter {
+    -fx-font-family: "Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Lucida Grande", system-ui;
+    -fx-font-size: 11px;
+    -fx-letter-spacing: 0.5px;
+}
+
+/* Action buttons with symbols */
+.action-btn-blue, .confirm-button, .clear-button {
+    -fx-font-family: "Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Lucida Grande", system-ui;
+    -fx-font-size: 11px;
+    -fx-letter-spacing: 0.5px;
+}
+
+/* Product add button */
+.product-add-btn {
+    -fx-font-family: "Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Lucida Grande", system-ui;
+    -fx-font-size: 11px;
+    -fx-letter-spacing: 0.5px;
+}
+
+/* Detail buttons */
+.detail-add-cart-btn, .detail-buy-now-btn {
+    -fx-font-family: "Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Lucida Grande", system-ui;
+    -fx-font-size: 12px;
+    -fx-letter-spacing: 0.5px;
+}
+

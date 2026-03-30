@@ -29,17 +29,17 @@
             <Circle radius="20" fill="#ffffff" styleClass="sidebar-logo" />
 
             <!-- Navigation Items -->
-            <Button text="🏠 Home" prefWidth="150" onAction="#onNavHome" styleClass="sidebar-btn-active" />
-            <Button fx:id="productsBtn" text="📦 Products" prefWidth="150" onAction="#onProductsClick" styleClass="sidebar-btn" />
-            <Button text="💰 Sales" prefWidth="150" onAction="#onSalesClick" styleClass="sidebar-btn" />
-            <Button text="📥 Restock" prefWidth="150" onAction="#onRestockClick" styleClass="sidebar-btn" />
-            <Button text="👥 Customers" prefWidth="150" onAction="#onCustomersClick" styleClass="sidebar-btn" />
-            <Button text="📊 Reports" prefWidth="150" onAction="#onReportsClick" styleClass="sidebar-btn" />
-            <Button text="➕ Add Product" prefWidth="150" onAction="#onOpenAddProductModal" styleClass="sidebar-btn" />
+            <Button text="🏠 Home" prefWidth="150" onAction="#onNavHome" styleClass="sidebar-btn-active" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+            <Button fx:id="productsBtn" text="📦 Products" prefWidth="150" onAction="#onProductsClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+            <Button text="💰 Sales" prefWidth="150" onAction="#onSalesClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+            <Button text="📥 Restock" prefWidth="150" onAction="#onRestockClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+            <Button text="👥 Customers" prefWidth="150" onAction="#onCustomersClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+            <Button text="📊 Reports" prefWidth="150" onAction="#onReportsClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+            <Button text="➕ Add Product" prefWidth="150" onAction="#onOpenAddProductModal" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
 
             <Separator />
 
-            <Button text="⚙️ Settings" prefWidth="150" onAction="#onProfileClick" styleClass="sidebar-btn" />
+            <Button text="⚙️ Settings" prefWidth="150" onAction="#onProfileClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
         </children>
     </VBox>
 
