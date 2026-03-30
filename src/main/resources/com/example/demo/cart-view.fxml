@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1400.0" style="-fx-background-color: #1a1a1a;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.CartController">
+    <children>
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="1400.0" style="-fx-background-color: #11998e;" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <padding>
+                <Insets left="30.0" right="30.0" />
+            </padding>
+            <children>
+                <Button mnemonicParsing="false" onAction="#onBackToHome" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16; -fx-text-fill: white;" text="⬅ Back to Shopping">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Button>
+                <Label text="🛒 Shopping Cart" textFill="WHITE" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font name="System Bold" size="28.0" />
+                    </font>
+                    <HBox.margin>
+                        <Insets left="30.0" />
+                    </HBox.margin>
+                </Label>
+            </children>
+        </HBox>
+
+        <!-- Status Label -->
+        <Label fx:id="statusLabel" layoutX="30.0" layoutY="90.0" text="🛒 Your cart is empty" style="-fx-text-fill: #11998e; -fx-font-size: 14px; -fx-font-weight: bold;" AnchorPane.topAnchor="90.0" AnchorPane.leftAnchor="30.0" />
+
+        <!-- Main Content HBox -->
+        <HBox spacing="25" AnchorPane.topAnchor="130.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+            <children>
+                <!-- LEFT: Cart Items (50% width) -->
+                <VBox spacing="15" HBox.hgrow="ALWAYS" minWidth="400" maxWidth="700" style="-fx-border-color: #444; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-color: #0d0d0d; -fx-padding: 25;">
+                    <children>
+                        <Label text="📦 Cart Items" style="-fx-text-fill: #11998e; -fx-font-weight: bold; -fx-font-size: 20px;" />
+
+                        <!-- Products ScrollPane -->
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" prefHeight="400" style="-fx-background-color: #0d0d0d; -fx-border-color: #333; -fx-border-radius: 8; -fx-padding: 0;">
+                            <VBox fx:id="cartItemsContainer" spacing="20" style="-fx-background-color: #0d0d0d; -fx-padding: 20; -fx-min-width: 0;" prefWidth="350" />
+                        </ScrollPane>
+
+                        <!-- Bottom Buttons -->
+                        <HBox spacing="20" alignment="CENTER_RIGHT" minHeight="70">
+                            <Button mnemonicParsing="false" onAction="#onClearCart" prefHeight="60" minWidth="140" maxWidth="170" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 8; -fx-font-size: 14px; -fx-wrap-text: true;" text="🗑️ Clear Cart" />
+                            <Button mnemonicParsing="false" onAction="#onContinueShopping" prefHeight="60" minWidth="140" maxWidth="170" style="-fx-background-color: #2c3e50; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 8; -fx-font-size: 14px; -fx-wrap-text: true;" text="⬅️ Continue" />
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <!-- RIGHT: Customer Form & Checkout (50% width) -->
+                <VBox spacing="18" HBox.hgrow="ALWAYS" minWidth="400" maxWidth="700" style="-fx-border-color: #444; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-color: #0d0d0d; -fx-padding: 25;">
+                    <children>
+                        <Label text="👤 Customer Details" style="-fx-text-fill: #11998e; -fx-font-weight: bold; -fx-font-size: 20px;" />
+
+                        <!-- Scrollable Form -->
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" prefHeight="400" style="-fx-background-color: #0d0d0d; -fx-border-color: transparent;">
+                            <VBox spacing="14" style="-fx-background-color: #0d0d0d; -fx-min-width: 0;">
+                                <padding>
+                                    <Insets left="8.0" right="8.0" />
+                                </padding>
+
+                                <!-- Name (Auto-filled) -->
+                                <VBox spacing="8">
+                                    <Label text="👤 Name" style="-fx-text-fill: #aaa; -fx-font-size: 13px; -fx-font-weight: bold;" />
+                                    <TextField fx:id="customerNameField" promptText="Username" editable="false" prefHeight="42" style="-fx-background-color: #1a1a1a; -fx-text-fill: #11998e; -fx-border-color: #11998e; -fx-border-width: 2; -fx-border-radius: 6; -fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 10;" />
+                                </VBox>
+
+                                <!-- Phone -->
+                                <VBox spacing="8">
+                                    <Label text="📞 Phone Number *" style="-fx-text-fill: #aaa; -fx-font-size: 13px; -fx-font-weight: bold;" />
+                                    <TextField fx:id="customerPhoneField" promptText="01711223344" prefHeight="42" style="-fx-background-color: #1a1a1a; -fx-text-fill: white; -fx-border-color: #444; -fx-border-width: 2; -fx-border-radius: 6; -fx-font-size: 13px; -fx-padding: 10;" />
+                                </VBox>
+
+                                <!-- Email -->
+                                <VBox spacing="8">
+                                    <Label text="📧 Email" style="-fx-text-fill: #aaa; -fx-font-size: 13px; -fx-font-weight: bold;" />
+                                    <TextField fx:id="customerEmailField" promptText="example@email.com" prefHeight="42" style="-fx-background-color: #1a1a1a; -fx-text-fill: white; -fx-border-color: #444; -fx-border-width: 2; -fx-border-radius: 6; -fx-font-size: 13px; -fx-padding: 10;" />
+                                </VBox>
+
+                                <!-- Address -->
+                                <VBox spacing="8">
+                                    <Label text="🏠 Address" style="-fx-text-fill: #aaa; -fx-font-size: 13px; -fx-font-weight: bold;" />
+                                    <TextField fx:id="customerAddressField" promptText="Delivery address" prefHeight="42" style="-fx-background-color: #1a1a1a; -fx-text-fill: white; -fx-border-color: #444; -fx-border-width: 2; -fx-border-radius: 6; -fx-font-size: 13px; -fx-padding: 10;" />
+                                </VBox>
+
+                                <!-- Bill Items Separator -->
+                                <Label text="━━━━━━━━━━━━━━━━" style="-fx-text-fill: #444; -fx-font-size: 11px; -fx-padding: 8 0 4 0;" />
+                                <Label text="📋 Items Summary" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;" />
+
+                                <!-- Bill Items ScrollPane -->
+                                <ScrollPane fitToWidth="true" prefHeight="120" minHeight="100" style="-fx-background-color: #1a1a1a; -fx-border-color: #333; -fx-border-radius: 6; -fx-control-inner-background: #1a1a1a;">
+                                    <VBox fx:id="billItemsContainer" spacing="8" style="-fx-background-color: #1a1a1a; -fx-padding: 10; -fx-min-width: 0;" />
+                                </ScrollPane>
+                            </VBox>
+                        </ScrollPane>
+
+                        <!-- Total Price Box -->
+                        <HBox spacing="15" alignment="CENTER_LEFT" minHeight="60" style="-fx-background-color: #11998e; -fx-padding: 15; -fx-background-radius: 8;">
+                            <Label text="💰 Total:" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Label fx:id="totalPriceLabel" text="৳ 0.00" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 22px;" HBox.hgrow="ALWAYS" />
+                        </HBox>
+
+                        <!-- Buy Button -->
+                        <Button mnemonicParsing="false" onAction="#onCheckout" prefHeight="60" minHeight="55" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-background-radius: 10; -fx-cursor: hand;" text="✅ BUY NOW" />
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+</AnchorPane>
+

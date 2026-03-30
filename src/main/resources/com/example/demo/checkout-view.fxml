@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="500.0" style="-fx-background-color: #1a1a1a;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.CheckoutController">
+    <children>
+        <!-- Header -->
+        <Label layoutX="14.0" layoutY="14.0" text="Checkout" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+
+        <!-- Scrollable Content -->
+        <ScrollPane fitToWidth="true" layoutX="0.0" layoutY="50.0" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #1a1a1a; -fx-border-color: transparent;">
+            <content>
+                <VBox spacing="15.0" style="-fx-background-color: #1a1a1a;">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <!-- Order Summary -->
+                        <Label text="Order Summary" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                        <VBox fx:id="itemsVBox" spacing="5.0" style="-fx-border-color: #444; -fx-border-radius: 5; -fx-background-color: #2a2a2a; -fx-padding: 10;">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                            </padding>
+                        </VBox>
+
+                        <!-- Total -->
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                            <children>
+                                <Label text="Total:" textFill="WHITE">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="cartTotalLabel" text="৳0.00" textFill="#11998e">
+                                    <font>
+                                        <Font name="System Bold" size="16.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+
+                        <!-- Customer Details -->
+                        <Label text="Customer Details" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets top="10.0" />
+                            </VBox.margin>
+                        </Label>
+
+                        <Label text="Name:" textFill="WHITE">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="customerNameField" prefHeight="35.0" style="-fx-background-radius: 5; -fx-background-color: #333333; -fx-text-fill: white; -fx-control-inner-background: #333333; -fx-border-color: #444;" />
+
+                        <Label text="Phone Number:" textFill="WHITE">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="phoneNumberField" prefHeight="35.0" style="-fx-background-radius: 5; -fx-background-color: #333333; -fx-text-fill: white; -fx-control-inner-background: #333333; -fx-border-color: #444;" />
+
+                        <Label text="Shipping Address:" textFill="WHITE">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                        <TextArea fx:id="shippingAddressArea" prefHeight="80.0" style="-fx-background-radius: 5; -fx-background-color: #333333; -fx-text-fill: white; -fx-control-inner-background: #333333; -fx-border-color: #444;" wrapText="true" />
+
+                        <Label text="Payment Method:" textFill="WHITE">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                        <ComboBox fx:id="paymentMethodCombo" prefHeight="35.0" prefWidth="460.0" style="-fx-background-color: #333333; -fx-border-color: #444; -fx-text-fill: white;" />
+
+                        <!-- Status Label -->
+                        <Label fx:id="statusLabel" text="" textFill="WHITE">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+
+                        <!-- Buttons -->
+                        <HBox alignment="CENTER" spacing="10.0">
+                            <children>
+                                <Button fx:id="placeOrderButton" minWidth="120.0" mnemonicParsing="false" onAction="#onPlaceOrder" style="-fx-background-color: #11998e; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand; -fx-font-size: 12;" text="Place Order" />
+                                <Button fx:id="cancelButton" minWidth="120.0" mnemonicParsing="false" onAction="#onCancel" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand; -fx-font-size: 12;" text="Cancel" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</AnchorPane>
+
