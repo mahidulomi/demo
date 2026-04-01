@@ -93,6 +93,10 @@ public final class Session {
         changeScene(anyNodeInScene, "reports-view.fxml", 1250, 750);
     }
 
+    public static void goToAboutUs(Node anyNodeInScene) {
+        changeScene(anyNodeInScene, "about-view.fxml", 1250, 750);
+    }
+
     public static void goToCustomers(Node anyNodeInScene) {
         changeScene(anyNodeInScene, "customer-view.fxml", 1250, 750);
     }

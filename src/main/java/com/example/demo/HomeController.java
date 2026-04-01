@@ -281,8 +281,7 @@ public class HomeController {
 
     @FXML
     private void onProfileClick() {
-        String user = Session.getCurrentUser();
-        statusLabel.setText("Profile: " + (user == null ? "Guest" : user) + " (Profile page coming soon)");
+        Session.goToAboutUs(statusLabel);
     }
 
     @FXML

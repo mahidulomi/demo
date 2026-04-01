@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -282,12 +283,53 @@ public class CustomerController {
 
     // Navigation (same as Home)
     @FXML private void onNavHome() { Session.goToHome(userLabel); }
-    @FXML private void onProductsClick() { Session.goToStock(userLabel); } // Or show menu
+
+    @FXML private Button productsBtn;
+
+    @FXML private void onProductsClick() {
+        if (productsBtn != null) {
+            javafx.scene.control.ContextMenu menu = new javafx.scene.control.ContextMenu();
+
+            javafx.scene.control.MenuItem beautyItem = new javafx.scene.control.MenuItem("💄 Beauty");
+            beautyItem.setOnAction(e -> {
+                ProductListController.setCategoryToShow("Beauty");
+                Session.goToProductList(userLabel);
+            });
+
+            javafx.scene.control.MenuItem electronicsItem = new javafx.scene.control.MenuItem("📱 Electronics");
+            electronicsItem.setOnAction(e -> {
+                ProductListController.setCategoryToShow("Electronics");
+                Session.goToProductList(userLabel);
+            });
+
+            javafx.scene.control.MenuItem homeLivingItem = new javafx.scene.control.MenuItem("🏠 Home & Living");
+            homeLivingItem.setOnAction(e -> {
+                ProductListController.setCategoryToShow("Home and Living");
+                Session.goToProductList(userLabel);
+            });
+
+            javafx.scene.control.MenuItem fashionItem = new javafx.scene.control.MenuItem("👗 Fashion");
+            fashionItem.setOnAction(e -> {
+                ProductListController.setCategoryToShow("Fashion");
+                Session.goToProductList(userLabel);
+            });
+
+            menu.getItems().addAll(beautyItem, electronicsItem, homeLivingItem, fashionItem);
+
+            javafx.geometry.Bounds bounds = productsBtn.localToScreen(productsBtn.getBoundsInLocal());
+            if(bounds != null) {
+                menu.show(productsBtn, bounds.getCenterX(), bounds.getCenterY() + 30);
+            }
+        } else {
+            Session.goToStock(userLabel);
+        }
+    }
+
     @FXML private void onSalesClick() { Session.goToSales(userLabel); }
     @FXML private void onRestockClick() { Session.goToRestock(userLabel); }
     @FXML private void onCustomersClick() { /* Already here */ }
     @FXML private void onReportsClick() { Session.goToReports(userLabel); }
-    @FXML private void onProfileClick() { /* Todo */ }
+    @FXML private void onProfileClick() { Session.goToAboutUs(userLabel); }
     @FXML private void onLogout() { Session.logout(); }
     @FXML private void openFashion() { Session.goToFashion(userLabel); } // Re-use
 }

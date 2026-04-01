@@ -32,7 +32,7 @@
                                 <Font name="System Bold" size="38.0" />
                             </font>
                         </Label>
-                        <Label layoutX="80.0" layoutY="310.0" prefHeight="80.0" prefWidth="400.0" styleClass="welcome-text-large" text="HATBAZARx" textAlignment="LEFT">
+                        <Label layoutX="80.0" layoutY="310.0" prefHeight="80.0" prefWidth="400.0" styleClass="welcome-text-large" text="Shop Master" textAlignment="LEFT">
                             <font>
                                 <Font name="System Bold" size="56.0" />
                             </font>

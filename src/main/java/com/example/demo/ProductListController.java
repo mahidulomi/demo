@@ -225,10 +225,10 @@ public class ProductListController {
         stockBox.getChildren().addAll(stockLabel, stock);
 
         // Click row to reveal delete option for this product.
-        Button deleteBtn = new Button("Delete");
+        Button deleteBtn = new Button("delete");
         deleteBtn.setVisible(false);
         deleteBtn.setManaged(false);
-        deleteBtn.setStyle("-fx-background-color: #b91c1c; -fx-text-fill: #ffffff; -fx-font-weight: 800; -fx-min-width: 84; -fx-min-height: 32; -fx-max-height: 32; -fx-background-radius: 6; -fx-cursor: hand;");
+        deleteBtn.setStyle("-fx-background-color: #b91c1c; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-font-weight: bold; -fx-min-width: 84; -fx-min-height: 32; -fx-max-height: 32; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 0;");
         deleteBtn.setOnAction(e -> {
             e.consume();
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);

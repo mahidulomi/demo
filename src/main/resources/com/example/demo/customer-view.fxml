@@ -26,15 +26,15 @@
             <padding><Insets top="20" left="10" right="10" bottom="20" /></padding>
             <spacing>15</spacing>
             <children>
-                <Circle radius="20" fill="#ffffff" styleClass="sidebar-logo" />
+                <!-- Navigation Items -->
                 <Button text="🏠 Home" prefWidth="150" onAction="#onNavHome" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
-                <Button text="📦 Products" prefWidth="150" onAction="#onProductsClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+                <Button fx:id="productsBtn" text="📦 Products" prefWidth="150" onAction="#onProductsClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
                 <Button text="💰 Sales" prefWidth="150" onAction="#onSalesClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
                 <Button text="📥 Restock" prefWidth="150" onAction="#onRestockClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
                 <Button text="👥 Customers" prefWidth="150" onAction="#onCustomersClick" styleClass="sidebar-btn-active" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
                 <Button text="📊 Reports" prefWidth="150" onAction="#onReportsClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
                 <Separator />
-                <Button text="⚙️ Settings" prefWidth="150" onAction="#onProfileClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
+                <Button text="ℹ️ About" prefWidth="150" onAction="#onProfileClick" styleClass="sidebar-btn" style="-fx-font-size: 12; -fx-padding: 10; -fx-letter-spacing: 1;" />
             </children>
         </VBox>
 
