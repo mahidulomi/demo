@@ -18,12 +18,12 @@
                 <Insets left="30.0" right="30.0" />
             </padding>
             <children>
-                <Button mnemonicParsing="false" onAction="#onBackToHome" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16; -fx-text-fill: white;" text="⬅ Back to Shopping">
+                <Button mnemonicParsing="false" onAction="#onBackToHome" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16; -fx-text-fill: white; -fx-font-weight: bold;" text="⬅ Back to Shopping">
                     <font>
                         <Font name="System Bold" size="18.0" />
                     </font>
                 </Button>
-                <Label text="🛒 Shopping Cart" textFill="WHITE" HBox.hgrow="ALWAYS">
+                <Label text="🛒 Shopping Cart" textFill="WHITE" HBox.hgrow="ALWAYS" style="-fx-font-weight: bold;">
                     <font>
                         <Font name="System Bold" size="28.0" />
                     </font>
@@ -35,7 +35,7 @@
         </HBox>
 
         <!-- Status Label -->
-        <Label fx:id="statusLabel" layoutX="30.0" layoutY="90.0" text="🛒 Your cart is empty" style="-fx-text-fill: #11998e; -fx-font-size: 14px; -fx-font-weight: bold;" AnchorPane.topAnchor="90.0" AnchorPane.leftAnchor="30.0" />
+        <Label fx:id="statusLabel" layoutX="30.0" layoutY="90.0" text="🛒 Your cart is empty" style="-fx-text-fill: #11998e; -fx-font-size: 16px; -fx-font-weight: bold;" AnchorPane.topAnchor="90.0" AnchorPane.leftAnchor="30.0" />
 
         <!-- Main Content HBox -->
         <HBox spacing="25" AnchorPane.topAnchor="130.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">

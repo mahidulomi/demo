@@ -54,8 +54,8 @@ public final class StockManager {
         addDefault("PROD_005",          "Foam Cleanser",          "Beauty", 25, 600, "/beautyimages/foamcleanser.png");
         addDefault("PROD_006",          "Foundation",             "Beauty", 25, 1500, "/beautyimages/foundation_cropped.png");
         addDefault("PROD_007",          "Garnier Men Facewash",   "Beauty", 25, 250, "/beautyimages/gernierman_1_cropped.png");
-        addDefault("PROD_008",          "Hair Oil",               "Beauty", 25, 350, "/beautyimages/lipstickset_cropped.png");
-        addDefault("PROD_009",          "Lipstick Set",           "Beauty", 25, 2200, "/beautyimages/hairoil_cropped.png");
+        addDefault("PROD_008",          "Hair Oil",               "Beauty", 25, 350, "/beautyimages/hairoil_cropped.png");
+        addDefault("PROD_009",          "Lipstick Set",           "Beauty", 25, 2200, "/beautyimages/lipstickset_cropped.png");
         addDefault("PROD_010",          "Mascara",                "Beauty", 25, 450, "/beautyimages/mashkara_cropped.png");
         addDefault("PROD_011",          "Shampoo",                "Beauty", 25, 500, "/beautyimages/shampp_1_cropped.png");
         addDefault("PROD_012",          "Sunscreen",              "Beauty", 25, 750, "/beautyimages/sunscreen_1_cropped.png");

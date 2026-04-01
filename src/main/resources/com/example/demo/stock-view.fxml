@@ -103,32 +103,26 @@
 
                     <!-- SERVER row -->
                     <HBox alignment="CENTER_LEFT" spacing="12">
-                        <Label text="🖥️ Server:" style="-fx-text-fill:#00d2ff; -fx-font-weight:bold; -fx-min-width:70;"/>
-                        <Label text="Port" style="-fx-text-fill:#aaaacc;"/>
-                        <TextField fx:id="serverPortField" text="5555" prefWidth="70"
-                                   style="-fx-background-color:#2d2d2d; -fx-text-fill:white; -fx-border-color:#00d2ff; -fx-border-radius:5; -fx-background-radius:5;"/>
-                        <Button fx:id="startServerBtn" text="▶ Start Server" onAction="#onStartServer"
-                                style="-fx-background-color:#00d2ff; -fx-text-fill:#0f3460; -fx-font-weight:bold; -fx-background-radius:6; -fx-cursor:hand; -fx-padding:5 14;"/>
-                        <Label fx:id="myIpLabel" text="" style="-fx-text-fill:#00d2ff; -fx-font-size:11px;"/>
+                        <Label text="🖥️ Server:" style="-fx-text-fill: #00d2ff; -fx-font-weight: bold; -fx-font-size: 13; -fx-min-width: 70;"/>
+                        <Label text="Port" style="-fx-text-fill: #aaaacc; -fx-font-weight: bold;"/>
+                        <TextField fx:id="serverPortField" text="5555" prefWidth="70" style="-fx-background-color: #2d2d2d; -fx-text-fill: white; -fx-border-color: #00d2ff; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-weight: bold;"/>
+                        <Button fx:id="startServerBtn" text="▶ Start Server" onAction="#onStartServer" style="-fx-background-color: #00d2ff; -fx-text-fill: #0f3460; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 8 15; -fx-font-size: 12;"/>
+                        <Label fx:id="myIpLabel" text="" style="-fx-text-fill: #00d2ff; -fx-font-size: 12; -fx-font-weight: bold;"/>
                     </HBox>
 
                     <!-- CLIENT row -->
                     <HBox alignment="CENTER_LEFT" spacing="12">
-                        <Label text="📡 Client:" style="-fx-text-fill:#f5a623; -fx-font-weight:bold; -fx-min-width:70;"/>
-                        <Label text="Server IP" style="-fx-text-fill:#aaaacc;"/>
-                        <TextField fx:id="clientIpField" promptText="192.168.x.x" prefWidth="130"
-                                   style="-fx-background-color:#2d2d2d; -fx-text-fill:white; -fx-border-color:#f5a623; -fx-border-radius:5; -fx-background-radius:5;"/>
-                        <Label text="Port" style="-fx-text-fill:#aaaacc;"/>
-                        <TextField fx:id="clientPortField" text="5555" prefWidth="60"
-                                   style="-fx-background-color:#2d2d2d; -fx-text-fill:white; -fx-border-color:#f5a623; -fx-border-radius:5; -fx-background-radius:5;"/>
-                        <Button fx:id="connectBtn" text="🔗 Connect" onAction="#onConnect"
-                                style="-fx-background-color:#f5a623; -fx-text-fill:#1a1a2e; -fx-font-weight:bold; -fx-background-radius:6; -fx-cursor:hand; -fx-padding:5 14; -fx-font-size:11; -fx-letter-spacing:0.5;"/>
-                        <Button text="✈️ Offline" onAction="#onSetOffline"
-                                style="-fx-background-color:#334155; -fx-text-fill:#ccccff; -fx-background-radius:6; -fx-cursor:hand; -fx-padding:5 14; -fx-font-size:11; -fx-letter-spacing:0.5;"/>
+                        <Label text="📡 Client:" style="-fx-text-fill: #f5a623; -fx-font-weight: bold; -fx-font-size: 13; -fx-min-width: 70;"/>
+                        <Label text="Server IP" style="-fx-text-fill: #aaaacc; -fx-font-weight: bold;"/>
+                        <TextField fx:id="clientIpField" promptText="192.168.x.x" prefWidth="130" style="-fx-background-color: #2d2d2d; -fx-text-fill: white; -fx-border-color: #f5a623; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-weight: bold;"/>
+                        <Label text="Port" style="-fx-text-fill: #aaaacc; -fx-font-weight: bold;"/>
+                        <TextField fx:id="clientPortField" text="5555" prefWidth="60" style="-fx-background-color: #2d2d2d; -fx-text-fill: white; -fx-border-color: #f5a623; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-weight: bold;"/>
+                        <Button fx:id="connectBtn" text="🔗 Connect" onAction="#onConnect" style="-fx-background-color: #f5a623; -fx-text-fill: #1a1a2e; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 8 15; -fx-font-size: 12; -fx-letter-spacing: 0.5;"/>
+                        <Button text="✈️ Offline" onAction="#onSetOffline" style="-fx-background-color: #334155; -fx-text-fill: #ccccff; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 8 15; -fx-font-size: 12; -fx-letter-spacing: 0.5; -fx-font-weight: bold;"/>
                     </HBox>
 
                     <!-- Status message -->
-                    <Label fx:id="networkErrorLabel" text="" style="-fx-text-fill:#e94560; -fx-font-size:12px;" wrapText="true"/>
+                    <Label fx:id="networkErrorLabel" text="" style="-fx-text-fill: #e94560; -fx-font-size: 13; -fx-font-weight: bold;" wrapText="true"/>
                 </VBox>
             </VBox>
 
@@ -137,12 +131,12 @@
                 <padding>
                     <Insets bottom="12" left="15" right="15" top="12" />
                 </padding>
-                <Label styleClass="stock-filter-label" text="Filter:" />
-                <Button fx:id="btnAll" onAction="#onFilterAll" styleClass="stock-filter stock-filter-active" text="All" style="-fx-font-size:11;"/>
-                <Button fx:id="btnElectronics" onAction="#onFilterElectronics" styleClass="stock-filter" text="⚡ Electronics" style="-fx-font-size:11; -fx-letter-spacing:0.5;"/>
-                <Button fx:id="btnBeauty" onAction="#onFilterBeauty" styleClass="stock-filter" text="💄 Beauty" style="-fx-font-size:11; -fx-letter-spacing:0.5;"/>
-                <Button fx:id="btnLowStock" onAction="#onFilterLowStock" styleClass="stock-filter" text="⚠️ Low Stock" style="-fx-font-size:11; -fx-letter-spacing:0.5;"/>
-                <Button fx:id="btnOutOfStock" onAction="#onFilterOutOfStock" styleClass="stock-filter" text="❌ Out of Stock" style="-fx-font-size:11; -fx-letter-spacing:0.5;"/>
+                <Label styleClass="stock-filter-label" text="Filter:" style="-fx-font-weight: bold; -fx-font-size: 13;" />
+                <Button fx:id="btnAll" onAction="#onFilterAll" styleClass="stock-filter stock-filter-active" text="All" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Button fx:id="btnElectronics" onAction="#onFilterElectronics" styleClass="stock-filter" text="⚡ Electronics" style="-fx-font-size: 13; -fx-letter-spacing: 0.5; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Button fx:id="btnBeauty" onAction="#onFilterBeauty" styleClass="stock-filter" text="💄 Beauty" style="-fx-font-size: 13; -fx-letter-spacing: 0.5; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Button fx:id="btnLowStock" onAction="#onFilterLowStock" styleClass="stock-filter" text="⚠️ Low Stock" style="-fx-font-size: 13; -fx-letter-spacing: 0.5; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Button fx:id="btnOutOfStock" onAction="#onFilterOutOfStock" styleClass="stock-filter" text="❌ Out of Stock" style="-fx-font-size: 13; -fx-letter-spacing: 0.5; -fx-font-weight: bold; -fx-text-fill: white;"/>
             </HBox>
 
             <!-- Stock Table Header -->

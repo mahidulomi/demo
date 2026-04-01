@@ -51,7 +51,9 @@
         <children>
             <Label text="Dashboard" styleClass="dashboard-title" HBox.hgrow="ALWAYS" />
             <Label fx:id="userLabel" text="Welcome, Admin" styleClass="dashboard-welcome" />
-            <Button text="Logout" onAction="#onLogout" styleClass="logout-btn" />
+            <Button text="🚪 Logout" onAction="#onLogout" prefWidth="120" prefHeight="40" minWidth="120" textFill="WHITE" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 0; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-width: 0; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;">
+                <font><Font name="System Bold" size="14"/></font>
+            </Button>
         </children>
     </HBox>
 

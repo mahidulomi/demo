@@ -32,10 +32,10 @@
                         <Font name="System Bold" size="18.0" />
                     </font>
                 </Button>
-                <Button mnemonicParsing="false" onAction="#onLogout" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 8 15;" text="Logout">
-                    <font><Font name="System Bold" size="13"/></font>
+                <Button mnemonicParsing="false" onAction="#onLogout" text="⬅ Logout" textFill="WHITE" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 15; -fx-font-weight: bold; -fx-padding: 12 25; -fx-border-radius: 8;">
+                    <font><Font name="System Bold" size="15"/></font>
                     <HBox.margin>
-                        <Insets left="15.0" />
+                        <Insets left="20.0" />
                     </HBox.margin>
                 </Button>
             </children>
