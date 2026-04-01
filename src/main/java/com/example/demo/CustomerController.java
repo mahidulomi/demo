@@ -23,9 +23,9 @@ public class CustomerController {
     @FXML private TableColumn<Customer, String> nameColumn;
     @FXML private TableColumn<Customer, String> phoneColumn;
     @FXML private TableColumn<Customer, String> emailColumn;
+    @FXML private TableColumn<Customer, String> addressColumn;
     @FXML private TableColumn<Customer, String> typeColumn;
     @FXML private TableColumn<Customer, Double> dueColumn;
-    @FXML private TableColumn<Customer, Void> actionColumn;
 
     // Modal elements
     @FXML private StackPane rootStackPane;
@@ -83,6 +83,7 @@ public class CustomerController {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         dueColumn.setCellValueFactory(new PropertyValueFactory<>("dueBalance"));
         
@@ -96,38 +97,6 @@ public class CustomerController {
                 } else {
                     setText(String.format("Tk.%.2f", price));
                 }
-            }
-        });
-        
-        // Action column with Edit and Delete buttons
-        actionColumn.setCellFactory(new Callback<TableColumn<Customer, Void>, TableCell<Customer, Void>>() {
-            @Override
-            public TableCell<Customer, Void> call(TableColumn<Customer, Void> param) {
-                return new TableCell<Customer, Void>() {
-                    private final Button editBtn = new Button("Edit");
-                    private final Button deleteBtn = new Button("Delete");
-                    private final HBox hbox = new HBox(5);
-                    
-                    {
-                        editBtn.setStyle("-fx-padding: 5; -fx-font-size: 11;");
-                        deleteBtn.setStyle("-fx-padding: 5; -fx-font-size: 11; -fx-text-fill: white; -fx-background-color: #dc2626;");
-                        hbox.setAlignment(Pos.CENTER);
-                        hbox.getChildren().addAll(editBtn, deleteBtn);
-                    }
-                    
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            Customer customer = getTableView().getItems().get(getIndex());
-                            editBtn.setOnAction(e -> onEdit(customer));
-                            deleteBtn.setOnAction(e -> onDelete(customer));
-                            setGraphic(hbox);
-                        }
-                    }
-                };
             }
         });
     }
@@ -299,6 +268,18 @@ public class CustomerController {
         alert.showAndWait();
     }
 
+    private void showAddress(Customer customer) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Customer Address");
+        alert.setHeaderText(customer.getName() + " - " + customer.getPhone());
+        String address = customer.getAddress();
+        if (address == null || address.isEmpty()) {
+            address = "No address provided";
+        }
+        alert.setContentText("Address:\n\n" + address);
+        alert.showAndWait();
+    }
+
     // Navigation (same as Home)
     @FXML private void onNavHome() { Session.goToHome(userLabel); }
     @FXML private void onProductsClick() { Session.goToStock(userLabel); } // Or show menu
@@ -307,5 +288,6 @@ public class CustomerController {
     @FXML private void onCustomersClick() { /* Already here */ }
     @FXML private void onReportsClick() { Session.goToReports(userLabel); }
     @FXML private void onProfileClick() { /* Todo */ }
+    @FXML private void onLogout() { Session.logout(); }
     @FXML private void openFashion() { Session.goToFashion(userLabel); } // Re-use
 }

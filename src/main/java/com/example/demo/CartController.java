@@ -38,9 +38,15 @@ public class CartController {
     @FXML private javafx.scene.control.TextField customerPhoneField;
     @FXML private javafx.scene.control.TextField customerEmailField;
     @FXML private javafx.scene.control.TextField customerAddressField;
+    @FXML private javafx.scene.control.ScrollPane productsScrollPane;
+    @FXML private javafx.scene.control.ScrollPane formScrollPane;
+    @FXML private javafx.scene.control.ScrollPane billScrollPane;
 
     @FXML
     private void initialize() {
+        // Apply dark theme to all ScrollPane viewports
+        applyDarkThemeToScrollPanes();
+        
         // Auto-fill username
         String currentUser = Session.getCurrentUser();
         if (currentUser != null && !currentUser.isEmpty()) {
@@ -52,7 +58,46 @@ public class CartController {
         
         refreshCart();
     }
-
+    
+    private void applyDarkThemeToScrollPanes() {
+        // Set viewport background color for all ScrollPanes
+        javafx.application.Platform.runLater(() -> {
+            // For products ScrollPane - darker background for items display
+            if (productsScrollPane != null) {
+                productsScrollPane.setStyle("-fx-background-color: #0d0d0d; -fx-control-inner-background: #0d0d0d; -fx-border-color: #222; -fx-border-width: 1; -fx-border-radius: 6;");
+                applyDarkViewportToScrollPane(productsScrollPane, "#0d0d0d");
+            }
+            
+            // For form ScrollPane
+            if (formScrollPane != null) {
+                formScrollPane.setStyle("-fx-background-color: #0d0d0d; -fx-control-inner-background: #0d0d0d;");
+                applyDarkViewportToScrollPane(formScrollPane, "#0d0d0d");
+            }
+            
+            // For bill ScrollPane
+            if (billScrollPane != null) {
+                billScrollPane.setStyle("-fx-background-color: #1a1a1a; -fx-control-inner-background: #1a1a1a;");
+                applyDarkViewportToScrollPane(billScrollPane, "#1a1a1a");
+            }
+        });
+    }
+    
+    private void applyDarkViewportToScrollPane(javafx.scene.control.ScrollPane scrollPane, String bgColor) {
+        try {
+            javafx.scene.control.skin.ScrollPaneSkin skin = (javafx.scene.control.skin.ScrollPaneSkin) scrollPane.getSkin();
+            if (skin != null) {
+                // Get the viewport (content area)
+                javafx.scene.Node viewport = skin.getNode();
+                if (viewport != null) {
+                    viewport.setStyle("-fx-background-color: " + bgColor + ";");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error styling ScrollPane viewport: " + e.getMessage());
+        }
+    }
+    
+    
     // ── Refresh ───────────────────────────────────────────────────────────────
 
     private void refreshCart() {
@@ -83,6 +128,7 @@ public class CartController {
         // Populate cartItemsContainer
         if (cartItemsContainer != null) {
             cartItemsContainer.getChildren().clear();
+            cartItemsContainer.setStyle("-fx-background-color: #0d0d0d;");
             List<CartItem> items = Cart.getAllItems();
             if (items.isEmpty()) {
                 Label empty = new Label("(No items added yet)");
@@ -100,12 +146,13 @@ public class CartController {
 
     private VBox createCartItemRow(CartItem item) {
         VBox itemBox = new VBox(10);
-        itemBox.setStyle("-fx-border-color: #333; -fx-border-radius: 8; -fx-background-color: #1a1a1a; -fx-padding: 15;");
+        itemBox.setStyle("-fx-border-color: #333; -fx-border-radius: 8; -fx-background-color: #0d0d0d; -fx-padding: 15;");
         itemBox.setPrefWidth(Double.MAX_VALUE);
 
         // Header: Image + Info
         HBox headerBox = new HBox(15);
         headerBox.setAlignment(Pos.CENTER_LEFT);
+        headerBox.setStyle("-fx-background-color: #0d0d0d; -fx-padding: 0;");
 
         // Product Image - Larger
         ImageView imageView = new ImageView();
@@ -137,6 +184,7 @@ public class CartController {
 
         // Product Info - Better layout
         VBox infoBox = new VBox(6);
+        infoBox.setStyle("-fx-background-color: #0d0d0d;");
 
         Label nameLabel = new Label(item.getProductName());
         nameLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15px;");
@@ -167,7 +215,7 @@ public class CartController {
 
         Spinner<Integer> qtySpinner = new Spinner<>(1, 100, item.getQuantity());
         qtySpinner.setPrefWidth(90);
-        qtySpinner.setStyle("-fx-font-size: 13px; -fx-padding: 8;");
+        qtySpinner.setStyle("-fx-font-size: 13px; -fx-padding: 8; -fx-background-color: #1a1a1a; -fx-text-fill: white; -fx-control-inner-background: #1a1a1a; -fx-border-color: #444; -fx-border-radius: 4;");
 
         Button decrementBtn = new Button("▼");
         decrementBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 14; -fx-font-size: 14px; -fx-background-radius: 5;");

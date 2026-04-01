@@ -2,12 +2,13 @@ package com.example.demo;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 import java.io.InputStream;
@@ -18,13 +19,13 @@ public class CustomerHomeController {
     @FXML private Label greetingLabel;
     @FXML private Button cartButton;
     @FXML private TextField searchField;
-    @FXML private FlowPane productsFlowPane;
+    @FXML private TilePane productsFlowPane;
     
     private String currentCategory = "All";
 
     @FXML
     public void initialize() {
-        StockManager.initializeStock();
+         StockManager.initializeStock();
         String user = Session.getCurrentUser();
         greetingLabel.setText("Hello, " + (user != null ? user : "Customer") + "!");
         updateCartCount();
@@ -35,6 +36,7 @@ public class CustomerHomeController {
             loadProducts(currentCategory, newVal);
         });
     }
+
 
     private void updateCartCount() {
         cartButton.setText("🛒 Cart (" + Cart.getItemCount() + ")");
@@ -65,7 +67,6 @@ public class CustomerHomeController {
 
         if (productsFlowPane.getChildren().isEmpty()) {
             Label noResult = new Label("No products found.");
-            noResult.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
             productsFlowPane.getChildren().add(noResult);
         }
     }
@@ -73,18 +74,20 @@ public class CustomerHomeController {
     private VBox createProductCard(StockItem item) {
         VBox card = new VBox(8);
         card.setAlignment(Pos.TOP_CENTER);
-        card.setStyle("-fx-background-color: #2a2a2a; -fx-padding: 15; -fx-background-radius: 10; -fx-border-color: #444; -fx-border-width: 1; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);");
-        card.setPrefWidth(240);
+        card.setPrefWidth(300);
+        card.setMaxWidth(300);
+        card.setStyle("-fx-background-color: #2a2a2a; -fx-border-color: #000000; -fx-border-width: 2; -fx-border-radius: 10; -fx-padding: 12;");
 
-        // Image with white background
+        // Image with white background - MUCH BIGGER
         javafx.scene.layout.VBox imageBox = new javafx.scene.layout.VBox();
         imageBox.setAlignment(Pos.CENTER);
-        imageBox.setStyle("-fx-background-color: white; -fx-padding: 8; -fx-background-radius: 6;");
-        imageBox.setPrefHeight(130);
+        imageBox.setPrefHeight(220);
+        imageBox.setMaxHeight(220);
+        imageBox.setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #cccccc; -fx-border-width: 1; -fx-border-radius: 8;");
         
         ImageView imageView = new ImageView();
-        imageView.setFitHeight(110);
-        imageView.setFitWidth(110);
+        imageView.setFitHeight(200);
+        imageView.setFitWidth(200);
         imageView.setPreserveRatio(true);
 
         String path = item.getImagePath();
@@ -113,99 +116,69 @@ public class CustomerHomeController {
 
         // Product Name
         Label nameLbl = new Label(item.getProductName());
-        nameLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+        nameLbl.setStyle("-fx-text-fill: white; -fx-font-size: 15px;");
         nameLbl.setWrapText(true);
-        nameLbl.setMaxWidth(210);
+        nameLbl.setMaxWidth(270);
+        nameLbl.setAlignment(Pos.CENTER);
+        nameLbl.setPrefHeight(30);
 
         // Price
         Label priceLbl = new Label(String.format("Tk.%.2f", item.getPrice()));
-        priceLbl.setStyle("-fx-text-fill: #11998e; -fx-font-weight: bold; -fx-font-size: 13px;");
+        priceLbl.setStyle("-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;");
+        priceLbl.setAlignment(Pos.CENTER);
+        priceLbl.setPrefHeight(20);
 
-        // Stock Info
-        Label stockLbl = new Label("Stock: " + item.getQuantity());
-        stockLbl.setStyle("-fx-text-fill: #aaa; -fx-font-style: italic; -fx-font-size: 11px;");
+        // Count label
+        Label countLbl = new Label("1");
+        countLbl.setStyle("-fx-text-fill: white; -fx-alignment: center; -fx-font-size: 14px; -fx-font-weight: bold;");
+        countLbl.setPrefWidth(45);
+        countLbl.setAlignment(Pos.CENTER);
 
-        // Store quantity in an AtomicInteger wrapper
-        java.util.concurrent.atomic.AtomicInteger quantity = new java.util.concurrent.atomic.AtomicInteger(1);
-        java.util.concurrent.atomic.AtomicBoolean isUpdatingField = new java.util.concurrent.atomic.AtomicBoolean(false);
-
-        // Quantity TextField
-        javafx.scene.control.TextField qtyField = new javafx.scene.control.TextField();
-        qtyField.setStyle("-fx-background-color: #1a1a1a; -fx-text-fill: white; -fx-border-color: #444; -fx-border-width: 1; -fx-border-radius: 4; -fx-font-size: 12px; -fx-alignment: center; -fx-padding: 5;");
-        qtyField.setPrefWidth(50);
-        qtyField.setEditable(true);
-        qtyField.setText("1");
-        
-        // Update quantity when user types
-        qtyField.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (isUpdatingField.get()) {
-                return;  // Ignore programmatic updates
-            }
-            if (newVal == null || newVal.isEmpty()) {
-                return;
-            }
-            try {
-                int val = Integer.parseInt(newVal);
-                if (val > 0 && val <= 100) {
-                    quantity.set(val);
-                } else {
-                    isUpdatingField.set(true);
-                    qtyField.setText(String.valueOf(quantity.get()));
-                    isUpdatingField.set(false);
-                }
-            } catch (NumberFormatException e) {
-                isUpdatingField.set(true);
-                qtyField.setText(String.valueOf(quantity.get()));
-                isUpdatingField.set(false);
-            }
-        });
-
-        // Up/Down buttons
+        // Up/Down buttons - INCREASED FONT SIZE FOR VISIBILITY
         Button downBtn = new Button("▼");
-        downBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 6 10; -fx-font-size: 12px; -fx-background-radius: 4;");
-        downBtn.setPrefWidth(40);
+        downBtn.setStyle("-fx-background-color: #444444; -fx-text-fill: white; -fx-font-size: 20px; -fx-padding: 2 5; -fx-background-radius: 4; -fx-font-weight: bold;");
+        downBtn.setPrefWidth(50);
+        downBtn.setPrefHeight(40);
+        downBtn.setCursor(Cursor.HAND);
 
         Button upBtn = new Button("▲");
-        upBtn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 6 10; -fx-font-size: 12px; -fx-background-radius: 4;");
-        upBtn.setPrefWidth(40);
+        upBtn.setStyle("-fx-background-color: #444444; -fx-text-fill: white; -fx-font-size: 20px; -fx-padding: 2 5; -fx-background-radius: 4; -fx-font-weight: bold;");
+        upBtn.setPrefWidth(50);
+        upBtn.setPrefHeight(40);
+        upBtn.setCursor(Cursor.HAND);
+
+        // Track count
+        java.util.concurrent.atomic.AtomicInteger count = new java.util.concurrent.atomic.AtomicInteger(1);
 
         downBtn.setOnAction(e -> {
-            int current = quantity.get();
+            int current = count.get();
             if (current > 1) {
-                quantity.set(current - 1);
-                isUpdatingField.set(true);
-                qtyField.setText(String.valueOf(quantity.get()));
-                isUpdatingField.set(false);
+                count.set(current - 1);
+                countLbl.setText(String.valueOf(count.get()));
             }
         });
 
         upBtn.setOnAction(e -> {
-            int current = quantity.get();
+            int current = count.get();
             if (current < 100) {
-                quantity.set(current + 1);
-                isUpdatingField.set(true);
-                qtyField.setText(String.valueOf(quantity.get()));
-                isUpdatingField.set(false);
+                count.set(current + 1);
+                countLbl.setText(String.valueOf(count.get()));
             }
         });
 
-        // Control box with quantity and buttons
-        javafx.scene.layout.HBox controlBox = new javafx.scene.layout.HBox(6);
-        controlBox.setAlignment(Pos.CENTER);
-        controlBox.setPrefHeight(40);
-        controlBox.getChildren().addAll(qtyField, downBtn, upBtn);
-
         // Add button
         Button addToCartBtn = new Button("Add");
-        addToCartBtn.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 4; -fx-font-weight: bold; -fx-padding: 8 20; -fx-font-size: 13px;");
-        addToCartBtn.setPrefWidth(170);
+        addToCartBtn.setPrefWidth(160);
+        addToCartBtn.setPrefHeight(38);
+        addToCartBtn.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10; -fx-cursor: hand;");
+        
         addToCartBtn.setOnAction(e -> {
-            int qty = quantity.get();
+            int qty = count.get();
             Cart.addItem(item.getProductId(), item.getProductName(), item.getCategory(), item.getPrice(), qty, item.getImagePath(), 0);
             updateCartCount();
-            quantity.set(1);
-            qtyField.setText("1");
-            addToCartBtn.setText("✓ Added!");
+            count.set(1);
+            countLbl.setText("1");
+            addToCartBtn.setText("✓ Added");
             new Thread(() -> {
                 try {
                     Thread.sleep(1200);
@@ -216,7 +189,29 @@ public class CustomerHomeController {
             }).start();
         });
 
-        card.getChildren().addAll(imageBox, nameLbl, priceLbl, stockLbl, controlBox, addToCartBtn);
+        // Bottom control box - Add button on left, Up/Down on right
+        javafx.scene.layout.HBox controlBox = new javafx.scene.layout.HBox(8);
+        controlBox.setAlignment(Pos.CENTER);
+        controlBox.setPrefHeight(40);
+        controlBox.getChildren().addAll(addToCartBtn, downBtn, countLbl, upBtn);
+
+        card.getChildren().addAll(imageBox, nameLbl, priceLbl, controlBox);
+        
+        // Add hover effect - ENHANCED
+        card.setOnMouseEntered(e -> {
+            card.setStyle("-fx-background-color: #2a2a2a; -fx-border-color: #007bff; -fx-border-width: 3; -fx-border-radius: 10; -fx-padding: 12; -fx-spacing: 10; -fx-effect: dropshadow(gaussian, rgba(0,107,255,0.5), 8, 0, 0, 3);");
+            nameLbl.setStyle("-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;");
+            priceLbl.setStyle("-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;");
+            addToCartBtn.setStyle("-fx-background-color: #0056cc; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,86,204,0.6), 6, 0, 0, 2);");
+        });
+        
+        card.setOnMouseExited(e -> {
+            card.setStyle("-fx-background-color: #2a2a2a; -fx-border-color: #000000; -fx-border-width: 2; -fx-border-radius: 10; -fx-padding: 12; -fx-spacing: 10;");
+            nameLbl.setStyle("-fx-text-fill: white; -fx-font-size: 15px;");
+            priceLbl.setStyle("-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;");
+            addToCartBtn.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10; -fx-cursor: hand;");
+        });
+        
         return card;
     }
 

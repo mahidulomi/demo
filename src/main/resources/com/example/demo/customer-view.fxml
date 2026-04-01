@@ -44,7 +44,9 @@
             <spacing>30</spacing>
             <alignment>CENTER_LEFT</alignment>
             <children>
-                <Button text="⬅ Back to Home" onAction="#onNavHome" styleClass="action-btn-blue" />
+                <Button text="⬅ Back to Home" onAction="#onNavHome" prefWidth="130" prefHeight="40" textAlignment="CENTER" contentDisplay="CENTER" textFill="WHITE" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 0; -fx-background-radius: 6; -fx-cursor: hand; -fx-border-width: 0; -fx-border-radius: 6; -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.4), 8, 0, 0, 2);">
+                    <font><Font name="System Bold" size="13"/></font>
+                </Button>
                 <Label text="Customers" styleClass="dashboard-title" HBox.hgrow="ALWAYS">
                     <font><Font name="System Bold" size="18"/></font>
                 </Label>
@@ -65,12 +67,12 @@
              <!-- Table -->
              <TableView fx:id="customerTable" VBox.vgrow="ALWAYS" styleClass="modern-table">
                  <columns>
-                     <TableColumn fx:id="nameColumn" text="Name" prefWidth="200"/>
-                     <TableColumn fx:id="phoneColumn" text="Phone" prefWidth="150"/>
-                     <TableColumn fx:id="emailColumn" text="Email Address" prefWidth="200"/>
-                     <TableColumn fx:id="typeColumn" text="Customer Type" prefWidth="120"/>
-                     <TableColumn fx:id="dueColumn" text="Due Balance" prefWidth="120"/>
-                     <TableColumn fx:id="actionColumn" text="Actions" prefWidth="100"/>
+                     <TableColumn fx:id="nameColumn" text="Name" prefWidth="180"/>
+                     <TableColumn fx:id="phoneColumn" text="Phone" prefWidth="130"/>
+                     <TableColumn fx:id="emailColumn" text="Email Address" prefWidth="150"/>
+                     <TableColumn fx:id="addressColumn" text="Address" prefWidth="180"/>
+                     <TableColumn fx:id="typeColumn" text="Customer Type" prefWidth="110"/>
+                     <TableColumn fx:id="dueColumn" text="Due Balance" prefWidth="100"/>
                  </columns>
                  <columnResizePolicy>
                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
