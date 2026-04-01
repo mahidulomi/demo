@@ -192,6 +192,14 @@ public class ElectronicsController {
                     setupArrowButtons(productCard);
                 }
             }
+
+            // Sort all product cards by name alphabetically
+            allProductCards.sort((card1, card2) -> {
+                String name1 = getProductNameFromCard(card1);
+                String name2 = getProductNameFromCard(card2);
+                return name1.compareToIgnoreCase(name2);
+            });
+
             // Wire up network UI maps (FXML-defined products)
             buildNetworkMaps();
         }

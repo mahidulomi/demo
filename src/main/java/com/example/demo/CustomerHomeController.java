@@ -36,6 +36,14 @@ public class CustomerHomeController {
             loadProducts(currentCategory, newVal);
         });
 
+        // Listen for external stock file changes (product deletions from another instance)
+        StockManager.addExternalChangeListener(() -> {
+            javafx.application.Platform.runLater(() -> {
+                System.out.println("📦 Product catalog changed externally! Refreshing...");
+                loadProducts(currentCategory, searchField.getText());
+            });
+        });
+
         // Register network listener for real-time product updates
         NetworkManager.getInstance().setCurrentListener(new StockUpdateListener() {
             @Override
@@ -64,6 +72,13 @@ public class CustomerHomeController {
     private void loadProducts(String category, String searchQuery) {
         productsFlowPane.getChildren().clear();
         List<StockItem> items = StockManager.getAllStockItems();
+
+        // Sort by product name alphabetically
+        items.sort((a, b) -> {
+            String nameA = a.getProductName() != null ? a.getProductName() : "";
+            String nameB = b.getProductName() != null ? b.getProductName() : "";
+            return nameA.compareToIgnoreCase(nameB);
+        });
 
         for (StockItem item : items) {
             String cat = item.getCategory();

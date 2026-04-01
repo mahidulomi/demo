@@ -597,6 +597,9 @@ public class SalesController {
             }
         }
 
+        // Sort by product name alphabetically
+        filtered.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+
         return filtered;
     }
 
@@ -616,6 +619,9 @@ public class SalesController {
                 searchResults.add(p);
             }
         }
+
+        // Sort by product name alphabetically
+        searchResults.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
 
         for (Product product : searchResults) {
             VBox productCard = createProductCard(product);
@@ -642,6 +648,9 @@ public class SalesController {
                 item.getImagePath()
             ));
         }
+
+        // Sort by product name alphabetically
+        products.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
 
         return products;
     }

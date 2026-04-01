@@ -474,6 +474,12 @@ public class FashionController {
         }
 
         if (changed) {
+            // Sort all product cards by name alphabetically before refreshing grid
+            allProductCards.sort((card1, card2) -> {
+                String name1 = getProductNameFromCard(card1);
+                String name2 = getProductNameFromCard(card2);
+                return name1.compareToIgnoreCase(name2);
+            });
             refreshProductGrid();
         }
     }
@@ -495,6 +501,14 @@ public class FashionController {
                     setupArrowButtons(productCard);
                 }
             }
+
+            // Sort all product cards by name alphabetically
+            allProductCards.sort((card1, card2) -> {
+                String name1 = getProductNameFromCard(card1);
+                String name2 = getProductNameFromCard(card2);
+                return name1.compareToIgnoreCase(name2);
+            });
+
             System.out.println("✓ Fashion: Stored " + allProductCards.size() + " products for search");
             // Wire up network UI maps (FXML-defined products)
             buildNetworkMaps();
