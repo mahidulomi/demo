@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -33,6 +34,34 @@ public class CheckoutController {
     public void initialize() {
         paymentMethodCombo.getItems().addAll("Credit Card", "Debit Card", "Mobile Banking", "Cash on Delivery");
         paymentMethodCombo.setValue("Cash on Delivery");
+
+        // Make payment method items bold
+        paymentMethodCombo.setCellFactory(param -> new javafx.scene.control.ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                    setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+                }
+            }
+        });
+
+        // Also style the button cell (selected value)
+        paymentMethodCombo.setButtonCell(new javafx.scene.control.ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                    setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+                }
+            }
+        });
     }
 
     public void setCheckoutData(String customerId, String customerName, List<CartItem> cartItems) {
@@ -62,19 +91,38 @@ public class CheckoutController {
         String shippingAddress = shippingAddressArea.getText().trim();
         String paymentMethod = paymentMethodCombo.getValue();
 
+        // Reset field styles
+        resetFieldStyles();
+
+        boolean hasError = false;
+
         if (customerName.isEmpty()) {
-            statusLabel.setText("❌ Please enter customer name");
+            customerNameField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            statusLabel.setText("❌ Please enter customer name (marked in red)");
             statusLabel.setStyle("-fx-text-fill: #e74c3c;");
-            return;
+            hasError = true;
         }
+
         if (phoneNumber.isEmpty()) {
-            statusLabel.setText("❌ Please enter phone number");
+            phoneNumberField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            statusLabel.setText("❌ Please enter phone number (marked in red)");
             statusLabel.setStyle("-fx-text-fill: #e74c3c;");
-            return;
+            hasError = true;
+        } else if (!isValidPhoneNumber(phoneNumber)) {
+            phoneNumberField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            statusLabel.setText("❌ Phone number must be 11 digits and start with 01");
+            statusLabel.setStyle("-fx-text-fill: #e74c3c;");
+            hasError = true;
         }
+
         if (shippingAddress.isEmpty()) {
-            statusLabel.setText("❌ Please enter shipping address");
+            shippingAddressArea.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            statusLabel.setText("❌ Please enter shipping address (marked in red)");
             statusLabel.setStyle("-fx-text-fill: #e74c3c;");
+            hasError = true;
+        }
+
+        if (hasError) {
             return;
         }
 
@@ -109,6 +157,17 @@ public class CheckoutController {
             statusLabel.setStyle("-fx-text-fill: #e74c3c;");
             e.printStackTrace();
         }
+    }
+
+    private boolean isValidPhoneNumber(String phone) {
+        // Check if phone is 11 digits and starts with 01
+        return phone.matches("^01\\d{9}$");
+    }
+
+    private void resetFieldStyles() {
+        customerNameField.setStyle("");
+        phoneNumberField.setStyle("");
+        shippingAddressArea.setStyle("");
     }
 
     @FXML

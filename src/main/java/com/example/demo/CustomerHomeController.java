@@ -25,7 +25,7 @@ public class CustomerHomeController {
 
     @FXML
     public void initialize() {
-         StockManager.initializeStock();
+        StockManager.initializeStock();
         String user = Session.getCurrentUser();
         greetingLabel.setText("Hello, " + (user != null ? user : "Customer") + "!");
         updateCartCount();
@@ -34,6 +34,25 @@ public class CustomerHomeController {
         // Add real-time search listener
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             loadProducts(currentCategory, newVal);
+        });
+
+        // Register network listener for real-time product updates
+        NetworkManager.getInstance().setCurrentListener(new StockUpdateListener() {
+            @Override
+            public void onStockUpdated(String productId, int newQuantity) {
+                // When stock changes, reload products to reflect the change
+                javafx.application.Platform.runLater(() -> {
+                    loadProducts(currentCategory, searchField.getText());
+                });
+            }
+
+            @Override
+            public void onProductCatalogChanged() {
+                // When product catalog changes (new product added/removed), reload all products
+                javafx.application.Platform.runLater(() -> {
+                    loadProducts(currentCategory, searchField.getText());
+                });
+            }
         });
     }
 
@@ -93,22 +112,29 @@ public class CustomerHomeController {
         String path = item.getImagePath();
         if (path != null && !path.isEmpty()) {
             try {
-                if (!path.startsWith("/")) {
-                    path = "/" + path;
-                }
-                
-                InputStream is = getClass().getResourceAsStream(path);
-                if (is != null) {
-                    imageView.setImage(new Image(is));
-                } else {
-                    String altPath = path.substring(1);
-                    is = getClass().getResourceAsStream(altPath);
+                // Try multiple path formats
+                String[] pathFormats = {
+                    path,                           // Original path
+                    "/" + path,                     // With leading slash
+                    path.startsWith("/") ? path.substring(1) : path  // Remove leading slash if exists
+                };
+
+                InputStream is = null;
+                for (String tryPath : pathFormats) {
+                    is = getClass().getResourceAsStream(tryPath);
                     if (is != null) {
                         imageView.setImage(new Image(is));
+                        break;
                     }
                 }
+
+                if (is == null) {
+                    System.err.println("[WARNING] Could not load image for product: " + item.getProductName() +
+                                     " with path: " + path);
+                }
             } catch (Exception e) {
-                System.err.println("[ERROR] Error loading image: " + e.getMessage());
+                System.err.println("[ERROR] Error loading image for " + item.getProductName() + ": " + e.getMessage());
+                e.printStackTrace();
             }
         }
         

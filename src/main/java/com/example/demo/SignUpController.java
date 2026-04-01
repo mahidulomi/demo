@@ -6,6 +6,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ListCell;
 import javafx.collections.FXCollections;
 
 public class SignUpController {
@@ -35,6 +36,37 @@ public class SignUpController {
         if (roleComboBox != null) {
             roleComboBox.setItems(FXCollections.observableArrayList("Admin", "Customer"));
             roleComboBox.getSelectionModel().selectFirst();
+
+            // Make role items bold with larger font
+            roleComboBox.setCellFactory(param -> new javafx.scene.control.ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item);
+                        setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: white;");
+                    }
+                }
+            });
+
+            // Style the button cell (selected value) - EXTRA BOLD
+            roleComboBox.setButtonCell(new javafx.scene.control.ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item);
+                        setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: white; -fx-padding: 5px;");
+                    }
+                }
+            });
+
+            // Apply CSS styling to the ComboBox itself
+            roleComboBox.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
         }
     }
 
@@ -46,19 +78,49 @@ public class SignUpController {
         String personalData = safe(personalDataField.getText());
         String role = roleComboBox != null && roleComboBox.getValue() != null ? roleComboBox.getValue() : "Admin";
 
-        if (username.isEmpty() || password.isEmpty() || confirm.isEmpty() || personalData.isEmpty()) {
-            setError("All fields are required.");
+        // Reset field styles
+        resetFieldStyles();
+
+        boolean hasError = false;
+
+        if (username.isEmpty()) {
+            usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            setError("Username is required.");
+            hasError = true;
+        }
+
+        if (password.isEmpty()) {
+            passwordField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            if (!hasError) setError("Password is required.");
+            hasError = true;
+        }
+
+        if (confirm.isEmpty()) {
+            confirmPasswordField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            if (!hasError) setError("Confirm Password is required.");
+            hasError = true;
+        }
+
+        if (personalData.isEmpty()) {
+            personalDataField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            if (!hasError) setError("Recovery Data is required.");
+            hasError = true;
+        }
+
+        if (hasError) {
             return;
         }
 
         // Validate username format (only letters, numbers, and underscore)
         if (!username.matches("^[a-zA-Z0-9_]+$")) {
+            usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
             setError("Username can only contain letters, numbers, and underscores.");
             return;
         }
 
         // Validate password length (6-8 characters)
         if (password.length() < 6 || password.length() > 8) {
+            passwordField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
             setError("Password must be 6-8 characters long.");
             passwordField.clear();
             confirmPasswordField.clear();
@@ -66,12 +128,14 @@ public class SignUpController {
         }
 
         if (!password.equals(confirm)) {
+            confirmPasswordField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
             setError("Password and Confirm Password must match.");
             confirmPasswordField.clear();
             return;
         }
 
         if (UserStore.userExists(username)) {
+            usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
             setError("Username already taken!");
             return;
         }
@@ -111,6 +175,13 @@ public class SignUpController {
             statusLabel.getStyleClass().add("error-label");
         }
         statusLabel.setText(msg);
+    }
+
+    private void resetFieldStyles() {
+        usernameField.setStyle("");
+        passwordField.setStyle("");
+        confirmPasswordField.setStyle("");
+        personalDataField.setStyle("");
     }
 
     private void setSuccess(String msg) {

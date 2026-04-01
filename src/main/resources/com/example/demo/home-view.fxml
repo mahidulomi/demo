@@ -119,7 +119,7 @@
                     </HBox>
 
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="Product Name:" styleClass="product-form-label" prefWidth="105.0" />
+                        <Label text="Product Name:" styleClass="product-form-label" prefWidth="130.0" />
                         <TextField fx:id="productNameField" promptText="Enter product name" styleClass="product-form-field" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
                     </HBox>
 
@@ -141,7 +141,7 @@
                     </HBox>
                 </VBox>
 
-                <VBox spacing="8" alignment="CENTER">
+                <VBox spacing="35" alignment="CENTER">
                     <ImageView fx:id="productPreviewImage" fitWidth="120.0" fitHeight="120.0" preserveRatio="true" styleClass="product-image-preview" />
                     <Button text="Import" onAction="#onImportProductImage" styleClass="product-action-btn product-action-import" prefWidth="120.0" />
                     <Label fx:id="selectedImageLabel" text="No image selected" styleClass="product-image-label" />

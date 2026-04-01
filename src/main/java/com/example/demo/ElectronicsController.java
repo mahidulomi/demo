@@ -533,7 +533,9 @@ public class ElectronicsController {
         // Create new product row with stock
         VBox newProductCard = createProductCard(productName, price, category, newProductId, stockQuantity);
 
-        String imagePath = selectedImageFile != null ? selectedImageFile.toURI().toString() : "";
+        // Note: Image paths from external files cannot be shared across network
+        // Store empty string for now
+        String imagePath = "";
         StockManager.addStock(newProductId, productName, "Electronics", category, stockQuantity, price, imagePath);
 
         // Add to network maps so real-time updates work for this card too

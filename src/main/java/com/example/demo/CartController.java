@@ -259,38 +259,37 @@ public class CartController {
     // ── Bill row ──────────────────────────────────────────────────────────────
 
     private HBox createBillItemRow(CartItem item) {
-        HBox row = new HBox(5);
-        row.setAlignment(Pos.CENTER_LEFT);
-        row.getStyleClass().add("bill-item-row");
+         HBox row = new HBox(5);
+         row.setAlignment(Pos.CENTER_LEFT);
+         row.setStyle("-fx-padding: 8; -fx-background-color: #1a1a1a; -fx-border-radius: 4;");
 
-        String name = item.getProductName();
-        if (name.length() > 22) name = name.substring(0, 19) + "...";
+         String name = item.getProductName();
+         if (name.length() > 22) name = name.substring(0, 19) + "...";
 
-        Label nameLabel = new Label(name);
-        nameLabel.getStyleClass().add("bill-item-name");
-        nameLabel.setMinWidth(160);
-        HBox.setHgrow(nameLabel, Priority.ALWAYS);
+         Label nameLabel = new Label(name);
+         nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+         nameLabel.setMinWidth(160);
+         HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
-        Label qtyLabel = new Label("×" + item.getQuantity());
-        qtyLabel.getStyleClass().add("bill-item-qty");
-        qtyLabel.setMinWidth(35);
-        qtyLabel.setAlignment(Pos.CENTER);
+         Label qtyLabel = new Label("×" + item.getQuantity());
+         qtyLabel.setStyle("-fx-text-fill: #aaa; -fx-font-size: 13px; -fx-font-weight: bold;");
+         qtyLabel.setMinWidth(35);
+         qtyLabel.setAlignment(Pos.CENTER);
 
-        Label priceLabel = new Label(String.format("৳%.0f", item.getTotalPrice()));
-        priceLabel.getStyleClass().add("bill-item-price");
-        priceLabel.setMinWidth(75);
-        priceLabel.setAlignment(Pos.CENTER_RIGHT);
+         Label priceLabel = new Label(String.format("৳%.0f", item.getTotalPrice()));
+         priceLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-size: 14px; -fx-font-weight: bold;");
+         priceLabel.setMinWidth(75);
+         priceLabel.setAlignment(Pos.CENTER_RIGHT);
 
-        // ── Cancel / Remove button — only removes from cart, stock unchanged ──
-        Button removeBtn = new Button("✕ Cancel");
-        removeBtn.getStyleClass().add("bill-item-remove-btn");
-        removeBtn.setStyle("-fx-background-color:#e74c3c; -fx-text-fill:white; "
-                + "-fx-font-size:11px; -fx-background-radius:5; -fx-cursor:hand; -fx-padding:3 8;");
-        removeBtn.setOnAction(e -> removeItemFromCart(item));
+         // ── Cancel / Remove button — only removes from cart, stock unchanged ──
+         Button removeBtn = new Button("✕ Cancel");
+         removeBtn.setStyle("-fx-background-color:#e74c3c; -fx-text-fill:white; "
+                 + "-fx-font-size:12px; -fx-font-weight: bold; -fx-background-radius:5; -fx-cursor:hand; -fx-padding:5 10;");
+         removeBtn.setOnAction(e -> removeItemFromCart(item));
 
-        row.getChildren().addAll(nameLabel, qtyLabel, priceLabel, removeBtn);
-        return row;
-    }
+         row.getChildren().addAll(nameLabel, qtyLabel, priceLabel, removeBtn);
+         return row;
+     }
 
     /**
      * Remove one item from the cart.

@@ -96,11 +96,11 @@
 
                                 <!-- Bill Items Separator -->
                                 <Label text="━━━━━━━━━━━━━━━━" style="-fx-text-fill: #444; -fx-font-size: 11px; -fx-padding: 8 0 4 0;" />
-                                <Label text="📋 Items Summary" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;" />
+                                <Label text="📋 Items Summary" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" />
 
                                 <!-- Bill Items ScrollPane -->
-                                <ScrollPane fx:id="billScrollPane" fitToWidth="true" prefHeight="120" minHeight="100" style="-fx-background-color: #1a1a1a; -fx-control-inner-background: #1a1a1a; -fx-border-color: #333; -fx-border-radius: 6;">
-                                    <VBox fx:id="billItemsContainer" spacing="8" style="-fx-background-color: #1a1a1a; -fx-padding: 10; -fx-min-width: 0;" />
+                                <ScrollPane fx:id="billScrollPane" fitToWidth="true" prefHeight="120" minHeight="100" style="-fx-background-color: #1a1a1a; -fx-control-inner-background: #1a1a1a; -fx-border-color: #333; -fx-border-radius: 6; -fx-padding: 0;">
+                                    <VBox fx:id="billItemsContainer" spacing="10" style="-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-min-width: 0;" />
                                 </ScrollPane>
                             </VBox>
                         </ScrollPane>

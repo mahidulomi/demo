@@ -91,24 +91,46 @@ public class HelloController {
         String username = safe(usernameField.getText());
         String password = safe(passwordField.getText());
 
-        if (username.isEmpty() || password.isEmpty()) {
-            setError("Username & password required.");
-            return;
+        // Reset field styles
+        resetFieldStyles();
+
+        boolean hasError = false;
+
+        // Validate username
+        if (username.isEmpty()) {
+            usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            setError("Username is required.");
+            hasError = true;
+        } else if (!username.matches("^[a-zA-Z0-9_]+$")) {
+            usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            setError("Username can only contain letters, numbers, and underscores.");
+            hasError = true;
         }
 
-        // Validate username format (only letters, numbers, and underscore)
-        if (!username.matches("^[a-zA-Z0-9_]+$")) {
-            setError("Username can only contain letters, numbers, and underscores.");
+        // Validate password
+        if (password.isEmpty()) {
+            passwordField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            if (!hasError) setError("Password is required.");
+            hasError = true;
+        } else if (password.length() < 6 || password.length() > 8) {
+            passwordField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+            setError("Password must be 6 to 8 characters.");
+            hasError = true;
+        }
+
+        if (hasError) {
             return;
         }
 
         // If no users exist or this user doesn't exist yet, block login.
         if (!UserStore.userExists(username)) {
+            usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
             setError("No account found. Check your username or Sign Up.");
             return;
         }
 
         if (!UserStore.validateLogin(username, password)) {
+            passwordField.setStyle("-fx-border-color: red; -fx-border-width: 2;");
             setError("Wrong username or password.");
             return;
         }
@@ -161,6 +183,11 @@ public class HelloController {
     private void setInfo(String msg) {
         welcomeText.getStyleClass().removeAll("error-label", "success-label");
         welcomeText.setText(msg);
+    }
+
+    private void resetFieldStyles() {
+        usernameField.setStyle("");
+        passwordField.setStyle("");
     }
 
     private static String safe(String s) {

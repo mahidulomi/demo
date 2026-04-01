@@ -399,7 +399,9 @@ public class BeautyController {
         // Create new text-only product row with stock
         VBox newProductCard = createProductCard(productName, price, category, newProductId, stockQuantity);
 
-        String imagePath = selectedImageFile != null ? selectedImageFile.toURI().toString() : "";
+        // Note: Image paths from external files cannot be shared across network
+        // We store empty string for now. For multi-machine support, images should be bundled with resources
+        String imagePath = "";
         StockManager.addStock(newProductId, productName, "Beauty", category, stockQuantity, price, imagePath);
 
         // Add to network maps so real-time updates work for this card too
