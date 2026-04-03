@@ -541,10 +541,15 @@ public class ElectronicsController {
         // Create new product row with stock
         VBox newProductCard = createProductCard(productName, price, category, newProductId, stockQuantity);
 
-        // Note: Image paths from external files cannot be shared across network
-        // Store empty string for now
-        String imagePath = "";
-        StockManager.addStock(newProductId, productName, "Electronics", category, stockQuantity, price, imagePath);
+         // Use selected image path if available, otherwise check for defaults
+         String imagePath = "";
+         if (selectedImageFile != null && selectedImageFile.exists()) {
+             imagePath = selectedImageFile.toURI().toString();
+         } else {
+             // Auto-assign image path for known products
+             imagePath = getDefaultImagePathForProduct(productName);
+         }
+         StockManager.addStock(newProductId, productName, "Electronics", category, stockQuantity, price, imagePath);
 
         // Add to network maps so real-time updates work for this card too
         Label  newStockLabel = getStockLabelFromCard(newProductCard);
@@ -945,6 +950,11 @@ public class ElectronicsController {
 
     private static String safe(String s) {
         return s == null ? "" : s.trim();
+    }
+
+    private String getDefaultImagePathForProduct(String productName) {
+        // Use StockManager's method which has comprehensive product mappings
+        return StockManager.getDefaultImagePathForProduct(productName, "Electronics");
     }
 }
 

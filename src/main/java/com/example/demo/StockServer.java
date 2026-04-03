@@ -80,6 +80,10 @@ public class StockServer {
         broadcastRawToAllClients("PRODUCT_UPSERT:" + NetworkCodec.encodeStockItem(item));
     }
 
+    public void broadcastDeleteProductToAllClients(String productId) {
+        broadcastRawToAllClients("PRODUCT_DELETE:" + productId);
+    }
+
     public void broadcastSaleToAllClients(SaleRecord sale) {
         broadcastRawToAllClients("SALE_RECORD:" + NetworkCodec.encodeSaleRecord(sale));
     }
@@ -193,6 +197,10 @@ public class StockServer {
             } else if (line.startsWith("NEW_PRODUCT:")) {
                 networkManager.onNewProductFromNetwork(line.substring("NEW_PRODUCT:".length()));
                 broadcastRawToOthers(this, "PRODUCT_UPSERT:" + line.substring("NEW_PRODUCT:".length()));
+            } else if (line.startsWith("PRODUCT_DELETE:")) {
+                String productId = line.substring("PRODUCT_DELETE:".length());
+                networkManager.onDeleteProductFromNetwork(productId);
+                broadcastRawToOthers(this, line);
             } else if (line.startsWith("SALE_RECORD:")) {
                 String saleData = line.substring("SALE_RECORD:".length());
                 networkManager.onSaleRecordFromNetwork(saleData);

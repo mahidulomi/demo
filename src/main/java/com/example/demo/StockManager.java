@@ -36,11 +36,14 @@ public final class StockManager {
         } else {
             // If item exists but has no image (or has old /home/ or broken /extra/ path), update it
             StockItem existing = stockData.get(id);
-            if ((existing.getImagePath() == null || existing.getImagePath().isBlank() 
-                    || existing.getImagePath().startsWith("/home/") 
-                    || existing.getImagePath().startsWith("/extra/"))
+            String currentPath = existing.getImagePath();
+            if ((currentPath == null || currentPath.isBlank()
+                    || currentPath.startsWith("/home/")
+                    || currentPath.startsWith("/extra/")
+                    || currentPath.equals(""))
                     && imagePath != null && !imagePath.isBlank()) {
                 existing.setImagePath(imagePath);
+                System.out.println("[StockManager] Updated imagePath for " + name + ": " + imagePath);
             }
         }
     }
@@ -117,13 +120,25 @@ public final class StockManager {
         if (stockData.containsKey("E_AjajKeyboard")) stockData.remove("E_AjajKeyboard");
         if (stockData.containsKey("E_RedSwitchKeyboard")) stockData.remove("E_RedSwitchKeyboard");
 
-        // Remove any items that have no image path (as per user request: "jei box gulay image nei ogula remove kore dao")
-        stockData.values().removeIf(item -> item.getImagePath() == null || item.getImagePath().trim().isEmpty());
+        // Keep all items even if they don't have an image path
+        // This allows dynamically added products to be displayed
 
         // Only seed defaults on first run (no saved file).
         // If a saved file exists, keep it as source of truth so deleted products stay deleted.
         if (!hasSavedFile) {
             loadDefaults();
+        } else {
+            // If file exists, make sure all products have image paths assigned
+            // This fixes the issue when products are deleted and re-added
+            for (StockItem item : new ArrayList<>(stockData.values())) {
+                if (item.getImagePath() == null || item.getImagePath().isBlank()) {
+                    String defaultPath = getDefaultImagePathForProduct(item.getProductName(), item.getCategory());
+                    if (defaultPath != null && !defaultPath.isBlank()) {
+                        item.setImagePath(defaultPath);
+                        System.out.println("[StockManager] Auto-assigned imagePath for " + item.getProductName() + ": " + defaultPath);
+                    }
+                }
+            }
         }
 
         saveToFile();     // persist combined state
@@ -155,6 +170,10 @@ public final class StockManager {
                                              String category, String subCategory,
                                              int quantity, double price, String imagePath) {
         initializeStock();
+        // If imagePath is empty, try to get default path
+        if (imagePath == null || imagePath.isBlank()) {
+            imagePath = getDefaultImagePathForProduct(productName, category);
+        }
         stockData.put(productId, new StockItem(productId, productName, category, subCategory,
                 quantity, price, imagePath));
         saveToFile();
@@ -346,6 +365,11 @@ public final class StockManager {
                         price = Double.parseDouble(p[4].trim());
                     }
 
+                    // If imagePath is empty, try to get default path for this product
+                    if (imagePath == null || imagePath.isBlank()) {
+                        imagePath = getDefaultImagePathForProduct(name, cat);
+                    }
+
                     stockData.put(id, new StockItem(id, name, cat, subCategory, qty, price, imagePath));
                     count++;
                 } catch (NumberFormatException ignored) {}
@@ -408,5 +432,92 @@ public final class StockManager {
                 // Listener failures should not stop stock synchronization.
             }
         }
+    }
+
+    public static String getDefaultImagePathForProduct(String productName, String category) {
+        if (productName == null || productName.isEmpty()) {
+            return getDefaultImagePathForCategory(category);
+        }
+
+        String lowerName = productName.toLowerCase();
+        System.out.println("[DEBUG] Looking for image path: productName='" + productName + "', lowerName='" + lowerName + "', category='" + category + "'");
+
+        // Beauty products
+        if ("Beauty".equalsIgnoreCase(category)) {
+            switch (lowerName) {
+                case "acid serum": return "/beautyimages/acidserum.png";
+                case "deep conditioner": return "/beautyimages/deepconditioner.png";
+                case "eyeshadow palette": return "/beautyimages/eyeshadow.png";
+                case "eyeshadow": return "/beautyimages/eyeshadow.png";
+                case "face cream": return "/beautyimages/facecream.png";
+                case "foam cleanser": return "/beautyimages/foamcleanser.png";
+                case "foundation": return "/beautyimages/foundation_cropped.png";
+                case "garnier men facewash": return "/beautyimages/gernierman_1_cropped.png";
+                case "garnier": return "/beautyimages/gernierman_1_cropped.png";
+                case "hair oil": return "/beautyimages/hairoil_cropped.png";
+                case "lipstick set": return "/beautyimages/lipstickset_cropped.png";
+                case "lipstick": return "/beautyimages/lipstickset_cropped.png";
+                case "mascara": return "/beautyimages/mashkara_cropped.png";
+                case "shampoo": return "/beautyimages/shampp_1_cropped.png";
+                case "sunscreen": return "/beautyimages/sunscreen_1_cropped.png";
+            }
+        }
+
+        // Electronics products
+        if ("Electronics".equalsIgnoreCase(category)) {
+            switch (lowerName) {
+                case "airpods": return "/images/airpods.png";
+                case "asus laptop": return "/images/asus.png";
+                case "ipad": return "/images/ipad.png";
+                case "iphone 15": return "/images/iphone15.png";
+                case "iphone 16": return "/images/iphone16.png";
+                case "iphone 17": return "/images/iphone17.png";
+                case "lenovo laptop": return "/images/loglenevo.png";
+                case "wireless mouse": return "/images/mouise.png";
+                case "power bank": return "/images/powerbank.png";
+                case "samsung s25": return "/images/samsungs25.png";
+                case "vivo x200 ultra": return "/images/vivox200ultra.png";
+                case "titan watch": return "/images/titan.png";
+                case "keyboard": return "/images/ajaj.png";
+            }
+        }
+
+        // Fashion products
+        if ("Fashion".equalsIgnoreCase(category)) {
+            switch (lowerName) {
+                case "t-shirt": return "/fashion/T-shirt.jpg";
+                case "pant": return "/fashion/pant.jpg";
+                case "sneakers": return "/fashion/sneakers.jpg";
+                case "jacket": return "/fashion/jacket.jpg";
+                case "saree": return "/fashion/saree.jpg";
+                case "shirt": return "/fashion/Shirt.jpg";
+            }
+        }
+
+        // Home and Living products
+        if ("Home and Living".equalsIgnoreCase(category) || "Home & Living".equalsIgnoreCase(category)) {
+            switch (lowerName) {
+                case "luxury sofa": return "/extra/luxurysofa.jpg";
+                case "home decor set": return "/extra/decorset.jpg";
+                case "indoor swing": return "/extra/indorswing.jpg";
+                case "dining table": return "/extra/dinningtable.jpg";
+                case "corner table": return "/extra/cornertable.jpg";
+                case "cotton bed sheet": return "/extra/bedsit.jpg";
+                case "lunar wall clock": return "/extra/wallclock.jpg";
+                case "table lamp": return "/extra/tablelamp.jpg";
+            }
+        }
+
+        return getDefaultImagePathForCategory(category);
+    }
+
+    private static String getDefaultImagePathForCategory(String category) {
+        return switch (category) {
+            case "Electronics" -> "/images/iphone15.png";
+            case "Fashion" -> "/fashion/T-shirt.jpg";
+            case "Beauty" -> "/beautyimages/acidserum.png";
+            case "Home and Living", "Home & Living" -> "/extra/luxurysofa.jpg";
+            default -> "";
+        };
     }
 }

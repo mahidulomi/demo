@@ -80,6 +80,12 @@ public class StockClient {
         }
     }
 
+    public void sendDeleteProduct(String productId) {
+        if (out != null && connected) {
+            out.println("PRODUCT_DELETE:" + productId);
+        }
+    }
+
     public void sendSaleRecord(SaleRecord sale) {
         if (out != null && connected) {
             out.println("SALE_RECORD:" + NetworkCodec.encodeSaleRecord(sale));
@@ -172,6 +178,8 @@ public class StockClient {
             networkManager.onNewProductFromNetwork(line.substring("PRODUCT_UPSERT:".length()));
         } else if (line.startsWith("NEW_PRODUCT:")) {
             networkManager.onNewProductFromNetwork(line.substring("NEW_PRODUCT:".length()));
+        } else if (line.startsWith("PRODUCT_DELETE:")) {
+            networkManager.onDeleteProductFromNetwork(line.substring("PRODUCT_DELETE:".length()));
         } else if (line.startsWith("SALE_RECORD:")) {
             networkManager.onSaleRecordFromNetwork(line.substring("SALE_RECORD:".length()));
         } else if (line.startsWith("CUSTOMER_UPSERT:")) {

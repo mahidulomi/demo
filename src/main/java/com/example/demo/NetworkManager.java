@@ -96,15 +96,23 @@ public class NetworkManager {
             client.sendStockUpdate(productId, newQty);
     }
 
-    public void broadcastNewProduct(StockItem item) {
-        if (item == null || mode == Mode.OFFLINE) return;
-        if (mode == Mode.SERVER && server != null)
-            server.broadcastProductToAllClients(item);
-        else if (mode == Mode.CLIENT && client != null)
-            client.sendNewProduct(item);
-    }
+     public void broadcastNewProduct(StockItem item) {
+         if (item == null || mode == Mode.OFFLINE) return;
+         if (mode == Mode.SERVER && server != null)
+             server.broadcastProductToAllClients(item);
+         else if (mode == Mode.CLIENT && client != null)
+             client.sendNewProduct(item);
+     }
 
-    public void broadcastSaleRecord(SaleRecord sale) {
+     public void broadcastDeleteProduct(String productId) {
+         if (productId == null || productId.isEmpty() || mode == Mode.OFFLINE) return;
+         if (mode == Mode.SERVER && server != null)
+             server.broadcastDeleteProductToAllClients(productId);
+         else if (mode == Mode.CLIENT && client != null)
+             client.sendDeleteProduct(productId);
+     }
+
+     public void broadcastSaleRecord(SaleRecord sale) {
         if (sale == null || mode == Mode.OFFLINE) return;
         if (mode == Mode.SERVER && server != null)
             server.broadcastSaleToAllClients(sale);
@@ -242,22 +250,36 @@ public class NetworkManager {
         });
     }
 
-    public void onNewProductFromNetwork(String data) {
-        try {
-            StockItem item = NetworkCodec.decodeStockItem(data);
-            StockManager.upsertStockItem(item);
-            System.out.println("[NetworkManager] Product sync from network: " + item.getProductName());
-            Platform.runLater(() -> {
-                if (currentListener != null) {
-                    currentListener.onProductCatalogChanged();
-                }
-            });
-        } catch (RuntimeException e) {
-            System.err.println("[NetworkManager] Bad PRODUCT_UPSERT data: " + data);
-        }
-    }
+     public void onNewProductFromNetwork(String data) {
+         try {
+             StockItem item = NetworkCodec.decodeStockItem(data);
+             StockManager.upsertStockItem(item);
+             System.out.println("[NetworkManager] Product sync from network: " + item.getProductName());
+             Platform.runLater(() -> {
+                 if (currentListener != null) {
+                     currentListener.onProductCatalogChanged();
+                 }
+             });
+         } catch (RuntimeException e) {
+             System.err.println("[NetworkManager] Bad PRODUCT_UPSERT data: " + data);
+         }
+     }
 
-    public void onSaleRecordFromNetwork(String data) {
+     public void onDeleteProductFromNetwork(String productId) {
+         try {
+             StockManager.removeStockItem(productId);
+             System.out.println("[NetworkManager] Product deleted from network: " + productId);
+             Platform.runLater(() -> {
+                 if (currentListener != null) {
+                     currentListener.onProductCatalogChanged();
+                 }
+             });
+         } catch (RuntimeException e) {
+             System.err.println("[NetworkManager] Bad PRODUCT_DELETE data: " + productId);
+         }
+     }
+
+     public void onSaleRecordFromNetwork(String data) {
         try {
             SaleRecord sale = NetworkCodec.decodeSaleRecord(data);
             SalesManager.recordSale(sale);
