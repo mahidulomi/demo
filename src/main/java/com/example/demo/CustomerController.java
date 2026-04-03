@@ -5,14 +5,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.util.Callback;
 
 import java.util.Optional;
 
@@ -53,11 +49,13 @@ public class CustomerController {
 
         // Listen for external updates (network/file)
         CustomerManager.addExternalChangeListener(() -> {
+            System.out.println("[CustomerController] Detected external customer change. Reloading...");
             Platform.runLater(this::loadCustomers);
         });
         
         // Also listen via NetworkManager for immediate updates if not file-based
         NetworkManager.getInstance().setServerStatusCallback(() -> {
+             System.out.println("[CustomerController] Detected network update. Reloading...");
              Platform.runLater(this::loadCustomers);
         });
 
@@ -105,6 +103,7 @@ public class CustomerController {
     private void loadCustomers() {
         java.util.List<Customer> allCustomers = new java.util.ArrayList<>(CustomerManager.getAllCustomers());
         java.util.Collections.reverse(allCustomers);  // Newest customers first
+        System.out.println("[CustomerController] Loading " + allCustomers.size() + " customers into table");
         customerList.setAll(allCustomers);
     }
 

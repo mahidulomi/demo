@@ -482,16 +482,22 @@ public class SalesController {
 
     @FXML
     private void onSaveCustomer() {
-        if (nameField.getText().isEmpty() || phoneField.getText().isEmpty()) {
-            showAlert("Required Fields", "Name and Phone Number are required.");
+        String name = nameField.getText().trim();
+        String phone = phoneField.getText().trim();
+        String email = emailField.getText().trim();
+        String address = addressArea.getText().trim();
+        String type = typeCombo.getValue();
+
+        if (name.isEmpty()) {
+            showAlert("Error", "Please enter customer name");
             return;
         }
 
-        String name = nameField.getText();
-        String phone = phoneField.getText();
-        String email = emailField.getText();
-        String address = addressArea.getText();
-        String type = typeCombo.getValue();
+        if (phone.isEmpty()) {
+            showAlert("Error", "Please enter phone number");
+            return;
+        }
+
         boolean hasDue = dueBalanceToggle.isSelected();
         double due = 0.0;
         
@@ -514,25 +520,27 @@ public class SalesController {
         
         Customer customer;
         if (existing != null) {
-            // Update existing? Or just use it? usually ask, but for speed lets update
             customer = existing;
             customer.setName(name);
             customer.setEmail(email);
             customer.setAddress(address);
             customer.setType(type);
-            // customer.setDueBalance(due); // Maybe don't overwrite due balance blindly
         } else {
             customer = new Customer(name, phone, email, address, type, due);
         }
 
+        System.out.println("[SalesController] Saving customer: " + customer.getName() + " | Phone: " + customer.getPhone());
         CustomerManager.saveCustomer(customer);
         NetworkManager.getInstance().broadcastCustomer(customer);
         
+        System.out.println("[SalesController] Customer saved successfully!");
+
         // Set as selected
         currentSelectedCustomer = customer;
         selectedCustomerLabel.setText("Selected: " + customer.getName());
         updateAddCustomerButtonState();
         
+        showAlert("Success", "Customer saved: " + customer.getName());
         onCancelModal(); // Close modal
     }
     
