@@ -102,7 +102,8 @@ public class CustomerController {
 
     private void loadCustomers() {
         java.util.List<Customer> allCustomers = new java.util.ArrayList<>(CustomerManager.getAllCustomers());
-        java.util.Collections.reverse(allCustomers);  // Newest customers first
+        // Sort by createdAt timestamp in descending order (newest first)
+        allCustomers.sort((c1, c2) -> Long.compare(c2.getCreatedAt(), c1.getCreatedAt()));
         System.out.println("[CustomerController] Loading " + allCustomers.size() + " customers into table");
         customerList.setAll(allCustomers);
     }

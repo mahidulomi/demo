@@ -256,10 +256,10 @@ SERVER/CLIENT মোড? → NetworkManager.broadcastStockUpdate() ✓
 
 ### কাজ: চেকআউট সম্পন্ন করা
 ```
-কাজটি করে:     CheckoutController.java ✓ (Checkout UI)
+কাজটি করে:     CartController.java ✓ (onCheckout মেথড)
 যা গ্রহণ করে:
   - Cart.getAllItems()
-  - Customer তথ্য (নাম, ফোন, ইমেইল, ঠিকানা)
+  - Customer তথ্য (নাম, ফোন, ইমেইল, ঠিকানা) - ইউজার ইনপুট ফিল্ড থেকে
   - Session.getCurrentUser() (বিক্রেতার নাম)
 যা তৈরি করে:  SaleRecord অবজেক্ট (NetworkManager.buildSaleRecord)
 যা রেকর্ড করে: SalesManager.recordSale(saleRecord)
@@ -269,23 +269,36 @@ SERVER/CLIENT মোড? → NetworkManager.broadcastStockUpdate() ✓
   - NetworkManager.broadcastSaleRecord(sale)
   - NetworkManager.broadcastStockUpdate() সব পণ্যের জন্য
 যা গ্রাহক যোগ করে: CustomerManager.saveCustomer() (বিক্রয়ের জন্য)
-যা প্রদর্শন করে: BillDetailsController.java (বিল দেখায়)
+যা প্রদর্শন করে: Success Alert ডায়ালগ (বিল কনফার্মেশন)
 ```
 **বিস্তারিত প্রক্রিয়া:**
 ```
-CheckoutController.onCheckoutClicked()
+CartController.onCheckout()
     ↓
 Cart.getAllItems() → সব আইটেম পায়
     ↓
-Customer তথ্য ইনপুট নেয় (ডায়ালগ বা ফর্ম)
+Customer তথ্য ভেরিফাই করে (নাম, ফোন - required)
+    ↓
+Phone validation: ঠিক 11 ডিজিট হতে হবে
+    ↓
+Customer খুঁজে বের করে (ফোন দ্বারা) বা নতুন তৈরি করে
+    ↓
+CustomerManager.saveCustomer(customer) → সংরক্ষণ
+    ↓
+NetworkManager.broadcastCustomer() → নেটওয়ার্কে পাঠায়
+    ↓
+প্রতিটি পণ্যের জন্য:
+    - StockManager.updateStock(productId, newQty)
+    - ফাইলে সংরক্ষণ
+    - SalesTracker.addSale() → Dashboard মেট্রিক্স
     ↓
 NetworkManager.buildSaleRecord() কল করে
     ↓
 SaleRecord তৈরি হয়:
     - saleId = "BILL-" + System.currentTimeMillis()
     - timestamp = LocalDateTime.now()
-    - soldBy = Session.getCurrentUser() বা "Guest"
-    - sourceNode = "hostname-MODE" (e.g., "PC1-SERVER")
+    - soldBy = Session.getCurrentUser()
+    - sourceNode = "hostname-MODE"
     - itemsJson = পণ্যগুলির JSON
     - customerName, customerPhone, customerEmail, customerAddress
     ↓
@@ -294,27 +307,24 @@ SalesManager.recordSale(saleRecord) কল
 SalesManager এ:
     - সেলস লিস্টে যোগ
     - ~/shopapp_sales.dat ফাইলে লেখা (Base64)
-    - SalesTracker এ রেজিস্টার করা
-    ↓
-প্রতিটি পণ্যের জন্য:
-    StockManager.updateStock(productId, newQty)
-    ফাইল সংরক্ষণ
     ↓
 নেটওয়ার্ক MODE?
     OFFLINE → কিছু না
     SERVER → StockServer.broadcastToAllClients() → সব ক্লায়েন্টে
     CLIENT → StockClient.sendStockUpdate() → সার্ভারে
     ↓
-গ্রাহক তথ্য সংরক্ষণ:
-    CustomerManager.saveCustomer(customer)
+বিক্রয় সম্প্রচার:
+    NetworkManager.broadcastSaleRecord(sale)
     ↓
-নেটওয়ার্ক মোডে:
-    NetworkManager.broadcastCustomer(customer)
+দূরবর্তী মেশিনে স্টক ও বিক্রয় আপডেট হয়
     ↓
-বিল প্রদর্শন:
-    BillDetailsController তে সেলস রেকর্ড দেখায়
+সাফল্য Alert:
+    "Order Confirmed" ডায়ালগ
+    সব Customer তথ্য প্রদর্শন করে
     ↓
-প্রিন্ট/ডাউনলোড অপশন (BillReport.java)
+কার্ট ক্লিয়ার করে
+    ↓
+HomeController.refreshDashboard() → Dashboard রিফ্রেশ
 ```
 
 ---
@@ -613,9 +623,7 @@ currentListener.onProductCatalogChanged() → UI রিফ্রেশ
 | **home-view.fxml** | HomeController | SalesTracker, StockManager | Dashboard মেট্রিক্স, নেটওয়ার্ক কন্ট্রোল |
 | **product-list-view.fxml** | ProductListController | StockManager.getAllStockItems() | পণ্য গ্রিড প্রদর্শন |
 | **beauty-view.fxml** | BeautyController | StockManager (ফিল্টার: category="Beauty") | বিউটি পণ্য শো |
-| **cart-view.fxml** | CartController | Cart.getAllItems() | কার্ট আইটেম তালিকা |
-| **product-details-view.fxml** | ProductDetailsController | StockManager.getStockItem(id) | একক পণ্যের বিবরণ |
-| **checkout-view.fxml** | CheckoutController | Cart + গ্রাহক ইনপুট | চেকআউট প্রসেস |
+| **cart-view.fxml** | CartController | Cart.getAllItems() + Customer Input | কার্ট প্রদর্শন ও চেকআউট |
 | **stock-view.fxml** | StockController | StockManager | স্টক পরিচালনা UI |
 | **sales-view.fxml** | SalesController | SalesManager.getAllSales() | বিক্রয় ইতিহাস টেবিল |
 | **customer-view.fxml** | CustomerController | CustomerManager.getAllCustomers() | গ্রাহক তালিকা |

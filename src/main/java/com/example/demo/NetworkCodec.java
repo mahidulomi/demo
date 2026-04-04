@@ -105,7 +105,8 @@ final class NetworkCodec {
                 encodeText(customer.getEmail()),
                 encodeText(customer.getAddress()),
                 encodeText(customer.getType()),
-                Double.toString(customer.getDueBalance())
+                Double.toString(customer.getDueBalance()),
+                Long.toString(customer.getCreatedAt())
         );
     }
 
@@ -114,6 +115,7 @@ final class NetworkCodec {
         if (parts.length < 7) {
             throw new IllegalArgumentException("Invalid customer payload: " + payload);
         }
+        long createdAt = parts.length >= 8 ? Long.parseLong(parts[7]) : System.currentTimeMillis();
         return new Customer(
                 decodeText(parts[0]),
                 decodeText(parts[1]),
@@ -121,7 +123,8 @@ final class NetworkCodec {
                 decodeText(parts[3]),
                 decodeText(parts[4]),
                 decodeText(parts[5]),
-                Double.parseDouble(parts[6])
+                Double.parseDouble(parts[6]),
+                createdAt
         );
     }
 

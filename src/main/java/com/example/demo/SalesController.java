@@ -62,7 +62,8 @@ public class SalesController {
         try {
             System.out.println("🔄 SalesController initializing...");
             StockManager.initializeStock(); // Ensure global stock is ready
-            
+            CustomerManager.initializeCustomers(); // Ensure customers are loaded
+
             // Listen for stock updates from other windows/instances
             StockManager.addExternalChangeListener(() -> {
                 javafx.application.Platform.runLater(() -> {
@@ -84,7 +85,7 @@ public class SalesController {
             }
             
             if (cartItemsContainer != null) {
-               updateCartDisplay();
+                updateCartDisplay();
             }
             
             // Initialize Type Combo

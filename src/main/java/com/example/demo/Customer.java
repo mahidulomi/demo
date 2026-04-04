@@ -11,11 +11,13 @@ public class Customer implements Serializable {
     private String address;
     private String type; // "Retail" or "Wholesale"
     private double dueBalance;
+    private long createdAt; // Timestamp for sorting
 
     public Customer() {
         this.id = UUID.randomUUID().toString();
         this.dueBalance = 0.0;
         this.type = "Retail";
+        this.createdAt = System.currentTimeMillis();
     }
 
     public Customer(String name, String phone, String email, String address, String type, double dueBalance) {
@@ -36,6 +38,18 @@ public class Customer implements Serializable {
         this.address = address;
         this.type = type;
         this.dueBalance = dueBalance;
+        this.createdAt = System.currentTimeMillis();
+    }
+
+    public Customer(String id, String name, String phone, String email, String address, String type, double dueBalance, long createdAt) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.type = type;
+        this.dueBalance = dueBalance;
+        this.createdAt = createdAt;
     }
 
     public String getId() { return id; }
@@ -58,6 +72,9 @@ public class Customer implements Serializable {
 
     public double getDueBalance() { return dueBalance; }
     public void setDueBalance(double dueBalance) { this.dueBalance = dueBalance; }
+
+    public long getCreatedAt() { return createdAt; }
+    public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
 
     @Override
     public String toString() {

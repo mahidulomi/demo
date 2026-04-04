@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,44 @@ public final class SalesManager {
     public static synchronized List<SaleRecord> getAllSales() {
         initializeSales();
         return new ArrayList<>(salesData.values());
+    }
+
+    public static synchronized List<SaleRecord> getAllSalesSorted() {
+        initializeSales();
+        return salesData.values().stream()
+                .sorted((s1, s2) -> s2.getTimestamp().compareTo(s1.getTimestamp())) // Newest first
+                .collect(Collectors.toList());
+    }
+
+    public static synchronized List<SaleRecord> getAllSalesSortedAscending() {
+        initializeSales();
+        return salesData.values().stream()
+                .sorted(Comparator.comparing(SaleRecord::getTimestamp)) // Oldest first
+                .collect(Collectors.toList());
+    }
+
+    public static synchronized List<SaleRecord> getSalesByCustomer(String customerPhone) {
+        initializeSales();
+        return salesData.values().stream()
+                .filter(s -> s.getCustomerPhone().equals(customerPhone))
+                .sorted((s1, s2) -> s2.getTimestamp().compareTo(s1.getTimestamp()))
+                .collect(Collectors.toList());
+    }
+
+    public static synchronized List<SaleRecord> getSalesBySeller(String soldBy) {
+        initializeSales();
+        return salesData.values().stream()
+                .filter(s -> s.getSoldBy().equals(soldBy))
+                .sorted((s1, s2) -> s2.getTimestamp().compareTo(s1.getTimestamp()))
+                .collect(Collectors.toList());
+    }
+
+    public static synchronized List<SaleRecord> getSalesBySourceNode(String sourceNode) {
+        initializeSales();
+        return salesData.values().stream()
+                .filter(s -> s.getSourceNode().equals(sourceNode))
+                .sorted((s1, s2) -> s2.getTimestamp().compareTo(s1.getTimestamp()))
+                .collect(Collectors.toList());
     }
 
     public static synchronized String getSerializedSalesData() {

@@ -72,6 +72,26 @@ public final class CustomerManager {
         return new ArrayList<>(customerData.values());
     }
 
+    public static synchronized Customer getCustomerById(String customerId) {
+        initializeCustomers();
+        return customerData.get(customerId);
+    }
+
+    public static synchronized Customer getCustomerByPhone(String phone) {
+        initializeCustomers();
+        return customerData.values().stream()
+                .filter(c -> c.getPhone().equals(phone))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static synchronized List<Customer> getAllCustomersSorted() {
+        initializeCustomers();
+        return customerData.values().stream()
+                .sorted((c1, c2) -> Long.compare(c1.getCreatedAt(), c2.getCreatedAt()))
+                .collect(Collectors.toList());
+    }
+
     public static synchronized String getSerializedCustomerData() {
         initializeCustomers();
         return NetworkCodec.joinRecords(customerData.values().stream()
